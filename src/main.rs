@@ -1,20 +1,26 @@
 use std::env;
-use std::fs;
 
 mod parse_args;
+mod config;
 
 fn main() {
     let args: Vec<String> = env::args().collect();
 
-    let arg = args.get(1);
-    match arg {
-        Some(arg) => println!("arg: {arg}"),
-        None => println!("No arguments passed."),
+    let args_map = parse_args::parse(args);
+
+    for (key,value) in &args_map {
+        println!("{key}: {value}");
     }
 
-    let content = fs::read_to_string("test_file.txt");
-    match content {
-        Ok(string) => println!("Content of file: {string}"),
-        Err(_) => println!("Something went wrong while reading the file."),
-    }
+    let file_arg = String::from("-f");
+    match args_map.get(&file_arg) {
+        Some(filename) => config::read(filename),
+        None => {
+            println!("No file passed to program, reading default.");
+            config::read(config::DEFAULT_CONFIG)
+        },
+    };
+
+
+
 }
