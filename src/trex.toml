@@ -1,0 +1,5 @@
+[bib]
+file = "bib.tex"
+
+[lectures]
+one = "lecture-1.tex"

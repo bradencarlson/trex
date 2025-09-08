@@ -13,14 +13,12 @@ fn main() {
     }
 
     let file_arg = String::from("-f");
-    match args_map.get(&file_arg) {
+    let config = match args_map.get(&file_arg) {
         Some(filename) => config::read(filename),
         None => {
             println!("No file passed to program, reading default.");
             config::read(config::DEFAULT_CONFIG)
         },
     };
-
-
 
 }
