@@ -1,8 +1,0 @@
-[bib]
-file = "bib.tex"
-
-[section]
-number = "1"
-name = "Matrices and Vectors"
-file-1 = "lecture-1.tex"
-file-2 = "lecture-2.tex"

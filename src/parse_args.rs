@@ -1,3 +1,12 @@
+/* parse_args.rs
+ *
+ * Author: Braden Carlson
+ * Date: September 2025
+ *
+ * Provides functions to parse the command line arguments passed to the 
+ * program. 
+ */
+
 use std::collections::HashMap;
 
 pub fn parse(args: Vec<String>) -> HashMap<String, String> {

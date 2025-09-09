@@ -2,6 +2,7 @@ use std::env;
 
 mod parse_args;
 mod config;
+mod compile;
 
 fn main() {
     let args: Vec<String> = env::args().collect();
@@ -20,8 +21,6 @@ fn main() {
 
     let config = config::read(filename);
 
-    match config {
-        Ok(string) => println!("config: {string}"),
-        Err(e) => println!("Error: {e}"),
-    };
+    compile::create_command("pdflatex");
+
 }
