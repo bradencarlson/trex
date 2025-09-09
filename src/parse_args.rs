@@ -70,7 +70,11 @@ fn parse_argument(key: &String, value: &String) -> bool {
 
     let valid_args = vec![
         String::from("-f"),
-        String::from("-b")
+        String::from("-b"),
+        String::from("range"),
+        String::from("engine"),
+        String::from("jobname")
+
     ];
 
     valid_args.contains(key)

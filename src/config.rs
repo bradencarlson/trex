@@ -10,8 +10,17 @@
 use std::fs;
 use std::io;
 
+const DEFAULT_PREAMBLE: &str = "\\documentclass{article}
+\\usepackage{amsmath,amstext,amssymb}\n";
+
+pub const DEFAULT_CONFIG: &str = "trex.conf";
+
+const MINIMAL_CONFIG: &str = "preamble: preamble.tex
+section: Section Label
+file: file-1.tex";
+
 #[derive(Debug)]
-struct Outline {
+pub struct Outline {
     /* Holds the outline of the lecture notes. */
 
     /* This is a list of file names, in the order in which they appeared 
@@ -24,34 +33,66 @@ struct Outline {
     /* This is a list of indices (in the lecture_files vector) at which new
     * sections start. For example, if 3 is an element of this vector, then
     * before the 4th file in lecture_files, a new section should be defined. */
-    section_pointers: Vec<u8>,
+    section_positions: Vec<usize>,
 
     /* This is a list of the section names, in the order in which they
      * appeared in the config file. */
     section_names: Vec<String>,
 }
 
-pub const DEFAULT_CONFIG: &str = "trex.conf";
-const MINIMAL_CONFIG: &str = "preamble: preamble.tex
-section: Section Label
-file: file-1.tex";
+impl Outline {
+    pub fn get_preamble(&self) -> String {
+        if self.preamble.len() > 0{
+            let mut p = String::new();
+            p.push_str("\\include{");
+            p.push_str(self.preamble.as_str());
+            p.push_str("}\n");
+            p
+        } else {
+            DEFAULT_PREAMBLE.to_string()
+        }
+    }
 
-pub fn read(path: &str) -> Result<String, io::Error>  {
+    pub fn get_full(&self) -> String {
+        let mut p = String::new();
+        p.push_str("\\begin{document}\n");
+        let mut idx: usize = 0;
+        let mut section_idx: usize = 0;
+        for file in &self.lecture_files {
+            if self.section_positions.contains(&idx) {
+                p.push_str("\\section{");
+                p.push_str(self.section_names[section_idx].as_str());
+                p.push_str("}\n");
+                section_idx += 1;
+            }
+            p.push_str("\\input{");
+            p.push_str(file.as_str());
+            p.push_str("}\n");
+
+            idx += 1;
+        }
+        p
+    }
+}
+
+
+pub fn read(path: &str) -> Option<Outline> {
     /* Reads the confige file and parses the result into an Outline struct.
      * 
      * Parameters: 
      *  path - the filepath to read. 
      *
      * Returns: 
-     *  Result<TODO, TODO> - TODO
+     *  Option<Outline> - The outline of the lecture notes is reading the config file is
+     *                               succesful. An Error if it is not.
      */
 
-    let config = fs::read_to_string(&path)?; 
+    let config = match fs::read_to_string(&path) {
+        Ok(string) => string, 
+        Err(_) => return None,
+     };
 
-    let outline = parse(&config);
-
-    Ok(config)
-
+    parse(&config)
 }
 
 fn parse(content: &String) -> Option<Outline> {
@@ -77,7 +118,7 @@ fn parse(content: &String) -> Option<Outline> {
     let mut outline = Outline {
         lecture_files: Vec::<String>::new(),
         preamble: String::new(),
-        section_pointers: Vec::<u8>::new(),
+        section_positions: Vec::<usize>::new(),
         section_names: Vec::<String>::new()
     };
 
@@ -97,7 +138,7 @@ fn parse(content: &String) -> Option<Outline> {
         } else if line.starts_with(section) {
             let arg = &line[section.len()..];
             outline.section_names.push(arg.to_string());
-            outline.section_pointers.push(
+            outline.section_positions.push(
                 outline.lecture_files.len().try_into()
                     .expect("Number of lecture files should not be this large")
             );

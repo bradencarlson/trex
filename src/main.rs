@@ -9,18 +9,18 @@ fn main() {
 
     let args_map = parse_args::parse(args);
 
-    for (key,value) in &args_map {
-        println!("{key}: {value}");
-    }
-
     let file_arg = String::from("-f");
+
     let filename = match args_map.get(&file_arg) {
         Some(string) => string,
-        None => ""
+        None => config::DEFAULT_CONFIG,
     };
 
-    let config = config::read(filename);
+    let outline = match config::read(filename) {
+        Some(outline) => outline, 
+        None => return,
+    };
 
-    compile::create_command("pdflatex");
+    compile::compile(&outline, &args_map);
 
 }
