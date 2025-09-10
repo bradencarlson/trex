@@ -1,0 +1,17 @@
+
+main 
+
+
+parse_args: 
+    main task: 
+        take in Vec<String> of command line args, return HashMap of options set
+        for the program. 
+
+config: 
+    main task: 
+        take in a filename, return an Outline of the lecture notes. 
+
+compile: 
+    main task: 
+        take in a range, the HashMap of options, and an Outline and run the
+        appropriate command to compile the document. 

@@ -2,7 +2,7 @@ use std::process::Command;
 use std::collections::HashMap;
 use number_range::NumberRangeOptions;
 
-use crate::config::Outline;
+use crate::outline::Outline;
 
 const DEFAULT_ENGINE: &str = "pdflatex";
 const DEFAULT_RANGE: &str = "1";
