@@ -73,6 +73,48 @@ impl Outline {
         }
         p
     }
+
+    pub fn get_range(&self, range: &Vec<usize>) -> String {
+        let mut p = String::new();
+        p.push_str("\\begin{document}\n");
+        let mut section_counter = 0;
+        let mut section_idx = 0;
+
+        /* Figure out how many sections we need to skip to get to the first 
+         * lecture in the range. */
+        loop {
+            if section_idx < self.section_positions.len() && 
+                self.section_positions[section_idx] <= range[0] {
+                section_idx += 1;
+                section_counter += 1;
+            } else {
+                break;
+            }
+        }
+
+        println!("The section_positions index I will use is: {}", section_idx);
+
+        p.push_str("\\section{");
+        p.push_str(self.section_names[section_idx-1].as_str());
+        p.push_str("}\n");
+
+        for idx in range {
+            if section_idx < self.section_positions.len() && 
+                idx == &self.section_positions[section_idx] {
+                    p.push_str("\\section{");
+                    p.push_str(self.section_names[section_idx].as_str());
+                    p.push_str("}\n");
+                    section_idx += 1;
+
+            }
+
+            p.push_str("\\input{");
+            p.push_str(self.lecture_files[*idx-1].as_str());
+            p.push_str("}\n");
+        }
+
+        p
+    }
 }
 
 

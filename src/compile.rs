@@ -82,7 +82,7 @@ pub fn compile(outline: &Outline, options: &HashMap<String, String>) {
 
     let mut tex = String::new();
     tex.push_str(outline.get_preamble().as_str());
-    tex.push_str(outline.get_full().as_str());
+    tex.push_str(outline.get_range(&rng).as_str());
     println!("{}", tex);
 
 
