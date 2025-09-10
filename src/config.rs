@@ -92,8 +92,6 @@ impl Outline {
             }
         }
 
-        println!("The section_positions index I will use is: {}", section_idx);
-
         p.push_str("\\section{");
         p.push_str(self.section_names[section_idx-1].as_str());
         p.push_str("}\n");

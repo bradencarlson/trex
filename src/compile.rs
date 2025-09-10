@@ -68,12 +68,6 @@ pub fn compile(outline: &Outline, options: &HashMap<String, String>) {
             Err(_) => vec![1],
         };
 
-    /* Debuging stuff, to be removed. */
-    println!("proposed engine: {proposed_engine}");
-    println!("jobname: {jobname}");
-    println!("{rng:?}");
-    /**********************************/
-
     let cmd = create_command(proposed_engine, jobname);
 
 
