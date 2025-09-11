@@ -13,5 +13,5 @@ config:
 
 compile: 
     main task: 
-        take in a range, the HashMap of options, and an Outline and run the
+        take in the HashMap of options and an Outline and run the
         appropriate command to compile the document. 

@@ -8,39 +8,11 @@ const DEFAULT_ENGINE: &str = "pdflatex";
 const DEFAULT_RANGE: &str = "1";
 const DEFAULT_JOBNAME: &str = "job";
 
-enum Engine {
-    LATEX,
-    PDFLATEX,
-}
+mod cmd;
 
-struct CMD {
-    engine: Engine,
-    jobname: String,
-    range: Vec<usize>,
-    outline: Outline,
-} 
+use cmd::CMD;
+use cmd::Engine;
 
-impl CMD {
-    pub fn new() -> CMD {
-        CMD {
-            engine: Engine::PDFLATEX,
-            jobname: String::from("out"),
-            range: Vec::<usize>::new(),
-            outline: Outline::new(),
-        }
-
-    }
-    fn pdflatex_list(&self) -> Vec<&str> {
-        let mut l = Vec::<&str>::new();
-        l.push("pdflatex");
-        l.push("-jobname");
-        l.push( match self.jobname.as_str() {
-            "" => "out",
-            _ => self.jobname.as_str(),
-        });
-        l
-    }
-}
 
 pub fn compile(outline: &Outline, options: &HashMap<String, String>) {
     let proposed_engine = match options.get("engine") {
