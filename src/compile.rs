@@ -16,6 +16,8 @@ enum Engine {
 struct CMD {
     engine: Engine,
     jobname: String,
+    range: Vec<usize>,
+    outline: Outline,
 } 
 
 impl CMD {
@@ -23,16 +25,11 @@ impl CMD {
         CMD {
             engine: Engine::PDFLATEX,
             jobname: String::from("out"),
+            range: Vec::<usize>::new(),
+            outline: Outline::new(),
         }
 
     }
-    pub fn to_list(&self) -> Vec<&str> {
-        match self.engine {
-            Engine::PDFLATEX => self.pdflatex_list(),
-            _ => Vec::<&str>::new(),
-        }
-    }
-
     fn pdflatex_list(&self) -> Vec<&str> {
         let mut l = Vec::<&str>::new();
         l.push("pdflatex");
@@ -43,8 +40,6 @@ impl CMD {
         });
         l
     }
-
-
 }
 
 pub fn compile(outline: &Outline, options: &HashMap<String, String>) {
@@ -68,22 +63,11 @@ pub fn compile(outline: &Outline, options: &HashMap<String, String>) {
             Err(_) => vec![1],
         };
 
-    let cmd = create_command(proposed_engine, jobname);
-
-
-    println!("Printing out the command:");
-    println!("{:?}", cmd.to_list());
-
-    let mut tex = String::new();
-    tex.push_str(outline.get_preamble().as_str());
-    tex.push_str(outline.get_range(&rng).as_str());
-    println!("{}", tex);
-
-
+    let cmd = create_command(proposed_engine, jobname, rng);
 }
 
 
-fn create_command(proposed_engine: &str, jobname: &str) -> CMD {
+fn create_command(proposed_engine: &str, jobname: &str, range: Vec<usize>) -> CMD {
     let engine: Engine = match proposed_engine {
         "latex" => Engine::LATEX,
         "pdflatex" => Engine::PDFLATEX,
@@ -94,6 +78,7 @@ fn create_command(proposed_engine: &str, jobname: &str) -> CMD {
 
     cmd.engine = engine;
     cmd.jobname = jobname.to_string();
+    cmd.range = range;
 
     cmd
 }

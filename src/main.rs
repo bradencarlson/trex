@@ -22,6 +22,6 @@ fn main() {
         None => return,
     };
 
-    compile::compile(&outline, &args_map);
+    println!("{}", outline);
 
 }

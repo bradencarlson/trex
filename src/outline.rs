@@ -1,6 +1,4 @@
-
-const DEFAULT_PREAMBLE: &str = "\\documentclass{article}
-\\usepackage{amsmath,amstext,amssymb}\n";
+use std::fmt;
 
 #[derive(Debug)]
 pub struct Outline {
@@ -23,77 +21,45 @@ pub struct Outline {
     pub section_names: Vec<String>,
 }
 
-impl Outline {
-    pub fn get_preamble(&self) -> String {
-        if self.preamble.len() > 0{
-            let mut p = String::new();
-            p.push_str("\\include{");
-            p.push_str(self.preamble.as_str());
-            p.push_str("}\n");
-            p
-        } else {
-            DEFAULT_PREAMBLE.to_string()
-        }
-    }
-
-    pub fn get_full(&self) -> String {
-        let mut p = String::new();
-        p.push_str("\\begin{document}\n");
-        let mut idx: usize = 0;
-        let mut section_idx: usize = 0;
-        for file in &self.lecture_files {
-            if self.section_positions.contains(&idx) {
-                p.push_str("\\section{");
-                p.push_str(self.section_names[section_idx].as_str());
-                p.push_str("}\n");
-                section_idx += 1;
-            }
-            p.push_str("\\input{");
-            p.push_str(file.as_str());
-            p.push_str("}\n");
-
-            idx += 1;
-        }
-        p
-    }
-
-    pub fn get_range(&self, range: &Vec<usize>) -> String {
-        let mut p = String::new();
-        p.push_str("\\begin{document}\n");
-        let mut section_counter = 0;
-        let mut section_idx = 0;
-
-        /* Figure out how many sections we need to skip to get to the first 
-         * lecture in the range. */
+impl fmt::Display for Outline {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "preamble: {}\n", self.preamble);
+        write!(f, "Number of Sections: {}\n", self.section_positions.len());
+        let mut s_idx = 0;
+        let mut idx = 0;
         loop {
-            if section_idx < self.section_positions.len() && 
-                self.section_positions[section_idx] <= range[0] {
-                section_idx += 1;
-                section_counter += 1;
-            } else {
+            if idx >= self.lecture_files.len() {
                 break;
             }
-        }
-
-        p.push_str("\\section{");
-        p.push_str(self.section_names[section_idx-1].as_str());
-        p.push_str("}\n");
-
-        for idx in range {
-            if section_idx < self.section_positions.len() && 
-                idx == &self.section_positions[section_idx] {
-                    p.push_str("\\section{");
-                    p.push_str(self.section_names[section_idx].as_str());
-                    p.push_str("}\n");
-                    section_idx += 1;
-
+            if s_idx < self.section_positions.len() && 
+                idx == *self.section_positions.get(s_idx).unwrap() {
+                    write!(f, "section: {}\n", self.section_names.get(s_idx).unwrap());
+                    s_idx += 1;
             }
-
-            p.push_str("\\input{");
-            p.push_str(self.lecture_files[*idx-1].as_str());
-            p.push_str("}\n");
+            write!(f, "\tfile: {}\n", self.lecture_files.get(idx).unwrap());
+            idx += 1;
         }
+        write!(f, "\nsection positions: {:?}", self.section_positions)
+    }
+}
 
-        p
+impl Outline {
+    pub fn new() -> Outline {
+        Outline {
+            lecture_files: Vec::<String>::new(), 
+            preamble: String::new(), 
+            section_positions: Vec::<usize>::new(),
+            section_names: Vec::<String>::new(),
+        }
+    }
+    pub fn get_preamble(&self) -> Option<&String> {
+        if self.preamble.len() > 0 {
+            Some(&self.preamble)
+        } else {
+            None
+        }
+    }
+    pub fn get_lecture(&self, index: usize) -> Option<&String> {
+        self.lecture_files.get(index)
     }
 }
