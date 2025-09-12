@@ -100,6 +100,9 @@ impl CMD {
             }
         }
 
+        c.push_str("\\setcounter{");
+        c.push_str((section_idx-1).to_string().as_str());
+        c.push_str("}\n");
         c.push_str("\\section{");
         c.push_str(self.outline.section_names[section_idx-1].as_str());
         c.push_str("}\n");
