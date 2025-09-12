@@ -14,7 +14,7 @@ use cmd::CMD;
 use cmd::Engine;
 
 
-pub fn compile(outline: &Outline, options: &HashMap<String, String>) {
+pub fn compile(outline: Outline, options: &HashMap<String, String>) {
     let proposed_engine = match options.get("engine") {
         Some(string) => string.as_str(),
         None => DEFAULT_ENGINE,
@@ -35,11 +35,13 @@ pub fn compile(outline: &Outline, options: &HashMap<String, String>) {
             Err(_) => vec![1],
         };
 
-    let cmd = create_command(proposed_engine, jobname, rng);
+    let cmd = create_command(proposed_engine, jobname, rng, outline);
+
+    cmd.run(options);
 }
 
 
-fn create_command(proposed_engine: &str, jobname: &str, range: Vec<usize>) -> CMD {
+fn create_command(proposed_engine: &str, jobname: &str, range: Vec<usize>, outline: Outline) -> CMD {
     let engine: Engine = match proposed_engine {
         "latex" => Engine::LATEX,
         "pdflatex" => Engine::PDFLATEX,
@@ -51,6 +53,7 @@ fn create_command(proposed_engine: &str, jobname: &str, range: Vec<usize>) -> CM
     cmd.engine = engine;
     cmd.jobname = jobname.to_string();
     cmd.range = range;
+    cmd.outline = outline;
 
     cmd
 }

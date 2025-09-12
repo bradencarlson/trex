@@ -24,4 +24,6 @@ fn main() {
 
     println!("{}", outline);
 
+    compile::compile(outline, &args_map);
+
 }
