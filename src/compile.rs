@@ -3,6 +3,7 @@ use std::collections::HashMap;
 use number_range::NumberRangeOptions;
 
 use crate::outline::Outline;
+use crate::parse_args;
 
 const DEFAULT_ENGINE: &str = "pdflatex";
 const DEFAULT_RANGE: &str = "1";
@@ -15,15 +16,15 @@ use cmd::Engine;
 
 
 pub fn compile(outline: Outline, options: &HashMap<String, String>) {
-    let proposed_engine = match options.get("engine") {
+    let proposed_engine = match options.get(parse_args::ENGINE_ARG) {
         Some(string) => string.as_str(),
         None => DEFAULT_ENGINE,
     };
-    let jobname = match options.get("jobname") {
+    let jobname = match options.get(parse_args::JOBNAME_ARG) {
         Some(string) => string.as_str(),
         None => DEFAULT_JOBNAME,
     };
-    let range = match options.get("range") {
+    let range = match options.get(parse_args::RANGE_ARG) {
         Some(string) => string.as_str(),
         None => DEFAULT_RANGE,
     };

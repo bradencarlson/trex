@@ -1,6 +1,6 @@
 use std::env;
 
-mod parse_args;
+pub mod parse_args;
 mod config;
 mod compile;
 pub mod outline;

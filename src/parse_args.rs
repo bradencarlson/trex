@@ -9,6 +9,11 @@
 
 use std::collections::HashMap;
 
+pub const RANGE_ARG: &str = "-r";
+pub const ENGINE_ARG: &str = "-e";
+pub const JOBNAME_ARG: &str = "-j";
+pub const FILENAME_ARG: &str = "-f";
+
 pub fn parse(args: Vec<String>) -> HashMap<String, String> {
     /* Takes in a vector of arguments, considers them in pairs, and if they represent a valid (key,
      * value) pair for the program, they are added as a (key, value) pair to a HashMap.
@@ -69,11 +74,10 @@ fn parse_argument(key: &String, value: &String) -> bool {
      */
 
     let valid_args = vec![
-        String::from("-f"),
-        String::from("-b"),
-        String::from("range"),
-        String::from("engine"),
-        String::from("jobname")
+        String::from(FILENAME_ARG),
+        String::from(RANGE_ARG),
+        String::from(ENGINE_ARG),
+        String::from(JOBNAME_ARG)
 
     ];
 
