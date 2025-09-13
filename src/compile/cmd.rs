@@ -26,19 +26,41 @@ impl CMD {
 
     }
     pub fn run(&self, options: &HashMap<String, String>) {
-        println!("range is: {:?}", self.range);
-        println!("{}", self.get_tex_code(options));
+        let mut command_list = self.command_list();
+        command_list.push(self.get_tex_code(options));
+        println!("{:?}", command_list);
+        let mut c = Command::new(&command_list[0]);
+        c.args(&command_list[1..]);
+        c.status().expect("Something went wrong while compiling the document.");
     }
 
-    fn pdflatex_list(&self) -> Vec<String> {
+    fn command_list(&self) -> Vec<String> {
         let mut l = Vec::<String>::new();
-        l.push("pdflatex".to_string());
-        let mut j = String::from("-jobname=");
-        j.push_str( match self.jobname.as_str() {
-            "" => "out", 
-            _ => self.jobname.as_str(),
-        });
-        l.push(j);
+
+        match self.engine {
+            Engine::LATEX => {
+                l.push("latex".to_string());
+                let mut j = String::from("-jobname=");
+                j.push_str( match self.jobname.as_str() {
+                    "" => "out", 
+                    _ => self.jobname.as_str(),
+                });
+                l.push(j);
+            },
+
+            /* Engine::PDFLATEX is the default, so it is not specified and 
+             * is caught here. */
+            _ => {
+                l.push("pdflatex".to_string());
+                let mut j = String::from("-jobname=");
+                j.push_str( match self.jobname.as_str() {
+                    "" => "out", 
+                    _ => self.jobname.as_str(),
+                });
+                l.push(j);
+            },
+        };
+
         l
     }
 
@@ -48,9 +70,9 @@ impl CMD {
 
         t.push_str("\\input{");
         t.push_str(self.outline.preamble.as_str());
-        t.push_str("}\n");
+        t.push_str("}");
 
-        t.push_str("\\begin{document}\n");
+        t.push_str("\\begin{document}");
 
         t.push_str(self.get_document_content().as_str());
         
@@ -100,12 +122,12 @@ impl CMD {
             }
         }
 
-        c.push_str("\\setcounter{");
+        c.push_str("\\setcounter{section}{");
         c.push_str((section_idx-1).to_string().as_str());
-        c.push_str("}\n");
+        c.push_str("}");
         c.push_str("\\section{");
         c.push_str(self.outline.section_names[section_idx-1].as_str());
-        c.push_str("}\n");
+        c.push_str("}");
         
         loop {
             if file_idx >= end {
@@ -120,14 +142,14 @@ impl CMD {
                         _ => {
                             c.push_str("\\section{");
                             c.push_str(self.outline.section_names[section_idx].as_str());
-                            c.push_str("}\n");
+                            c.push_str("}");
                             section_idx += 1;
                         }
                     }
             }
             c.push_str("\\input{");
             c.push_str(self.outline.lecture_files[file_idx].as_str());
-            c.push_str("}\n");
+            c.push_str("}");
             file_idx += 1;
         }
         c
