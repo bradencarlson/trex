@@ -107,11 +107,6 @@ impl CMD {
         c.push_str(self.outline.section_names[section_idx-1].as_str());
         c.push_str("}\n");
         
-        section_idx += 1;
-
-
-
-        
         loop {
             if file_idx >= end {
                 break;
