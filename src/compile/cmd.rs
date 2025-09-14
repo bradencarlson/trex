@@ -28,7 +28,6 @@ impl CMD {
     pub fn run(&self, options: &HashMap<String, String>) {
         let mut command_list = self.command_list();
         command_list.push(self.get_tex_code(options));
-        println!("{:?}", command_list);
         let mut c = Command::new(&command_list[0]);
         c.args(&command_list[1..]);
         c.status().expect("Something went wrong while compiling the document.");

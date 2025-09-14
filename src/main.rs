@@ -10,9 +10,7 @@ fn main() {
 
     let args_map = parse_args::parse(args);
 
-    let file_arg = String::from("-f");
-
-    let filename = match args_map.get(&file_arg) {
+    let filename = match args_map.get(parse_args::FILENAME_ARG) {
         Some(string) => string,
         None => config::DEFAULT_CONFIG,
     };
@@ -22,8 +20,17 @@ fn main() {
         None => return,
     };
 
-    println!("{}", outline);
+    println!("The outline I read was:\n\n{}\n", outline);
 
-    compile::compile(outline, &args_map);
-
+    match args_map.get(parse_args::COMPILE_ARG) {
+        Some(string) => {
+            compile::compile(outline, &args_map);
+        },
+        None => {
+            /* The default behavior is to NOT compile the document, this is to prevent 
+             * firing up pdflatex every time I want to test something. In a
+             * future version compiling will be the default. */
+            println!("Pass the -c option in order to compile.");     
+        },
+    }
 }
