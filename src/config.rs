@@ -8,7 +8,6 @@
  */
 
 use std::fs;
-use std::io;
 
 use crate::outline::Outline;
 
@@ -33,7 +32,7 @@ pub fn read(path: &str) -> Option<Outline> {
 
     let config = match fs::read_to_string(&path) {
         Ok(string) => string, 
-        Err(_) => return None,
+        Err(_) => MINIMAL_CONFIG.to_string(),
      };
 
     parse(&config)

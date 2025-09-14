@@ -23,7 +23,7 @@ fn main() {
     println!("The outline I read was:\n\n{}\n", outline);
 
     match args_map.get(parse_args::COMPILE_ARG) {
-        Some(string) => {
+        Some(_string) => {
             compile::compile(outline, &args_map);
         },
         None => {
