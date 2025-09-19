@@ -71,7 +71,7 @@ pub fn parse(args: Vec<String>) -> HashMap<String, String> {
     map
 }
 
-fn parse_argument(key: &String, value: &String) -> bool {
+pub fn parse_argument(key: &String, value: &String) -> bool {
     /* Determines if a given (key, value) pair is a valid option for this program. There is a
      * simple check to determine if the key belongs to the accepted keys list, and that the value
      * makes sense. 

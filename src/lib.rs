@@ -1,9 +1,9 @@
 use std::collections::HashMap;
 
-mod parse_args;
-mod config;
-mod outline;
-mod compile;
+pub mod parse_args;
+pub mod config;
+pub mod outline;
+pub mod compile;
 
 pub fn run(args: &HashMap<String,String>) {
 
