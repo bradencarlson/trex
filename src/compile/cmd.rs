@@ -43,6 +43,13 @@ impl CMD {
     }
 
     fn command_list(&self) -> Vec<String> {
+        /*  Generates a list of parameters to be passed to a shell. 
+         *
+         *  Returns: 
+         *    Vec<String> - a list of strings which will be passed to a shell when this command is
+         *                  run.
+         */
+
         let mut l = Vec::<String>::new();
 
         match self.engine {
@@ -73,6 +80,13 @@ impl CMD {
     }
 
     fn get_tex_code(&self) -> String {
+        /* Gets the TeX code of the document, based on the specified range and the structure of the
+         * outline file. 
+         *
+         * Returns: 
+         *  String - a string of TeX code. 
+         */
+
         let mut t = String::new();
         t.push_str("\"");
 
@@ -91,6 +105,13 @@ impl CMD {
     }
 
     fn get_document_content(&self) -> String {
+        /* Used by get_tex_code to obtain the TeX code of the document based on the range which was
+         * passed to this command. 
+         *
+         * Returns: 
+         *  String - a string of TeX code
+         */
+
         // TODO: Go though this entire method and check for things that could go wrong. This cannot
         // fail!
  
