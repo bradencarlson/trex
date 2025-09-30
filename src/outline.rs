@@ -23,6 +23,11 @@ pub struct Outline {
 
 impl fmt::Display for Outline {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        /* Prints out information about the outline, including the total number of sections found,
+         * location of the preamble file, and all sections and lecture files found, in the order
+         * that they were found in.  
+         */
+
         write!(f, "preamble: {}\n", self.preamble);
         write!(f, "Number of Sections: {}\n", self.section_positions.len());
         let mut s_idx = 0;
@@ -45,6 +50,8 @@ impl fmt::Display for Outline {
 
 impl Outline {
     pub fn new() -> Outline {
+        /* Creates a new Outline, with empty fields. */
+
         Outline {
             lecture_files: Vec::<String>::new(), 
             preamble: String::new(), 
@@ -53,6 +60,8 @@ impl Outline {
         }
     }
     pub fn get_preamble(&self) -> Option<&String> {
+        /* Returns the preamble if it is nonzero, otherwise returns None */
+
         if self.preamble.len() > 0 {
             Some(&self.preamble)
         } else {
@@ -60,6 +69,16 @@ impl Outline {
         }
     }
     pub fn get_lecture(&self, index: usize) -> Option<&String> {
+        /* Returns the lecture file at the given index, if it exists. 
+         *
+         * Parameters: 
+         *  index   - the index of the lecture file to get.
+         *
+         * Returns: 
+         *  Some(String) - if the index is valid
+         *  None         - if the index is invalid
+         */
+
         self.lecture_files.get(index)
     }
 }

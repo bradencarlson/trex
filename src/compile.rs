@@ -1,3 +1,12 @@
+/* compile.rs
+ *
+ * Author: Braden Carlson
+ * Date: September 2025
+ *
+ * Takes an outline and a HashMap of options to construct a command to run
+ * and runs it.
+ */
+
 use std::collections::HashMap;
 use number_range::NumberRangeOptions;
 
@@ -15,6 +24,14 @@ use cmd::Engine;
 
 
 pub fn compile(outline: Outline, options: &HashMap<String, String>) {
+    /* parses some of the options found in the options passed, then creates
+     * the appropriate command and runs it. 
+     *
+     * Parameters: 
+     *  outline - the outline of the lecture notes to use
+     *  options - options to use when creating the command
+     */
+
     let proposed_engine = match options.get(parse_args::ENGINE_ARG) {
         Some(string) => string.as_str(),
         None => DEFAULT_ENGINE,
@@ -37,11 +54,23 @@ pub fn compile(outline: Outline, options: &HashMap<String, String>) {
 
     let cmd = create_command(proposed_engine, jobname, rng, outline);
 
-    cmd.run(options);
+    cmd.run();
 }
 
 
 fn create_command(proposed_engine: &str, jobname: &str, range: Vec<usize>, outline: Outline) -> CMD {
+    /* Creates a command object which can then be run to compile the document. 
+     *
+     * Parameters: 
+     *  proposed_engine - the engine to use
+     *  jobname         - the jobname to use
+     *  range           - the range of files to compile
+     *  outline         - the outline to use 
+     *
+     * Returns: 
+     *  CMD             - the command which the caller can run
+     */
+
     let engine: Engine = match proposed_engine {
         "latex" => Engine::LATEX,
         "pdflatex" => Engine::PDFLATEX,

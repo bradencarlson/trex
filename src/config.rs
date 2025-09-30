@@ -11,9 +11,11 @@ use std::fs;
 
 use crate::outline::Outline;
 
-
+/* This is the default config file, if no filepath is passed to the read 
+ * function, this will be searched for. */
 pub const DEFAULT_CONFIG: &str = "trex.conf";
 
+/* If no config file is found, this default content is parsed. */
 const MINIMAL_CONFIG: &str = "preamble: preamble.tex
 section: Section Label
 file: file-1.tex";
@@ -58,12 +60,7 @@ fn parse(content: &String) -> Option<Outline> {
 
     let mut lines = content.lines();
 
-    let mut outline = Outline {
-        lecture_files: Vec::<String>::new(),
-        preamble: String::new(),
-        section_positions: Vec::<usize>::new(),
-        section_names: Vec::<String>::new()
-    };
+    let mut outline = Outline::new(); 
 
     loop {
         let line = match lines.next() {
@@ -71,6 +68,7 @@ fn parse(content: &String) -> Option<Outline> {
             None => break,
         };
 
+        // Define the keywords to match against.
         let preamble = "preamble: ";
         let section = "section: ";
         let file = "file: ";

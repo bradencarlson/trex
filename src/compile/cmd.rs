@@ -17,6 +17,8 @@ pub struct CMD {
 
 impl CMD {
     pub fn new() -> CMD {
+        /* Creates a new CMD, with some good default values. */
+
         CMD {
             engine: Engine::PDFLATEX,
             jobname: String::from("out"),
@@ -25,9 +27,16 @@ impl CMD {
         }
 
     }
-    pub fn run(&self, options: &HashMap<String, String>) {
+    pub fn run(&self) {
+        /* Runs this command 
+         *
+         * Parameters: 
+         *  options - a HashMap of additional options to use while 
+         *            running this command. 
+         */
+
         let mut command_list = self.command_list();
-        command_list.push(self.get_tex_code(options));
+        command_list.push( self.get_tex_code() );
         let mut c = Command::new(&command_list[0]);
         c.args(&command_list[1..]);
         c.status().expect("Something went wrong while compiling the document.");
@@ -63,7 +72,7 @@ impl CMD {
         l
     }
 
-    fn get_tex_code(&self, options: &HashMap<String, String>) -> String {
+    fn get_tex_code(&self) -> String {
         let mut t = String::new();
         t.push_str("\"");
 
