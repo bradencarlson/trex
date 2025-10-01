@@ -1,0 +1,7 @@
+preamble: testing.tex
+
+section: Section One
+    file: first-lecture.tex
+    file: second-lecture.tex
+section: The Second Section
+    file: third-lecture.tex
