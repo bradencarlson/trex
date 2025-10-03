@@ -14,7 +14,7 @@ pub const ENGINE_ARG: &str = "-e";
 pub const JOBNAME_ARG: &str = "-j";
 pub const FILENAME_ARG: &str = "-f";
 pub const CLASS_OPTION: &str = "-o";
-pub const COMPILE_ARG: &str = "-c";
+pub const DRYRUN_ARG: &str = "-d";
 pub const VERBOSE_ARG: &str = "-v";
 
 pub fn parse(args: Vec<String>) -> HashMap<String, String> {
@@ -53,9 +53,9 @@ pub fn parse(args: Vec<String>) -> HashMap<String, String> {
         };
 
         match key.as_str() {
-            COMPILE_ARG => {
+            DRYRUN_ARG => {
                 idx += 1;
-                map.insert(String::from(COMPILE_ARG),"true".to_string());
+                map.insert(String::from(DRYRUN_ARG),"true".to_string());
                 continue;
             },
             VERBOSE_ARG => {

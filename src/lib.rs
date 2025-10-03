@@ -21,15 +21,11 @@ pub fn run(args: &HashMap<String,String>) {
         println!("The outline I read was:\n\n{}\n", outline);
     }
 
-    match args.get(parse_args::COMPILE_ARG) {
-        Some(_string) => {
-            compile::compile(outline, &args);
-        },
+    /* If the dryrun argument was found, do nothing */
+    match args.get(parse_args::DRYRUN_ARG) {
+        Some(_string) => (),
         None => {
-            /* The default behavior is to NOT compile the document, this is to prevent 
-             * firing up pdflatex every time I want to test something. In a
-             * future version compiling will be the default. */
-            println!("Pass the -c option in order to compile.");     
+            compile::compile(outline, &args);
         },
     }
 
