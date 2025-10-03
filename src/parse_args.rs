@@ -74,6 +74,14 @@ pub fn parse(args: Vec<String>) -> HashMap<String, String> {
 
     }
 
+    if let Some(_s) = map.get(VERBOSE_ARG) {
+        println!("Options Parsed:");
+        for (key,value) in &map {
+            println!("\t{key}: {value}");
+        }
+        println!("");
+    }
+
     map
 }
 

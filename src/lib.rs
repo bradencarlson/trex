@@ -17,7 +17,9 @@ pub fn run(args: &HashMap<String,String>) {
         None => return,
     };
 
-    println!("The outline I read was:\n\n{}\n", outline);
+    if let Some(_s) = args.get(parse_args::VERBOSE_ARG) {
+        println!("The outline I read was:\n\n{}\n", outline);
+    }
 
     match args.get(parse_args::COMPILE_ARG) {
         Some(_string) => {
