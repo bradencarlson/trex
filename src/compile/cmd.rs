@@ -3,6 +3,8 @@ use std::collections::HashMap;
 
 use crate::outline::Outline;
 
+use std::fmt;
+
 pub enum Engine {
     LATEX,
     PDFLATEX,
@@ -185,4 +187,12 @@ impl CMD {
     }
 
 
+}
+
+impl fmt::Display for CMD {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{:?}\n", self.command_list());
+        write!(f, "The code appended to the command will be:\n");
+        write!(f, "{}", self.get_tex_code())
+    }
 }

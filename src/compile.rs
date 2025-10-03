@@ -54,7 +54,12 @@ pub fn compile(outline: Outline, options: &HashMap<String, String>) {
 
     let cmd = create_command(proposed_engine, jobname, rng, outline);
 
-    cmd.run();
+    if let Some(s) = options.get(parse_args::VERBOSE_ARG) {
+        println!("Running the following command:");
+        println!("{cmd}");
+    }
+
+    //cmd.run();
 }
 
 

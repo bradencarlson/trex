@@ -15,6 +15,7 @@ pub const JOBNAME_ARG: &str = "-j";
 pub const FILENAME_ARG: &str = "-f";
 pub const CLASS_OPTION: &str = "-o";
 pub const COMPILE_ARG: &str = "-c";
+pub const VERBOSE_ARG: &str = "-v";
 
 pub fn parse(args: Vec<String>) -> HashMap<String, String> {
     /* Takes in a vector of arguments, considers them in pairs, and if they represent a valid (key,
@@ -57,6 +58,11 @@ pub fn parse(args: Vec<String>) -> HashMap<String, String> {
                 map.insert(String::from(COMPILE_ARG),"true".to_string());
                 continue;
             },
+            VERBOSE_ARG => {
+                idx += 1;
+                map.insert(String::from(VERBOSE_ARG), "true".to_string());
+                continue;
+            },
             _ => {}
         }
 
@@ -89,7 +95,7 @@ pub fn parse_argument(key: &String, value: &String) -> bool {
         String::from(RANGE_ARG),
         String::from(ENGINE_ARG),
         String::from(JOBNAME_ARG),
-        String::from(CLASS_OPTION)
+        String::from(CLASS_OPTION),
     ];
 
     valid_args.contains(key)
