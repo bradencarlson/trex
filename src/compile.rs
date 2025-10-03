@@ -59,7 +59,7 @@ pub fn compile(outline: Outline, options: &HashMap<String, String>) {
         println!("{cmd}");
     }
 
-    //cmd.run();
+    cmd.run();
 }
 
 
