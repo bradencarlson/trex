@@ -21,12 +21,5 @@ pub fn run(args: &HashMap<String,String>) {
         println!("The outline I read was:\n\n{}\n", outline);
     }
 
-    /* If the dryrun argument was found, do nothing */
-    match args.get(parse_args::DRYRUN_ARG) {
-        Some(_string) => (),
-        None => {
-            compile::compile(outline, &args);
-        },
-    }
-
+    compile::compile(outline, &args);
 }

@@ -15,6 +15,7 @@ pub struct CMD {
     pub jobname: String,
     pub range: Vec<usize>,
     pub outline: Outline,
+    pub class_options: Vec<String>,
 } 
 
 impl CMD {
@@ -26,6 +27,7 @@ impl CMD {
             jobname: String::from("out"),
             range: Vec::<usize>::new(),
             outline: Outline::new(),
+            class_options: Vec::<String>::new(),
         }
 
     }
@@ -91,6 +93,14 @@ impl CMD {
 
         let mut t = String::new();
         t.push_str("\"");
+
+        for option in &self.class_options {
+            t.push_str("\\PassOptionsToClass{");
+            t.push_str(option.as_str());
+            t.push_str("}{");
+            t.push_str(self.outline.class.as_str());
+            t.push_str("}");
+        }
 
         t.push_str("\\input{");
         t.push_str(self.outline.preamble.as_str());

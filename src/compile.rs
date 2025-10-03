@@ -52,18 +52,28 @@ pub fn compile(outline: Outline, options: &HashMap<String, String>) {
             Err(_) => vec![1],
         };
 
-    let cmd = create_command(proposed_engine, jobname, rng, outline);
+    let mut class_options = Vec::<String>::new();
 
-    if let Some(s) = options.get(parse_args::VERBOSE_ARG) {
-        println!("Running the following command:");
-        println!("{cmd}");
+    for (key,value) in options {
+        if value.as_str() == "class_option" {
+            println!("option found: {}", key);
+            class_options.push(key.to_string());
+        }
     }
 
-    cmd.run();
+    let cmd = create_command(proposed_engine, jobname, rng, outline, class_options);
+
+    if let Some(s) = options.get(parse_args::DRYRUN_ARG) {
+        println!("Running the following command:");
+        println!("{cmd}");
+    } else {
+        cmd.run();
+    }
 }
 
 
-fn create_command(proposed_engine: &str, jobname: &str, range: Vec<usize>, outline: Outline) -> CMD {
+fn create_command(proposed_engine: &str, jobname: &str, 
+    range: Vec<usize>, outline: Outline,class_options: Vec<String>) -> CMD {
     /* Creates a command object which can then be run to compile the document. 
      *
      * Parameters: 
@@ -88,6 +98,7 @@ fn create_command(proposed_engine: &str, jobname: &str, range: Vec<usize>, outli
     cmd.jobname = jobname.to_string();
     cmd.range = range;
     cmd.outline = outline;
+    cmd.class_options = class_options;
 
     cmd
 }

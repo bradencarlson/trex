@@ -11,6 +11,9 @@ pub struct Outline {
     /* This the filename of the preamble document. */
     pub preamble: String,
 
+    /* Holds the class of the document */
+    pub class: String,
+
     /* This is a list of indices (in the lecture_files vector) at which new
     * sections start. For example, if 3 is an element of this vector, then
     * before the 4th file in lecture_files, a new section should be defined. */
@@ -55,6 +58,7 @@ impl Outline {
         Outline {
             lecture_files: Vec::<String>::new(), 
             preamble: String::new(), 
+            class: String::new(),
             section_positions: Vec::<usize>::new(),
             section_names: Vec::<String>::new(),
         }

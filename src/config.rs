@@ -70,6 +70,7 @@ fn parse(content: &String) -> Option<Outline> {
 
         // Define the keywords to match against.
         let preamble = "preamble: ";
+        let class = "class: ";
         let section = "section: ";
         let file = "file: ";
 
@@ -86,6 +87,9 @@ fn parse(content: &String) -> Option<Outline> {
         } else if line.starts_with(file) {
             let arg = &line[file.len()..];
             outline.lecture_files.push(arg.to_string());
+        } else if line.starts_with(class) {
+            let arg = &line[class.len()..];
+            outline.class = arg.to_string();
         }
     }
 

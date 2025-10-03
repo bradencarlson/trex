@@ -63,6 +63,13 @@ pub fn parse(args: Vec<String>) -> HashMap<String, String> {
                 map.insert(String::from(VERBOSE_ARG), "true".to_string());
                 continue;
             },
+            CLASS_OPTION => {
+                idx += 1;
+                let opt = args.get(idx).expect("Fatal error: No option given after {CLASS_OPTION}" , );
+                map.insert(opt.to_string(), "class_option".to_string());
+                idx += 1;
+                continue;
+            },
             _ => {}
         }
 
