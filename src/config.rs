@@ -22,7 +22,7 @@ file: file-1.tex";
 
 
 pub fn read(path: &str) -> Option<Outline> {
-    /* Reads the confige file and parses the result into an Outline struct.
+    /* Reads the config file and parses the result into an Outline struct.
      * 
      * Parameters: 
      *  path - the filepath to read. 

@@ -1,3 +1,12 @@
+/* outline.rs
+ *
+ * Author: Braden Carlson
+ * Date: September 2025
+ *
+ * Provides the Outline struct, which is used to hold the structure of the 
+ * document which is to be compiled. 
+ */
+
 use std::fmt;
 
 #[derive(Debug)]

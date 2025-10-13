@@ -1,3 +1,10 @@
+/* lib.rs
+ *
+ * Author: Braden Carlson
+ * Date: September 2025
+ *
+ */
+
 use std::collections::HashMap;
 
 pub mod parse_args;

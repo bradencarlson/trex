@@ -1,3 +1,12 @@
+/* cmd.rs
+ *
+ * Author: Braden Carlson
+ * Date: September 2025
+ *
+ * Provides the CMD struct, which holds all the neccessary information to
+ * compile the document with the appropriate command. 
+ */
+
 use std::process::Command;
 use std::collections::HashMap;
 
