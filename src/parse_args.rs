@@ -92,7 +92,7 @@ pub fn parse(args: Vec<String>) -> HashMap<String, String> {
     map
 }
 
-pub fn parse_argument(key: &String, value: &String) -> bool {
+fn parse_argument(key: &String, value: &String) -> bool {
     /* Determines if a given (key, value) pair is a valid option for this program. There is a
      * simple check to determine if the key belongs to the accepted keys list, and that the value
      * makes sense. 
@@ -114,4 +114,32 @@ pub fn parse_argument(key: &String, value: &String) -> bool {
     ];
 
     valid_args.contains(key)
+}
+
+#[cfg(test)]
+mod tests {
+
+use super::*;
+
+    #[test]
+    fn filename_arg() {
+        let k = String::from("-f");
+        let v = String::from("value");
+        assert!(parse_argument(&k,&v));
+    }
+
+    #[test]
+    fn range_arg() {
+        let r = String::from("-r");
+        let v = String::from("1-3");
+        assert!(parse_argument(&r, &v));
+    }
+
+    #[test]
+    fn engine_arg() {
+        let k = String::from("-e");
+        let v = String::from("pdflatex");
+        assert!(parse_argument(&k, &v));
+    }
+
 }
