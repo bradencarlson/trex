@@ -97,3 +97,26 @@ fn parse(content: &String) -> Option<Outline> {
 }
 
 
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn default_config() -> String {
+        "class: article
+        preamble: preamble.tex
+
+        section: Section One
+            file: file-1.tex
+            file: file-2.tex
+            file: file-3.tex
+        section: Section Two
+            file: file-4.tex
+            file: file-5.tex".to_string()
+    }
+
+    #[test]
+    fn test_config() {
+        let out = parse(&default_config()).unwrap();
+        assert_eq!(out.preamble, "preamble.tex");
+    }
+}
