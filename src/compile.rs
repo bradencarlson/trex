@@ -103,3 +103,41 @@ fn create_command(proposed_engine: &str, jobname: &str,
     cmd
 }
 
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn generate(engine: &str) -> CMD {
+        let jobname = "test_name";
+        let range: Vec<usize> = vec![1];
+        let outline = Outline::new();
+        let class_options = Vec::<String>::new();
+
+        create_command(engine, jobname, range, outline, class_options)
+    }
+
+
+    #[test]
+    fn engine_pdflatex() {
+
+        let c = generate("pdflatex");
+
+        assert!( match c.engine {
+            Engine::PDFLATEX => true, 
+            _ => false
+        });
+    }
+
+    #[test]
+    fn engine_latex() {
+
+        let c = generate("latex");
+
+        assert!( match c.engine {
+            Engine::LATEX => true, 
+            _ => false
+        });
+    }
+
+    
+}
