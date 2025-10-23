@@ -215,3 +215,63 @@ impl fmt::Display for CMD {
         write!(f, "{}", self.get_tex_code())
     }
 }
+
+#[cfg(test)]
+mod pdflatex {
+    use super::*;
+
+    fn create_outline() -> Outline {
+        let mut o = Outline::new();
+        o.class = String::from("article");
+        o.preamble = String::from("preamble.tex");
+        o.lecture_files = vec![String::from("file-1"), String::from("file-2"), 
+            String::from("file-3"), String::from("file-4"),
+            String::from("file-5"), String::from("file-6"), 
+            String::from("file-7"), String::from("file-8"), 
+            String::from("file-9"), String::from("file-10")];
+        o.section_positions = vec![0,3,7];
+        o.section_names = vec![
+            String::from("Files 1-3"), 
+            String::from("Files 4-7"), 
+            String::from("Files 8-10")];
+        o
+    }
+
+    #[test]
+    fn lecture_six() {
+        let o: Outline = create_outline();
+        let mut c = CMD::new();
+        c.outline = o;
+        c.range = vec![6];
+        c.jobname = String::from("lecture-6");
+
+        let tex = c.get_tex_code();
+        assert_eq!(tex, "\"\\input{preamble.tex}\\begin{document}\\setcounter{section}{1}\\section{Files 4-7}\\input{file-6}\\end{document}\"");
+    }
+
+    #[test]
+    fn lectures_1_to_3() {
+        let o: Outline = create_outline();
+        let mut c = CMD::new();
+        c.outline = o;
+        c.range = vec![1,2,3];
+        c.jobname = String::from("lectures-1-3");
+
+        let tex = c.get_tex_code();
+        assert_eq!(tex, "\"\\input{preamble.tex}\\begin{document}\\setcounter{section}{0}\
+            \\section{Files 1-3}\\input{file-1}\\input{file-2}\\input{file-3}\\end{document}\"");
+    }
+
+    #[test]
+    fn lecture_10() {
+        let o: Outline = create_outline();
+        let mut c = CMD::new();
+        c.outline = o;
+        c.range = vec![10];
+        c.jobname = String::from("lectures-1-3");
+
+        let tex = c.get_tex_code();
+        assert_eq!(tex, "\"\\input{preamble.tex}\\begin{document}\\setcounter{section}{2}\
+            \\section{Files 8-10}\\input{file-10}\\end{document}\"");
+    }
+}
