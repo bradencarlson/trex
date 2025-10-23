@@ -118,5 +118,10 @@ mod tests {
     fn test_config() {
         let out = parse(&default_config()).unwrap();
         assert_eq!(out.preamble, "preamble.tex");
+        assert_eq!(out.class, "article");
+        assert_eq!(out.section_names[0], "Section One");
+        assert_eq!(out.section_names[1], "Section Two");
+        assert_eq!(out.section_positions[0], 0);
+        assert_eq!(out.section_positions[1], 3);
     }
 }
