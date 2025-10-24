@@ -49,7 +49,12 @@ impl CMD {
          */
 
         let mut command_list = self.command_list();
-        command_list.push( self.get_tex_code() );
+        match self.engine {
+            Engine::PDFLATEX => {
+                command_list.push( self.get_tex_code() );
+            },
+            _ => {}
+        };
         let mut c = Command::new(&command_list[0]);
         c.args(&command_list[1..]);
         c.status().expect("Something went wrong while compiling the document.");
