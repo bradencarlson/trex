@@ -1,3 +1,12 @@
+/* cmd.rs
+ *
+ * Author: Braden Carlson
+ * Date: September 2025
+ *
+ * Provides the CMD struct, which holds all the neccessary information to
+ * compile the document with the appropriate command. 
+ */
+
 use std::process::Command;
 use std::collections::HashMap;
 
@@ -15,6 +24,7 @@ pub struct CMD {
     pub jobname: String,
     pub range: Vec<usize>,
     pub outline: Outline,
+    pub class_options: Vec<String>,
 } 
 
 impl CMD {
@@ -26,6 +36,7 @@ impl CMD {
             jobname: String::from("out"),
             range: Vec::<usize>::new(),
             outline: Outline::new(),
+            class_options: Vec::<String>::new(),
         }
 
     }
@@ -38,7 +49,12 @@ impl CMD {
          */
 
         let mut command_list = self.command_list();
-        command_list.push( self.get_tex_code() );
+        match self.engine {
+            Engine::PDFLATEX => {
+                command_list.push( self.get_tex_code() );
+            },
+            _ => {}
+        };
         let mut c = Command::new(&command_list[0]);
         c.args(&command_list[1..]);
         c.status().expect("Something went wrong while compiling the document.");
@@ -92,6 +108,14 @@ impl CMD {
         let mut t = String::new();
         t.push_str("\"");
 
+        for option in &self.class_options {
+            t.push_str("\\PassOptionsToClass{");
+            t.push_str(option.as_str());
+            t.push_str("}{");
+            t.push_str(self.outline.class.as_str());
+            t.push_str("}");
+        }
+
         t.push_str("\\input{");
         t.push_str(self.outline.preamble.as_str());
         t.push_str("}");
@@ -114,9 +138,6 @@ impl CMD {
          *  String - a string of TeX code
          */
 
-        // TODO: Go though this entire method and check for things that could go wrong. This cannot
-        // fail!
- 
         let mut c = String::new();
         let num_files = self.outline.lecture_files.len();
         let num_sections = self.outline.section_positions.len();
@@ -195,4 +216,140 @@ impl fmt::Display for CMD {
         write!(f, "The code appended to the command will be:\n");
         write!(f, "{}", self.get_tex_code())
     }
+}
+
+#[cfg(test)]
+mod pdflatex {
+    use super::*;
+
+    fn create_outline() -> Outline {
+        let mut o = Outline::new();
+        o.class = String::from("article");
+        o.preamble = String::from("preamble.tex");
+        o.lecture_files = vec![String::from("file-1"), String::from("file-2"), 
+            String::from("file-3"), String::from("file-4"),
+            String::from("file-5"), String::from("file-6"), 
+            String::from("file-7"), String::from("file-8"), 
+            String::from("file-9"), String::from("file-10")];
+        o.section_positions = vec![0,3,7];
+        o.section_names = vec![
+            String::from("Files 1-3"), 
+            String::from("Files 4-7"), 
+            String::from("Files 8-10")];
+        o
+    }
+
+    #[test]
+    fn lecture_six() {
+        let o: Outline = create_outline();
+        let mut c = CMD::new();
+        c.outline = o;
+        c.range = vec![6];
+        c.jobname = String::from("lecture-6");
+
+        let tex = c.get_tex_code();
+        assert_eq!(tex, "\"\\input{preamble.tex}\\begin{document}\\setcounter{section}{1}\\section{Files 4-7}\\input{file-6}\\end{document}\"");
+    }
+
+    #[test]
+    fn lectures_1_to_3() {
+        let o: Outline = create_outline();
+        let mut c = CMD::new();
+        c.outline = o;
+        c.range = vec![1,2,3];
+        c.jobname = String::from("lectures-1-3");
+
+        let tex = c.get_tex_code();
+        assert_eq!(tex, "\"\\input{preamble.tex}\\begin{document}\\setcounter{section}{0}\
+            \\section{Files 1-3}\\input{file-1}\\input{file-2}\\input{file-3}\\end{document}\"");
+    }
+
+    #[test]
+    fn lecture_10() {
+        let o: Outline = create_outline();
+        let mut c = CMD::new();
+        c.outline = o;
+        c.range = vec![10];
+        c.jobname = String::from("lectures-1-3");
+
+        let tex = c.get_tex_code();
+        assert_eq!(tex, "\"\\input{preamble.tex}\\begin{document}\\setcounter{section}{2}\
+            \\section{Files 8-10}\\input{file-10}\\end{document}\"");
+    }
+
+    #[test]
+    fn full_lecture() {
+        let o: Outline = create_outline();
+        let mut c = CMD::new();
+        c.outline = o;
+        c.range = vec![1,2,3,4,5,6,7,8,9,10];
+        c.jobname = String::from("lectures");
+
+        let tex = c.get_tex_code();
+        assert_eq!(tex, "\"\\input{preamble.tex}\\begin{document}\\setcounter{section}{0}\
+            \\section{Files 1-3}\\input{file-1}\\input{file-2}\\input{file-3}\
+            \\section{Files 4-7}\\input{file-4}\\input{file-5}\\input{file-6}\\input{file-7}\
+            \\section{Files 8-10}\\input{file-8}\\input{file-9}\\input{file-10}\\end{document}\"");
+    }
+
+    #[test]
+    fn jobname() {
+        let o: Outline = create_outline();
+        let mut c = CMD::new();
+        c.outline = o;
+        c.range = vec![1,2,3,4,5,6,7,8,9,10];
+        c.jobname = String::from("lectures");
+
+        let l = c.command_list();
+        
+        assert_eq!(l[1], "-jobname=lectures");
+    }
+
+    #[test]
+    fn engine() {
+        let o: Outline = create_outline();
+        let mut c = CMD::new();
+        c.outline = o;
+        c.range = vec![1,2,3,4,5,6,7,8,9,10];
+        c.jobname = String::from("lectures");
+
+        let l = c.command_list();
+        
+        assert_eq!(l[0], "pdflatex");
+    }
+
+    #[test]
+    fn nopres_option() {
+        let o: Outline = create_outline();
+        let mut c = CMD::new();
+        c.outline = o;
+        c.range = vec![6];
+        c.jobname = String::from("lecture-6");
+        c.class_options = vec![
+            String::from("nopresentation")];
+
+        let tex = c.get_tex_code();
+        assert_eq!(tex, "\"\\PassOptionsToClass{nopresentation}{article}\
+            \\input{preamble.tex}\\begin{document}\\setcounter{section}{1}\
+            \\section{Files 4-7}\\input{file-6}\\end{document}\"");
+    }
+
+    #[test]
+    fn two_options() {
+        let o: Outline = create_outline();
+        let mut c = CMD::new();
+        c.outline = o;
+        c.range = vec![6];
+        c.jobname = String::from("lecture-6");
+        c.class_options = vec![
+            String::from("nopresentation"), 
+            String::from("12pt")];
+
+        let tex = c.get_tex_code();
+        assert_eq!(tex, "\"\\PassOptionsToClass{nopresentation}{article}\
+            \\PassOptionsToClass{12pt}{article}\
+            \\input{preamble.tex}\\begin{document}\\setcounter{section}{1}\
+            \\section{Files 4-7}\\input{file-6}\\end{document}\"");
+    }
+
 }

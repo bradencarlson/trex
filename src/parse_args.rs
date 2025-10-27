@@ -14,7 +14,7 @@ pub const ENGINE_ARG: &str = "-e";
 pub const JOBNAME_ARG: &str = "-j";
 pub const FILENAME_ARG: &str = "-f";
 pub const CLASS_OPTION: &str = "-o";
-pub const COMPILE_ARG: &str = "-c";
+pub const DRYRUN_ARG: &str = "-d";
 pub const VERBOSE_ARG: &str = "-v";
 
 pub fn parse(args: Vec<String>) -> HashMap<String, String> {
@@ -53,14 +53,21 @@ pub fn parse(args: Vec<String>) -> HashMap<String, String> {
         };
 
         match key.as_str() {
-            COMPILE_ARG => {
+            DRYRUN_ARG => {
                 idx += 1;
-                map.insert(String::from(COMPILE_ARG),"true".to_string());
+                map.insert(String::from(DRYRUN_ARG),"true".to_string());
                 continue;
             },
             VERBOSE_ARG => {
                 idx += 1;
                 map.insert(String::from(VERBOSE_ARG), "true".to_string());
+                continue;
+            },
+            CLASS_OPTION => {
+                idx += 1;
+                let opt = args.get(idx).expect("Fatal error: No option given after {CLASS_OPTION}" , );
+                map.insert(opt.to_string(), "class_option".to_string());
+                idx += 1;
                 continue;
             },
             _ => {}
@@ -85,7 +92,7 @@ pub fn parse(args: Vec<String>) -> HashMap<String, String> {
     map
 }
 
-pub fn parse_argument(key: &String, value: &String) -> bool {
+fn parse_argument(key: &String, value: &String) -> bool {
     /* Determines if a given (key, value) pair is a valid option for this program. There is a
      * simple check to determine if the key belongs to the accepted keys list, and that the value
      * makes sense. 
@@ -107,4 +114,32 @@ pub fn parse_argument(key: &String, value: &String) -> bool {
     ];
 
     valid_args.contains(key)
+}
+
+#[cfg(test)]
+mod tests {
+
+use super::*;
+
+    #[test]
+    fn filename_arg() {
+        let k = String::from("-f");
+        let v = String::from("value");
+        assert!(parse_argument(&k,&v));
+    }
+
+    #[test]
+    fn range_arg() {
+        let r = String::from("-r");
+        let v = String::from("1-3");
+        assert!(parse_argument(&r, &v));
+    }
+
+    #[test]
+    fn engine_arg() {
+        let k = String::from("-e");
+        let v = String::from("pdflatex");
+        assert!(parse_argument(&k, &v));
+    }
+
 }

@@ -22,7 +22,7 @@ file: file-1.tex";
 
 
 pub fn read(path: &str) -> Option<Outline> {
-    /* Reads the confige file and parses the result into an Outline struct.
+    /* Reads the config file and parses the result into an Outline struct.
      * 
      * Parameters: 
      *  path - the filepath to read. 
@@ -70,6 +70,7 @@ fn parse(content: &String) -> Option<Outline> {
 
         // Define the keywords to match against.
         let preamble = "preamble: ";
+        let class = "class: ";
         let section = "section: ";
         let file = "file: ";
 
@@ -86,9 +87,41 @@ fn parse(content: &String) -> Option<Outline> {
         } else if line.starts_with(file) {
             let arg = &line[file.len()..];
             outline.lecture_files.push(arg.to_string());
+        } else if line.starts_with(class) {
+            let arg = &line[class.len()..];
+            outline.class = arg.to_string();
         }
     }
 
     Some(outline)
 }
 
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn default_config() -> String {
+        "class: article
+        preamble: preamble.tex
+
+        section: Section One
+            file: file-1.tex
+            file: file-2.tex
+            file: file-3.tex
+        section: Section Two
+            file: file-4.tex
+            file: file-5.tex".to_string()
+    }
+
+    #[test]
+    fn test_config() {
+        let out = parse(&default_config()).unwrap();
+        assert_eq!(out.preamble, "preamble.tex");
+        assert_eq!(out.class, "article");
+        assert_eq!(out.section_names[0], "Section One");
+        assert_eq!(out.section_names[1], "Section Two");
+        assert_eq!(out.section_positions[0], 0);
+        assert_eq!(out.section_positions[1], 3);
+    }
+}

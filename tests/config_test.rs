@@ -1,6 +1,5 @@
 
 use trex::config;
-use trex::outline::Outline;
 
 #[test]
 fn default_config_test() {
