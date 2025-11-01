@@ -199,6 +199,9 @@ impl CMD {
                         }
                     }
             }
+            c.push_str("\\setcounter{subsection}{");
+            c.push_str((file_idx - self.outline.section_positions[section_idx-1]).to_string().as_str());
+            c.push_str("}");
             c.push_str("\\input{");
             c.push_str(self.outline.lecture_files[file_idx].as_str());
             c.push_str("}");
@@ -248,7 +251,8 @@ mod pdflatex {
         c.jobname = String::from("lecture-6");
 
         let tex = c.get_tex_code();
-        assert_eq!(tex, "\"\\input{preamble.tex}\\begin{document}\\setcounter{section}{1}\\section{Files 4-7}\\input{file-6}\\end{document}\"");
+        assert_eq!(tex, "\"\\input{preamble.tex}\\begin{document}\\setcounter{section}{1}\
+            \\section{Files 4-7}\\setcounter{subsection}{2}\\input{file-6}\\end{document}\"");
     }
 
     #[test]
@@ -261,7 +265,10 @@ mod pdflatex {
 
         let tex = c.get_tex_code();
         assert_eq!(tex, "\"\\input{preamble.tex}\\begin{document}\\setcounter{section}{0}\
-            \\section{Files 1-3}\\input{file-1}\\input{file-2}\\input{file-3}\\end{document}\"");
+            \\section{Files 1-3}\\setcounter{subsection}{0}\\input{file-1}\
+            \\setcounter{subsection}{1}\\input{file-2}\
+            \\setcounter{subsection}{2}\\input{file-3}\
+            \\end{document}\"");
     }
 
     #[test]
@@ -274,7 +281,7 @@ mod pdflatex {
 
         let tex = c.get_tex_code();
         assert_eq!(tex, "\"\\input{preamble.tex}\\begin{document}\\setcounter{section}{2}\
-            \\section{Files 8-10}\\input{file-10}\\end{document}\"");
+            \\section{Files 8-10}\\setcounter{subsection}{2}\\input{file-10}\\end{document}\"");
     }
 
     #[test]
@@ -287,9 +294,18 @@ mod pdflatex {
 
         let tex = c.get_tex_code();
         assert_eq!(tex, "\"\\input{preamble.tex}\\begin{document}\\setcounter{section}{0}\
-            \\section{Files 1-3}\\input{file-1}\\input{file-2}\\input{file-3}\
-            \\section{Files 4-7}\\input{file-4}\\input{file-5}\\input{file-6}\\input{file-7}\
-            \\section{Files 8-10}\\input{file-8}\\input{file-9}\\input{file-10}\\end{document}\"");
+            \\section{Files 1-3}\\setcounter{subsection}{0}\\input{file-1}\
+            \\setcounter{subsection}{1}\\input{file-2}\
+            \\setcounter{subsection}{2}\\input{file-3}\
+            \\section{Files 4-7}\\setcounter{subsection}{0}\\input{file-4}\
+            \\setcounter{subsection}{1}\\input{file-5}\
+            \\setcounter{subsection}{2}\\input{file-6}\
+            \\setcounter{subsection}{3}\\input{file-7}\
+            \\section{Files 8-10}\
+            \\setcounter{subsection}{0}\\input{file-8}\
+            \\setcounter{subsection}{1}\\input{file-9}\
+            \\setcounter{subsection}{2}\\input{file-10}\
+            \\end{document}\"");
     }
 
     #[test]
@@ -331,7 +347,8 @@ mod pdflatex {
         let tex = c.get_tex_code();
         assert_eq!(tex, "\"\\PassOptionsToClass{nopresentation}{article}\
             \\input{preamble.tex}\\begin{document}\\setcounter{section}{1}\
-            \\section{Files 4-7}\\input{file-6}\\end{document}\"");
+            \\section{Files 4-7}\
+            \\setcounter{subsection}{2}\\input{file-6}\\end{document}\"");
     }
 
     #[test]
@@ -349,7 +366,7 @@ mod pdflatex {
         assert_eq!(tex, "\"\\PassOptionsToClass{nopresentation}{article}\
             \\PassOptionsToClass{12pt}{article}\
             \\input{preamble.tex}\\begin{document}\\setcounter{section}{1}\
-            \\section{Files 4-7}\\input{file-6}\\end{document}\"");
+            \\section{Files 4-7}\\setcounter{subsection}{2}\\input{file-6}\\end{document}\"");
     }
 
 }
