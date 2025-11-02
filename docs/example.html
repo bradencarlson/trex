@@ -1,0 +1,325 @@
+<div id="example" class="example">
+  <h2>Example</h2>
+  <p id="example-description-one" class="example-description">Here is a full
+  example taken from a lecture for linear algebra. As you can see below, each 
+  element of the lecture
+  implements the <code class="inline-code">\content</code> command to
+  manage different content based on whether or not the 
+  <code class="inline-code">presentation</code> option is
+  used. In the LaTeX for this example, comments have been added so that
+  the <code class="inline-code">main</code>, <code
+                  class="inline-code">pres</code>, <code
+                  class="inline-code">nopres</code>, and <code
+                  class="inline-code">comment</code> arguments for the <code
+                  class="inline-code">\content</code> command can be clearly seen.
+  Also, while there are several pages worth of lecture notes defined in the code
+  below, we only show the first page in the figure below. Here is the LaTeX for
+  the example.</p> 
+  <div id="tex-code" class="tex-code">
+<pre><code class="orange">\documentclass</code>[nopresentation]{notes}
+<code class="orange">\usepackage</code>{amsmath,amstext,amssymb}
+<code class="orange">\usepackage</code>{hyperref}
+
+<code class="orange">\begin</code>{document}
+
+<code class="orange">\section</code>{Linear Equations and Matrices}
+
+<code class="orange">\subsection</code>{Definitions and Examples}
+
+<code class="orange">\content</code>{ <code class="comment">% main</code> 
+
+<code class="orange">\begin</code>{definition} A <code
+      class="orange">\textbf</code>{linear equation} in variables <code
+      class="red">$</code>x_1,x_2,<code class="red">\dots</code> x_n<code class="red">$</code> is an equation that 
+can be written in the form 
+<code class="red">$$</code> a_1x_1+a_2x_2+<code class="red">\cdots</code> +a_nx_n=b <code class="red">$$</code>
+where <code class="red">$</code>a_1,a_2,<code class="red">\dots</code>,a_n, <code class="red">$</code> and <code class="red">$</code>b<code
+class="red">$</code> are real or complex numbers. The numbers <code
+                                                                  class="red">$</code>a_1,a_2,<code
+                                                                  class="red">\dots</code>, a_n<code class="red">$</code> are 
+called the <code class="orange">\textbf</code>{coefficients} of the equation.
+<code class="orange">\end</code>{definition}
+
+}{ <code class="comment">% presentation</code>
+}{ <code class="comment">% nopresentation</code>
+}{<code class="comment">% comments</code>
+}
+
+<code class="orange">\content</code>{ <code class="comment">% main</code> 
+
+<code class="orange">\begin</code>{example} Determine whether each of the following is a linear equation. 
+<code class="orange">\begin</code>{enumerate}
+    <code class="orange">\item </code><code class="red">$</code> 5x-3y=0 <code class="red">$</code>
+    <code class="orange">\item </code><code class="red">$</code> (1+i)x_1^2-2x_1x_2+3x_2=i <code class="red">$</code>, where <code class="red">$</code>i^2=-1<code class="red">$</code>.
+    <code class="orange">\item </code><code class="red">$</code> <code
+                                            class="red">\frac</code>{1}{x}-y=5 <code class="red">$</code>
+<code class="orange">\end</code>{enumerate}
+<code class="orange">\end</code>{example}
+
+}{ <code class="comment">% presentation </code>
+
+<code class="orange">\vspace</code>{2in}
+
+}{<code class="comment">% nopresentation</code>
+
+Solution: 
+<code class="orange">\begin</code>{enumerate}
+        <code class="orange">\item </code>This is a linear equation since it is of the form in the definition above.
+        <code class="orange">\item </code>This is <code
+              class="orange">\textbf</code>{not} a linear equation.  The presence of the <code class="red">$</code>x_1^2<code class="red">$</code>, as well 
+                as the term <code class="red">$</code>x_1x_2<code class="red">$</code> show that it is not of the form in the definition, and in fact, 
+                cannot be put into the form above, so this is not linear.
+        <code class="orange">\item </code>This is also not a linear equation.  Similarly to number 2, this equation cannot 
+                be manipulated into the correct form for a linear equation, so it is not linear. 
+<code class="orange">\end</code>{enumerate}
+
+}{ <code class="comment">% comments</code>
+
+Proving that the equations cannot be put into linear form is not needed here for
+this class. 
+
+}
+
+<code class="orange">\content</code>{ <code class="comment">% main</code> 
+
+<code class="orange">\begin</code>{definition} A system of linear equations is
+called a <code class="orange">\textbf</code>{linear system}.
+<code class="orange">\end</code>{definition}
+
+<code class="orange">\begin</code>{example} The following is an example of a linear system.
+<code class="orange">\begin</code>{eqnarray*}
+		5x-3y+z &=&0 \\
+		2x+y-2z &=& 1
+<code class="orange">\end</code>{eqnarray*}
+<code class="orange">\end</code>{example}
+
+}{<code class="comment">% presentation</code>
+}{<code class="comment">% nopresentation</code>
+}{<code class="comment">% comments</code>
+}
+
+<code class="orange">\content</code>{ <code class="comment">% main</code> 
+
+<code class="orange">\begin</code>{definition} Given a linear system in variables <code class="red">$</code>x_1,x_2,<code class="red">\dots</code>, x_n<code class="red">$</code>, we say that 
+<code class="red">$</code>(s_1,s_2,<code class="red">\dots</code>, s_n)<code class="red">$</code> is a <code class="orange">\textbf</code>{solution} to the linear system if upon substituting <code class="red">$</code>s_1<code class="red">$</code> for <code class="red">$</code>x_1<code class="red">$</code>, <code class="red">$</code>s_2<code class="red">$</code> for 
+<code class="red">$</code>x_2<code class="red">$</code>, <code
+                                   class="red">\dots</code>, and <code class="red">$</code>s_n<code class="red">$</code> for <code class="red">$</code>x_n<code class="red">$</code>, each linear equation in the system is satisfied. The set of all 
+solutions to a linear system is called a <code class="orange">\textbf</code>{solution set}.
+<code class="orange">\end</code>{definition}
+
+<code class="orange">\begin</code>{definition} Given a linear system, we say that the system is <code class="orange">\textbf</code>{consistent} if there exists at least 
+one solution.  If a linear system has no solution, then we say that the system
+is <code class="orange">\textbf</code>{inconsistent}. 
+<code class="orange">\end</code>{definition}
+
+}{<code class="comment">% presentation</code>
+}{<code class="comment">% nopresentation</code>
+}{<code class="comment">% comments</code>
+}
+
+<code class="orange">\content</code>{ <code class="comment">% main</code> 
+
+<code class="orange">\begin</code>{example} In the above linear system,
+<code class="orange">\begin</code>{eqnarray*}
+		5x-3y+z &=&0 \\
+		2x+y-2z &=& 1
+<code class="orange">\end</code>{eqnarray*}
+It is easily verified that <code class="red">$</code>(<code
+                                 class="red">\frac</code>{3}{11},<code
+                                 class="red">\frac</code>{5}{11},0)<code class="red">$</code> is a solution 
+by substituting <code class="red">$</code>x=<code
+class="red">\frac</code>{3}{11}<code class="red">$</code>, <code
+                                     class="red">$</code>y=<code
+                                     class="red">\frac</code>{5}{11}<code class="red">$</code>, and <code class="red">$</code>z=0<code class="red">$</code>.
+<code class="orange">\end</code>{example}
+
+}{<code class="comment">% presentation</code>
+
+<code class="orange">\vspace</code>{2in}
+
+}{<code class="comment">% nopresentation</code>
+
+Note that 
+<code class="red">$$</code> 5<code class="red">\left</code>(<code
+                                   class="red">\frac</code>{3}{11}<code
+                                   class="red">\right</code>) - 3<code
+                                   class="red">\left</code>(<code
+                                   class="red">\frac</code>{5}{11}<code
+                                   class="red">\right</code>) +0 = 0 <code class="red">$$</code>
+and 
+<code class="red">$$</code> 2<code class="red">\left</code>(<code
+                                   class="red">\frac</code>{3}{11}<code
+                                   class="red">\right</code>) +<code
+                                   class="red">\frac</code>{5}{11}-0 = <code
+                                   class="red">\frac</code>{11}{11} = 1. <code class="red">$$</code>
+So this system is consistent, since it has at least one solution.
+
+}{<code class="comment">% comments</code>
+}
+
+<code class="orange">\subsection</code>{Matrices}
+
+<code class="orange">\content</code>{ <code class="comment">% main</code> 
+
+Consider the following linear system:
+<code class="orange">\begin</code>{equation}<code class="orange">\label</code>{eqn:linear-sys}
+    <code class="orange">\begin</code>{array}{rrrr}
+		 5x & -3y & +2z &= 0 \\
+		-x & +y & &= 2 \\
+		 &-y & +z &= 1
+<code class="orange">\end</code>{array}
+<code class="orange">\end</code>{equation}
+We can summarize the left hand side of this linear system by writing all the coefficients 
+of each variable in a rectangular array like so:
+<code class="orange">\begin</code>{equation*}<code class="orange">\label</code>{eqn:coeff-matrix}
+    <code class="red">\left</code>(<code class="orange">\begin</code>{array}{rrr}
+				5 & -3 & 2   \\
+				-1 & 1 & 0  \\
+				0 & -1 & 1 
+    <code class="orange">\end</code>{array}<code class="red">\right</code>)
+<code class="orange">\end</code>{equation*}
+
+}{<code class="comment">% presentation</code>
+}{<code class="comment">% nopresentation</code>
+
+Note that the first column of this array corresponds to the coefficients 
+of the variable <code class="red">$</code>x<code class="red">$</code>, the second column 
+is the coefficients of the variable <code class="red">$</code>y<code class="red">$</code>, and the last column is the coefficients 
+of the variable <code class="red">$</code>z<code class="red">$</code>.  Similarly, 
+each row corresponds to one of the equations of the system. 
+
+}{<code class="comment">% comments</code>
+
+Mention that the first column corresponds to the coefficients of the first
+variable, the second column with those of the second variable, and so on. 
+
+}
+
+<code class="orange">\content</code>{ <code class="comment">% main</code> 
+
+<code class="orange">\begin</code>{definition}
+This is called the <code class="orange">\textbf</code>{coefficient matrix} of
+the system (<code class="orange">\ref</code>{eqn:linear-sys}). 
+We could also summarize this linear system by adding the three numbers 
+on the opposite side of the equals sign as another column, as so
+<code class="orange">\begin</code>{equation*}
+    <code class="red">\left</code>(<code class="orange">\begin</code>{array}{rrrr}
+				5 & -3 & 2 & 0  \\
+				-1 & 1 & 0 & 2 \\
+				0 & -1 & 1 & 1
+    <code class="orange">\end</code>{array}<code class="red">\right</code>)
+<code class="orange">\end</code>{equation*}
+This is called the <code class="orange">\textbf</code>{augmented matrix} of the
+linear system (<code class="orange">\ref</code>{eqn:linear-sys}).
+When talking about a matrix, if a matrix <code class="red">$</code>M<code class="red">$</code> has <code class="red">$</code>m<code class="red">$</code> rows and <code class="red">$</code>n<code class="red">$</code> columns,
+then we say that <code class="red">$</code>M<code class="red">$</code> is of <code class="orange">\textbf</code>{size}
+<code class="red">$</code>m<code class="red">\times</code> n<code class="red">$</code> (read ``<code class="red">$</code>m<code class="red">$</code> by <code class="red">$</code>n<code class="red">$</code>'').
+<code class="orange">\end</code>{definition}
+
+}{<code class="comment">% presentation </code>
+
+<code class="orange">\vspace</code>{2in}
+
+}{<code class="comment">% nopresentation</code>
+}{<code class="comment">% comments</code>
+}
+
+<code class="orange">\content</code>{ <code class="comment">% main</code> 
+
+<code class="orange">\begin</code>{example} Find a solution to the following linear system using the elimination method, after each 
+step, write the associated matrix of the linear system.
+<code class="orange">\begin</code>{equation*}
+    <code class="orange">\begin</code>{array}{rrrr}
+				x & -2y & +z & = 0 \\
+				  & 2y & -8z & = 8 \\
+				5x & & -5z & = 10
+    <code class="orange">\end</code>{array}
+<code class="orange">\end</code>{equation*}
+<code class="orange">\end</code>{example}
+
+}{<code class="comment">% presentation </code>
+
+<code class="orange">\vspace</code>{2in}
+
+}{<code class="comment">% nopresentation</code>
+
+After some algebra, we obtain the following system of linear equations, along with its corresponding augmented 
+matrix:\\
+<code class="orange">\begin</code>{center}
+<code class="orange">\begin</code>{minipage}{0.3\textwidth}
+<code class="orange">\begin</code>{align*}
+		x-2y+z &= 0 & \\
+		x-7z &= 8 & \\
+				z&=-1
+<code class="orange">\end</code>{align*}
+<code class="orange">\end</code>{minipage}
+<code class="orange">\begin</code>{minipage}{0.3<code
+      class="red">\textwidth</code>}
+    <code class="orange">\begin</code>{equation*}
+    <code class="orange">\begin</code>{pmatrix} 1 & -2 & 1 & 0 \\ 1 & 0 & -7 & 8
+    \\ 0 & 0 & 1 & -1 <code class="orange">\end</code>{pmatrix}
+    <code class="orange">\end</code>{equation*}
+<code class="orange">\end</code>{minipage}
+<code class="orange">\end</code>{center} 
+In the process of elimination, and solving the system, at each step when we write out the augmented matrix of the linear system, 
+we see that the same operations we perform on the system are reflected in the matrix. This motivates the following definition.
+
+}{<code class="comment">% comments</code>
+
+The resulting matrix should be 
+<code class="red">$$</code><code class="orange">\begin</code>{pmatrix} 1 & -2 & 1 & 0 \\ 1 & 0 & -7 & 8 \\ 0 & 0 & 1 & -1
+<code class="orange">\end</code>{pmatrix}<code class="red">$$</code>
+For now, we stop because we know the value of <code class="red">$</code>z<code class="red">$</code>, and can then find <code class="red">$</code>x<code class="red">$</code>
+and <code class="red">$</code>y<code class="red">$</code>. 
+
+}
+
+<code class="orange">\content</code>{ <code class="comment">% main</code> 
+
+<code class="orange">\begin</code>{definition} (Elementary Row Operations) 
+<code class="orange">\begin</code>{enumerate}
+    <code class="orange">\item </code>(Multiply Row Add) One row is replaced by the sum of itself and a nonzero multiple of 
+				another row.
+    <code class="orange">\item </code>(Scale) One row is replaced by a multiple of itself.
+    <code class="orange">\item </code>(Row Swap) Two rows swap positions.
+<code class="orange">\end</code>{enumerate}
+<code class="orange">\end</code>{definition}
+<code class="orange">\begin</code>{definition} Two matrices are said to be <code
+      class="orange">\textbf</code>{row equivalent} if there is some sequence of 
+elementary row operations transforming one into the other. 
+<code class="orange">\end</code>{definition}
+<code class="orange">\begin</code>{theorem}
+		If the augmented matrices of two linear systems are row equivalent, then the two 
+systems have the same solution set.
+<code class="orange">\end</code>{theorem}
+
+}{<code class="comment">% presentation</code>
+}{<code class="comment">% nopresentation</code>
+}{<code class="comment">% comments</code>
+}
+
+<code class="orange">\end</code>{document}
+    </pre>
+  </div>
+  <p class="example-description">
+  Note that the in example above, the <code class="inline-code">nopresentation</code>
+  option is passed to the class in the <code class="inline-code">\documentclass</code>
+  command in the preamble. This creates a document like the one we see on the
+  right below. 
+  </p>
+  <div id="image-row" class="image-row">
+    <img alt="Lecture notes in landscape orientation, with comments towards the
+              right hand side of the page." src="./images/presentation-1.jpg"
+              class="landscape-image">
+    <img src="./images/vertical-separator.png" class="vertical-separator">
+    <img alt ="Lecture notes in portrait orientation, these show the same
+               content (minus the comments) as the landscape notes, along with
+               solutions" src="./images/nopresentation-1.jpg" class="portrait-image">
+  </div>
+  <p id="example-description-two" class="example-description">The file on the
+  left was compiled with the <code class="inline-code">presentation</code> 
+  option, while the file on the right was
+  compiled from the same TeX document with the <code
+    class="inline-code">nopresentation</code> option. 
+  </p>
+</div>

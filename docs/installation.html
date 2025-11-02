@@ -1,0 +1,22 @@
+<div id="installation" class="installation">
+  <h2>Installation</h2>
+
+  <h3>Linux</h3>
+  <p id="installation-linux" class="installation-linux">I prefer the following
+  setup: 
+  <ol>
+    <li>Create a directory to host all user installed class files.</li>
+    <div class="bash">mkdir ~/.settings<br>
+      cd ~/.settings<br>
+    git clone https://github.com/bradencarlson/lecturenotes.git</div>
+    <li>Create symlinks to TeX's directory</li>
+    <div class="bash">ln -s ~/.settings/lecturenotes/notes.cls
+      /usr/share/texmf/tex/latex/custom/notes.cls<br>
+     ln -s ~/.settings/lecturenotes/mathcommands.sty
+      /usr/share/texmf/tex/latex/custom/mathcommands.sty</div>
+    <li>Run texhash</li>
+    <div class="bash">texhash</div>
+  </ol>
+  </p>
+
+</div>

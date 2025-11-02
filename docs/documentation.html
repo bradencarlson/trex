@@ -1,0 +1,219 @@
+<div id="documentation" class="documentation">
+  <h2>Documentation</h2>
+    <p>This page contains the documentation for all commands defined in class file as
+    well as the accompanying package. Keywords and commands are located to the
+    very left, and their command declarations (if applicable) and explanations
+    are indented below them.</p>
+    <p><div class="note">Note:</div>Currently, the hyperref package is required by this package to render the
+    pages correctly. This will be fixed in a future version.
+    </p>
+
+  <h3>Notes Class Documentation</h3>
+  <p class="keyword">Content</p>
+  <div class="function-declaration">
+    <code class="inline-code">\content{main}{pres}{nopres}{comment}</code>
+  </div>
+  <div class="description">
+    <p>Mandatory parameters: 
+    <ol>
+      <li> <code class="inline-code">main</code> - content to be shown in both versions of the file.</li>
+      <li> <code class="inline-code">pres</code> - content to be shown in the presentation version of the file
+        only.</li>
+      <li> <code class="inline-code">nopres</code> - content to be shown in the
+        non-presentation version of the file
+        only.</li>
+      <li> <code class="inline-code">comment</code> - comments to be shown to the right of 
+        <code class="inline-code">pres</code> in the presentation
+        version of the file.</li>
+    </ol>
+    Each of these may be any LaTeX commands you wish. They are all defined using
+    the <code class="inline-code">\long</code> keyword, meaning
+    that the content of each of these is permitted to contain more than one
+    paragraph. This is particularly useful for the <code class="inline-code">
+    nopres</code> option, as this often contains solutions to problems which can
+    be quite long. 
+    </p>
+    <p><div class="note">Note:</div> If the comment parameter is nonempty, the
+    class will draw a box around it, even if the comment parameter is just blank
+    space. To avoid boxes where you do not want them, it is recommended to either use the 
+    <code class="inline-code">%</code> operator in your LaTeX code immediately
+    after the opening brace of the comment parameter, followed on the next line by
+    the closing brace, or to simply leave the comment parameter completely empty
+    like so: <code class="inline-code">{}</code>.
+  </div>
+  <p class="keyword">Phantom</p>
+  <div class="function-declaration">
+    <code class="inline-code">\phantom{pres}{nopres}</code>
+  </div>
+  <div class="description">
+    <p>Mandatory Parameters:
+    <ol>
+      <li> <code class="inline-code">pres</code> - content to be shown when the
+        presentation option is specified. </li>
+      <li> <code class="inline-code">nopres</code> - content to be shown when
+        the nopresentation option is specified. </li>
+    </ol>
+    This command is defined using the <code class="inline-code">\long</code>
+    command, so each of the parameters may be as long as needed. This command
+    was included for backwards compatibility in a previous version of the notes
+    class. 
+    </p>
+  </div>
+  <h3>Mathcommands Package Documentation</h3>
+  <h4>Commands</h4>
+  <p class="keyword">supp</p>
+  <div class="function-declaration">
+    <code class="inline-code">\supp</code>
+  </div>
+  <div class="description">
+    <p>Provides the <code class="inline-code">\supp</code> command for the
+    support of a vector or function.</p>
+  </div>
+  <p class="keyword">la and ra</p>
+  <div class="function-declaration">
+    <code class="inline-code">\la</code> and
+    <code class="inline-code">\ra</code>
+  </div>
+  <div class="description">
+    <p>Maps the command <code class="inline-code">\la</code> to 
+    <code class="inline-code">\left\langle</code>, and provides a similar
+    command for <code class="inline-code">\right\rangle</code>.
+  </div>
+  <p class="keyword">F, C, R, Q, Z, N, and N<sub>0</sub></p>
+  <div class="function-declaration">
+    <code class="inline-code">\F</code>, 
+    <code class="inline-code">\C</code>, 
+    <code class="inline-code">\R</code>, 
+    <code class="inline-code">\Q</code>, 
+    <code class="inline-code">\Z</code>, 
+    <code class="inline-code">\N</code>, and 
+        <code class="inline-code">\Nzero</code>
+  </div>
+  <div class="description">
+    <p>Provides commands for standard sets in mathematics: the complex, real,
+    rational, and natural numbers, as well as the integers. The set of natural
+    numbers and zero is also defined.</p>
+  </div>
+  <p class="keyword">tr</p>
+  <div class="function-declaration">
+    <code class="inline-code">\tr</code>
+  </div>
+  <div class="description">
+    <p>Provides command for the trace of a matrix. This command does not provide
+    delimiters of any kind, it simply prints the letters tr.<p>
+  </div>
+  <p class="keyword">det</p>
+  <div class="function-declaration">
+    <code class="inline-code">\det</code>
+  </div>
+  <div class="description">
+    <p>Provides command for the determinant of a matrix. This command does not provide
+    delimiters of any kind, it simply prints the letters det.</p>
+  </div>
+  <p class="keyword">Im</p>
+  <div class="function-declaration">
+    <code class="inline-code">\Im</code>
+  </div>
+  <div class="description">
+    <p>Provides command for the image of a map. This command does not provide
+    delimiters of any kind, it simply prints the letters Im.</p>
+  </div>
+  <p class="keyword">Aut</p>
+  <div class="function-declaration">
+    <code class="inline-code">\aut</code>
+  </div>
+  <div class="description">
+    <p>Provides command for the automorphism group of an object. 
+    This command does not provide
+    delimiters of any kind, it simply prints the letters Aut.</p>
+  </div>
+  <p class="keyword">Inn</p>
+  <div class="function-declaration">
+    <code class="inline-code">\inn</code>
+  </div>
+  <div class="description">
+    <p>Provides command for the inner automorphism group of an object. This
+    command does not provide delimiters of any kind, it simply prints the
+    letters Inn.</p>
+  </div>
+  <p class="keyword">Gal</p>
+  <div class="function-declaration">
+    <code class="inline-code">\gal</code>
+  </div>
+  <div class="description">
+    <p>Provides command for the Galois group of an object. This
+    command does not provide delimiters of any kind, it simply prints the
+    letters Gal.</p>
+  </div>
+  <p class="keyword">lcm</p>
+  <div class="function-declaration">
+    <code class="inline-code">\lcm</code>
+  </div>
+  <div class="description">
+    <p>Provides command for the least common multiple of two numbers. This
+    command does not provide delimiters of any kind, it simply prints the
+    letters lcm.</p>
+  </div>
+  <p class="keyword">mod</p>
+  <div class="function-declaration">
+    <code class="inline-code">\mod{n}</code>
+  </div>
+  <div class="description">
+    <p>This commands prints out (mod n). For example, one might type 
+    <code class="inline-code">5 \mod{3}</code>, which would be rendered
+    as 5 (mod 3). This command does provide the parenthesis, but they are not
+    resized to fit the content between them.</p>
+  </div>
+
+  <h4>Environments</h4>
+
+  <p class="keyword">Theorem</p>
+  <div class="function-declaration">
+    <code class="inline-code">\begin{theorem} ... \end{theorem}</code>
+  </div>
+  <div class="description">
+    <p>Provides the theorem environment. If the current value of the subsection
+    counter is greater than zero, the label for this theorem is set to 
+    <code class="inline-code">\thesubsection.\thetheorem</code>, otherwise it is
+    set to <code class="inline-code">\thesection.\thetheorem</code>. The counter 
+    <code class="inline-code">\thetheorem</code> is defined by the package file,
+    and is reset upon declaring a new subsection of the document.</p>
+  </div>
+  <p class="keyword">Lemma</p>
+  <div class="function-declaration">
+    <code class="inline-code">\begin{lemma} ... \end{lemma}</code>
+  </div>
+  <div class="description">
+    <p>See Theorem.</p>
+  </div>
+  <p class="keyword">Corollary</p>
+  <div class="function-declaration">
+    <code class="inline-code">\begin{corollary} ... \end{corollary}</code>
+  </div>
+  <div class="description">
+    <p>See Theorem.</p>
+  </div>
+  <p class="keyword">Definition</p>
+  <div class="function-declaration">
+    <code class="inline-code">\begin{definition} ... \end{definition}</code>
+  </div>
+  <div class="description">
+    <p>See Theorem.</p>
+  </div>
+  <p class="keyword">Example</p>
+  <div class="function-declaration">
+    <code class="inline-code">\begin{example} ... \end{example}</code>
+  </div>
+  <div class="description">
+    <p>See Theorem.</p>
+  </div>
+  <p class="keyword">Proof</p>
+  <div class="function-declaration">
+    <code class="inline-code">\begin{proof} ... \end{proof}</code>
+  </div>
+  <div class="description">
+    <p>Provides the proof environment. Simply prints out "Proof." at the
+    beginning and prints a black square for the Q.E.D. symbol at the end of the
+    proof.</p>
+  </div>
+</div>
