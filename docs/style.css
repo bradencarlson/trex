@@ -65,6 +65,7 @@ body {
   align-items: baseline;
   flex-direction: row;
   color: var(--white);
+  background: linear-gradient(to right, var(--fade), var(--fade));
 }
 .navbar {
   display: flex;
@@ -87,7 +88,7 @@ body {
 }
 
 .title {
-  font-size: 3em;
+  font-size: 4em;
   font-family: var(--title-font);
   padding: 10px;
   z-index: 3;
