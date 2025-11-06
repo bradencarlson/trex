@@ -199,9 +199,13 @@ impl CMD {
                         }
                     }
             }
-            c.push_str("\\setcounter{subsection}{");
-            c.push_str((file_idx - self.outline.section_positions[section_idx-1]).to_string().as_str());
-            c.push_str("}");
+
+            if self.outline.subsections() {
+                c.push_str("\\setcounter{subsection}{");
+                c.push_str((file_idx - self.outline.section_positions[section_idx-1]).to_string().as_str());
+                c.push_str("}");
+            }
+
             c.push_str("\\input{");
             c.push_str(self.outline.lecture_files[file_idx].as_str());
             c.push_str("}");
@@ -234,6 +238,7 @@ mod pdflatex {
             String::from("file-5"), String::from("file-6"), 
             String::from("file-7"), String::from("file-8"), 
             String::from("file-9"), String::from("file-10")];
+        o.subsections = true;
         o.section_positions = vec![0,3,7];
         o.section_names = vec![
             String::from("Files 1-3"), 

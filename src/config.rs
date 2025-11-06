@@ -73,6 +73,7 @@ fn parse(content: &String) -> Option<Outline> {
         let class = "class: ";
         let section = "section: ";
         let file = "file: ";
+        let subsections = "subsections: ";
 
         if line.starts_with(preamble) {
             let arg = &line[preamble.len()..];
@@ -90,6 +91,13 @@ fn parse(content: &String) -> Option<Outline> {
         } else if line.starts_with(class) {
             let arg = &line[class.len()..];
             outline.class = arg.to_string();
+        } else if line.starts_with(subsections) {
+            let arg = &line[subsections.len()..];
+            if arg == "true" {
+                outline.subsections = true;
+            } else {
+                outline.subsections = false;
+            }
         }
     }
 
