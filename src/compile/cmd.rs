@@ -229,7 +229,7 @@ impl fmt::Display for CMD {
 mod pdflatex {
     use super::*;
 
-    fn create_outline() -> Outline {
+    fn create_outline(subsections: bool) -> Outline {
         let mut o = Outline::new();
         o.class = String::from("article");
         o.preamble = String::from("preamble.tex");
@@ -238,7 +238,7 @@ mod pdflatex {
             String::from("file-5"), String::from("file-6"), 
             String::from("file-7"), String::from("file-8"), 
             String::from("file-9"), String::from("file-10")];
-        o.subsections = true;
+        o.subsections = subsections;
         o.section_positions = vec![0,3,7];
         o.section_names = vec![
             String::from("Files 1-3"), 
@@ -249,7 +249,7 @@ mod pdflatex {
 
     #[test]
     fn lecture_six() {
-        let o: Outline = create_outline();
+        let o: Outline = create_outline(true);
         let mut c = CMD::new();
         c.outline = o;
         c.range = vec![6];
@@ -262,7 +262,7 @@ mod pdflatex {
 
     #[test]
     fn lectures_1_to_3() {
-        let o: Outline = create_outline();
+        let o: Outline = create_outline(true);
         let mut c = CMD::new();
         c.outline = o;
         c.range = vec![1,2,3];
@@ -278,7 +278,7 @@ mod pdflatex {
 
     #[test]
     fn lecture_10() {
-        let o: Outline = create_outline();
+        let o: Outline = create_outline(true);
         let mut c = CMD::new();
         c.outline = o;
         c.range = vec![10];
@@ -291,7 +291,7 @@ mod pdflatex {
 
     #[test]
     fn full_lecture() {
-        let o: Outline = create_outline();
+        let o: Outline = create_outline(true);
         let mut c = CMD::new();
         c.outline = o;
         c.range = vec![1,2,3,4,5,6,7,8,9,10];
@@ -315,7 +315,7 @@ mod pdflatex {
 
     #[test]
     fn jobname() {
-        let o: Outline = create_outline();
+        let o: Outline = create_outline(true);
         let mut c = CMD::new();
         c.outline = o;
         c.range = vec![1,2,3,4,5,6,7,8,9,10];
@@ -328,7 +328,7 @@ mod pdflatex {
 
     #[test]
     fn engine() {
-        let o: Outline = create_outline();
+        let o: Outline = create_outline(true);
         let mut c = CMD::new();
         c.outline = o;
         c.range = vec![1,2,3,4,5,6,7,8,9,10];
@@ -341,7 +341,7 @@ mod pdflatex {
 
     #[test]
     fn nopres_option() {
-        let o: Outline = create_outline();
+        let o: Outline = create_outline(true);
         let mut c = CMD::new();
         c.outline = o;
         c.range = vec![6];
@@ -358,7 +358,7 @@ mod pdflatex {
 
     #[test]
     fn two_options() {
-        let o: Outline = create_outline();
+        let o: Outline = create_outline(true);
         let mut c = CMD::new();
         c.outline = o;
         c.range = vec![6];
