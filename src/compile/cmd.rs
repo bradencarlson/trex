@@ -277,6 +277,22 @@ mod pdflatex {
     }
 
     #[test]
+    fn lectures_1_to_3_nosubs() {
+        let o: Outline = create_outline(false);
+        let mut c = CMD::new();
+        c.outline = o;
+        c.range = vec![1,2,3];
+        c.jobname = String::from("lectures-1-3");
+
+        let tex = c.get_tex_code();
+        assert_eq!(tex, "\"\\input{preamble.tex}\\begin{document}\\setcounter{section}{0}\
+            \\section{Files 1-3}\\input{file-1}\
+            \\input{file-2}\
+            \\input{file-3}\
+            \\end{document}\"");
+    }
+
+    #[test]
     fn lecture_10() {
         let o: Outline = create_outline(true);
         let mut c = CMD::new();
@@ -287,6 +303,19 @@ mod pdflatex {
         let tex = c.get_tex_code();
         assert_eq!(tex, "\"\\input{preamble.tex}\\begin{document}\\setcounter{section}{2}\
             \\section{Files 8-10}\\setcounter{subsection}{2}\\input{file-10}\\end{document}\"");
+    }
+
+    #[test]
+    fn lecture_10_nosubs() {
+        let o: Outline = create_outline(false);
+        let mut c = CMD::new();
+        c.outline = o;
+        c.range = vec![10];
+        c.jobname = String::from("lectures-1-3");
+
+        let tex = c.get_tex_code();
+        assert_eq!(tex, "\"\\input{preamble.tex}\\begin{document}\\setcounter{section}{2}\
+            \\section{Files 8-10}\\input{file-10}\\end{document}\"");
     }
 
     #[test]
@@ -310,6 +339,30 @@ mod pdflatex {
             \\setcounter{subsection}{0}\\input{file-8}\
             \\setcounter{subsection}{1}\\input{file-9}\
             \\setcounter{subsection}{2}\\input{file-10}\
+            \\end{document}\"");
+    }
+
+    #[test]
+    fn full_lecture_nosubs() {
+        let o: Outline = create_outline(false);
+        let mut c = CMD::new();
+        c.outline = o;
+        c.range = vec![1,2,3,4,5,6,7,8,9,10];
+        c.jobname = String::from("lectures");
+
+        let tex = c.get_tex_code();
+        assert_eq!(tex, "\"\\input{preamble.tex}\\begin{document}\\setcounter{section}{0}\
+            \\section{Files 1-3}\\input{file-1}\
+            \\input{file-2}\
+            \\input{file-3}\
+            \\section{Files 4-7}\\input{file-4}\
+            \\input{file-5}\
+            \\input{file-6}\
+            \\input{file-7}\
+            \\section{Files 8-10}\
+            \\input{file-8}\
+            \\input{file-9}\
+            \\input{file-10}\
             \\end{document}\"");
     }
 
