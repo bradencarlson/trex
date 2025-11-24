@@ -1,5 +1,30 @@
 <div id="documentation" class="documentation">
   <h2>Documentation</h2>
   <h3>Configuration</h3>
-  <p></p>
+  <p>All configuration for TreX is done through a simple file located in the
+  root directory of your project. The default config file name is 
+  <code class="inline-code">trex.conf</code>. Other config files can be used by
+  specifying the <code class="inline-code">-f</code> option, documented below.</p>
+
+  <p>The content of the config file is a sequence of key value pairs of the form 
+  <code class="inline-code">key: value</code>. Notice that there is no space before the
+  semicolon, but there is one afterwards.</p>
+
+  <h5>Key Value Pairs</h5>
+  <p class="function-declaration">class</p>
+  <p class="description">This key is required, and simply specifies the
+          document class of the file. For example, the value could be
+          <code class="inline-code">article</code>,
+          <code class="inline-code">book</code>, etc.</p>
+  <p class="function-declaration">preamble</p>
+  <p class="description">This key is required, and specifies the filename of the
+  preamble for the document.</p>
+  <p class="function-declaration">section</p>
+  <p class="description">This key may appear multiple times in the config
+  document, and each specifies a new section in the document. The value should
+  be the intended section name.</p>
+  <p class="function-declaration">file</p>
+  <p class="description">This key may appear multiple times in the config file,
+  and specifies a file to be included in the document. The value should be the
+  filename of the file to be included.</p> 
 </div>
