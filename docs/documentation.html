@@ -8,7 +8,9 @@
 
   <p>The content of the config file is a sequence of key value pairs of the form 
   <code class="inline-code">key: value</code>. Notice that there is no space before the
-  semicolon, but there is one afterwards.</p>
+  semicolon, but there is one afterwards. This is the only spacing which is
+  important in the config file, any white space at the beginning or end of a
+  line will be ignored.</p>
 
   <h5>Key Value Pairs</h5>
   <p class="function-declaration">class</p>
@@ -27,4 +29,37 @@
   <p class="description">This key may appear multiple times in the config file,
   and specifies a file to be included in the document. The value should be the
   filename of the file to be included.</p> 
+  <h5>Example Config</h5>
+  <p>Below is an example config file from a series of lecture notes. 
+  <p class="bash">
+  class: article<br>
+  preamble: preamble.tex<br>
+
+  section: Linear Equations and Row Reduction<br>
+  &emsp;file: lecture-1.tex<br>
+  &emsp;file: lecture-2.tex<br>
+  &emsp;file: lecture-3.tex<br>
+  &emsp;file: lecture-4.tex<br>
+  section: Matrices and Matrix Algebra<br>
+  &emsp;file: lecture-5.tex<br>
+  &emsp;file: lecture-6.tex<br>
+  &emsp;file: lecture-7.tex<br>
+  section: Determinants<br>
+  &emsp;file: lecture-8.tex<br>
+  &emsp;file: lecture-9.tex<br>
+  &emsp;file: lecture-10.tex<br>
+  </p>
+  <p>With the configuration setup in this way, running the command</p>
+  <p><code class="inline-code"> trex -r 2 -j filename</code></p> 
+  <p>will create the file filename.pdf with the contents of lecture 2. 
+  The way this is done is by calling
+  pdflatex with the following content:
+  <p class="bash">\documentclass{article}<br>
+  \input{preamble.tex}<br>
+  \begin{document}<br>
+  \setcounter{section}{0}<br>
+  \section{Linear Equations and Row Reduction}<br>
+  \input{lecture-2.tex}<br>
+  \end{document}
+  </p>
 </div>
