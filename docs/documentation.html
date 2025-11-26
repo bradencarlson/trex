@@ -12,6 +12,18 @@
   important in the config file, any white space at the beginning or end of a
   line will be ignored.</p>
 
+  <p>Since TreX wants to piece your project together piece by piece, it is
+  neccessary to separate your project in a somewhat unusual way. For LaTeX
+  users, the preamble of the document must be in it's own file, and must not
+  contain a \begin{document} command. There also must not be a \end{document}
+  command anywhere in any of the files.</p>
+
+  <p>Also, since there is the option to specify sections in the config file,
+  it is recommended to either specify all sections in the config file, or
+  none of them. In the latter case, simply specify each section in the
+  project files like normal. See the example for a demonstration of the first
+  method.</p>
+
   <h5>Key Value Pairs</h5>
   <p class="function-declaration">class</p>
   <p class="description">This key is required, and simply specifies the
@@ -62,4 +74,35 @@
   \input{lecture-2.tex}<br>
   \end{document}
   </p>
+
+  <h3>Command Line Options</h3>
+  <p class="function-declaration">-r</p>
+  <p class="description">The range to compile. The total number, N, of times the
+  file key appears in the config file defines the maximum number for the
+  range. Otherwise this can be any subset of {1,2,...,N}. For example, to
+  compile only the first file, use <code class="inline-code">-r 1</code>. To
+  compile files 1-3 and file 5, use <code class="inline-code">-r 1-3,5</code>. 
+  The default is 1.</p>
+  <p class="function-declaration">-e</p>
+  <p class="description">The engine to use when compiling. Currently the only
+  engine available is pdflatex. This option should not currently be used.</p>
+  <p class="function-declaration">-j</p>
+  <p class="description">The jobname. This specifies the filename of the
+  compiled document. For example, to specify that the output file should be
+  named exam-1.pdf, use <code class="inline-code">-j exam-1</code>. The
+  default is "out".</p>
+  <p class="function-declaration">-f</p>
+  <p class="description">The config file to use. If you do not wish to use
+  the default config file, specify the location of the config file with this
+  option.</p>
+  <p class="function-declaration">-o</p>
+  <p class="description">Pass options to the compiler. For example, to pass
+  the 12pt option to the article class, use <code class="inline-code">-o 12pt</code> 
+  and use <code class="inline-code">class: article</code> in the config file.</p>
+  <p class="function-declaration">-d</p>
+  <p class="description">Dry run option. Instead of compiling the document,
+  print out the command that would be run.</p>
+  <p class="function-declaration">-v</p>
+  <p class="description">Verbose output. This will force TreX to print out
+  what it finds in the config file, as well as the command that it will run.</p>
 </div>
