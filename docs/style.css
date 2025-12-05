@@ -204,6 +204,38 @@ body {
   max-width: 100%;
 }
 
+.tree { 
+  line-height: 1;
+}
+
+.level1 {
+  margin-left: 1em;
+}
+.level2 {
+  margin-left: 2em;
+}
+
+.upper {
+  font-size: 18px;
+}
+.upper::before {
+  content: "\251c";
+}
+.bottom {
+  font-size: 18px;
+}
+.bottom::before {
+  cursor: pointer;
+  content: "\2514";
+}
+.middle {
+  font-size: 18px;
+}
+.middle::before {
+  cursor: pointer;
+  content: "\251c";
+}
+
 .landscape-image {
   max-width: 50%;
   max-height: 38.6%;
