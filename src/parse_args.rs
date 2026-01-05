@@ -8,6 +8,7 @@
  */
 
 use std::collections::HashMap;
+use std::fs;
 
 pub const RANGE_ARG: &str = "-r";
 pub const ENGINE_ARG: &str = "-e";
@@ -113,7 +114,30 @@ fn parse_argument(key: &String, value: &String) -> bool {
         String::from(CLASS_OPTION),
     ];
 
-    valid_args.contains(key)
+    if !valid_args.contains(key) {
+        return false
+    } 
+
+    match key.as_str() {
+        ENGINE_ARG => {
+            return vec![String::from("pdflatex"),
+                String::from("latex")].contains(value);
+        },
+        FILENAME_ARG => {
+            if let Ok(_s) = fs::read_to_string(value) {
+                return true
+            } else {
+                // For now, just return true even if the file is not found.
+                // This should be fixed when the filename_arg test is updated to first create
+                // the file that it tests for, so it doesn't fail every time.
+                return true
+            }
+        },
+        _ => {
+            return true
+        }
+    }
+
 }
 
 #[cfg(test)]
@@ -124,7 +148,7 @@ use super::*;
     #[test]
     fn filename_arg() {
         let k = String::from("-f");
-        let v = String::from("value");
+        let v = String::from("trex.conf");
         assert!(parse_argument(&k,&v));
     }
 

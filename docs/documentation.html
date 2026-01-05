@@ -1,0 +1,120 @@
+<div id="documentation" class="documentation">
+  <h2>Documentation</h2>
+  <h3>Project Setup</h3>
+  <p>Before using TreX, it is necessary to have your project set up properly. 
+  TreX takes separate files, each listed in the configuration file, and options
+  passed via the command line, and creates a compile command that is to be
+  run.</p>
+  <p>If your project is such that every file is to be included every time you
+  wish to compile, setting up your project for use with TreX is probably already
+  done.</p>
+  <p>If your project contains many pieces, of which you wish to compile a subset
+  at a time (i.e. lecture notes, chapters of a book, etc.), Then there is some
+  preliminary work you must do to ensure that TreX can succesfully compile your
+  project.</p> 
+  <p>The preamble of the document must be contained in it's own file. There must
+  not be any \begin{document} or \end{document} commands in any file, since TreX
+  will insert there where needed.  
+  Also, since there is the option to specify sections in the config file,
+  it is recommended to either specify all sections in the config file, or
+  none of them. In the latter case, simply specify each section in the
+  project files like normal. See the example for a demonstration of the first
+  method.</p>
+  <h3>Configuration</h3>
+  <p>All configuration for TreX is done through a simple file located in the
+  root directory of your project. The default config file name is 
+  <code class="inline-code">trex.conf</code>. Other config files can be used by
+  specifying the <code class="inline-code">-f</code> option, documented below.</p>
+
+  <p>The content of the config file is a sequence of key value pairs of the form 
+  <code class="inline-code">key: value</code>. Notice that there is no space before the
+  semicolon, but there is one afterwards. This is the only spacing which is
+  important in the config file, any white space at the beginning or end of a
+  line will be ignored.</p>
+
+  <h5>Key Value Pairs</h5>
+  <p class="function-declaration">class</p>
+  <p class="description">This key is required, and simply specifies the
+          document class of the file. For example, the value could be
+          <code class="inline-code">article</code>,
+          <code class="inline-code">book</code>, etc.</p>
+  <p class="function-declaration">preamble</p>
+  <p class="description">This key is required, and specifies the filename of the
+  preamble for the document.</p>
+  <p class="function-declaration">section</p>
+  <p class="description">This key may appear multiple times in the config
+  document, and each specifies a new section in the document. The value should
+  be the intended section name.</p>
+  <p class="function-declaration">file</p>
+  <p class="description">This key may appear multiple times in the config file,
+  and specifies a file to be included in the document. The value should be the
+  filename of the file to be included.</p> 
+  <h5>Example Config</h5>
+  <p>Below is an example config file from a series of lecture notes. 
+  <p class="bash">
+  class: article<br>
+  preamble: preamble.tex<br>
+
+  section: Linear Equations and Row Reduction<br>
+  &emsp;file: lecture-1.tex<br>
+  &emsp;file: lecture-2.tex<br>
+  &emsp;file: lecture-3.tex<br>
+  &emsp;file: lecture-4.tex<br>
+  section: Matrices and Matrix Algebra<br>
+  &emsp;file: lecture-5.tex<br>
+  &emsp;file: lecture-6.tex<br>
+  &emsp;file: lecture-7.tex<br>
+  section: Determinants<br>
+  &emsp;file: lecture-8.tex<br>
+  &emsp;file: lecture-9.tex<br>
+  &emsp;file: lecture-10.tex<br>
+  </p>
+  <p>With the configuration setup in this way, running the command</p>
+  <p><code class="inline-code"> trex -r 2 -j filename</code></p> 
+  <p>will create the file filename.pdf with the contents of lecture 2. 
+  The way this is done is by calling
+  pdflatex with the following content:
+  <p class="bash">\documentclass{article}<br>
+  \input{preamble.tex}<br>
+  \begin{document}<br>
+  \setcounter{section}{0}<br>
+  \section{Linear Equations and Row Reduction}<br>
+  \input{lecture-2.tex}<br>
+  \end{document}
+  </p>
+  <p>Please note that the command line option <code class="inline-code">-r 2</code>
+  specifies to select the file contents of the second <code class="inline-code">
+  file</code> listed in the config file, and does not have anything to do with
+  the file name.</p>
+
+  <h3>Command Line Options</h3>
+  <p class="function-declaration">-r</p>
+  <p class="description">The range to compile. The total number, N, of times the
+  file key appears in the config file defines the maximum number for the
+  range. Otherwise this can be any subset of {1,2,...,N}. For example, to
+  compile only the first file, use <code class="inline-code">-r 1</code>. To
+  compile files 1-3 and file 5, use <code class="inline-code">-r 1-3,5</code>. 
+  The default is 1.</p>
+  <p class="function-declaration">-e</p>
+  <p class="description">The engine to use when compiling. Currently the only
+  engine available is pdflatex. This option should not currently be used.</p>
+  <p class="function-declaration">-j</p>
+  <p class="description">The jobname. This specifies the filename of the
+  compiled document. For example, to specify that the output file should be
+  named exam-1.pdf, use <code class="inline-code">-j exam-1</code>. The
+  default is "out".</p>
+  <p class="function-declaration">-f</p>
+  <p class="description">The config file to use. If you do not wish to use
+  the default config file, specify the location of the config file with this
+  option.</p>
+  <p class="function-declaration">-o</p>
+  <p class="description">Pass options to the compiler. For example, to pass
+  the 12pt option to the article class, use <code class="inline-code">-o 12pt</code> 
+  and use <code class="inline-code">class: article</code> in the config file.</p>
+  <p class="function-declaration">-d</p>
+  <p class="description">Dry run option. Instead of compiling the document,
+  print out the command that would be run.</p>
+  <p class="function-declaration">-v</p>
+  <p class="description">Verbose output. This will force TreX to print out
+  what it finds in the config file, as well as the command that it will run.</p>
+</div>
