@@ -1,5 +1,25 @@
 <div id="documentation" class="documentation">
   <h2>Documentation</h2>
+  <h3>Project Setup</h3>
+  <p>Before using TreX, it is necessary to have your project set up properly. 
+  TreX takes separate files, each listed in the configuration file, and options
+  passed via the command line, and creates a compile command that is to be
+  run.</p>
+  <p>If your project is such that every file is to be included every time you
+  wish to compile, setting up your project for use with TreX is probably already
+  done.</p>
+  <p>If your project contains many pieces, of which you wish to compile a subset
+  at a time (i.e. lecture notes, chapters of a book, etc.), Then there is some
+  preliminary work you must do to ensure that TreX can succesfully compile your
+  project.</p> 
+  <p>The preamble of the document must be contained in it's own file. There must
+  not be any \begin{document} or \end{document} commands in any file, since TreX
+  will insert there where needed.  
+  Also, since there is the option to specify sections in the config file,
+  it is recommended to either specify all sections in the config file, or
+  none of them. In the latter case, simply specify each section in the
+  project files like normal. See the example for a demonstration of the first
+  method.</p>
   <h3>Configuration</h3>
   <p>All configuration for TreX is done through a simple file located in the
   root directory of your project. The default config file name is 
@@ -11,18 +31,6 @@
   semicolon, but there is one afterwards. This is the only spacing which is
   important in the config file, any white space at the beginning or end of a
   line will be ignored.</p>
-
-  <p>Since TreX wants to piece your project together piece by piece, it is
-  neccessary to separate your project in a somewhat unusual way. For LaTeX
-  users, the preamble of the document must be in it's own file, and must not
-  contain a \begin{document} command. There also must not be a \end{document}
-  command anywhere in any of the files.</p>
-
-  <p>Also, since there is the option to specify sections in the config file,
-  it is recommended to either specify all sections in the config file, or
-  none of them. In the latter case, simply specify each section in the
-  project files like normal. See the example for a demonstration of the first
-  method.</p>
 
   <h5>Key Value Pairs</h5>
   <p class="function-declaration">class</p>
@@ -74,6 +82,10 @@
   \input{lecture-2.tex}<br>
   \end{document}
   </p>
+  <p>Please note that the command line option <code class="inline-code">-r 2</code>
+  specifies to select the file contents of the second <code class="inline-code">
+  file</code> listed in the config file, and does not have anything to do with
+  the file name.</p>
 
   <h3>Command Line Options</h3>
   <p class="function-declaration">-r</p>

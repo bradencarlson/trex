@@ -13,7 +13,7 @@
   <div class="bottom level1"> chapter-2.tex</div>
   <div class="level1" style="font-size: 18px;"> chapter-3</div>
   <div class="middle level2"> subsection-1.tex</div>
-  <div class="middle level2"> subsection-2.tex</div>
+  <div class="bottom level2"> subsection-2.tex</div>
   </div>
 
   <p>We can then create our config file as follows.</p>
@@ -27,13 +27,13 @@
   section: Chapter 2<br>
   &emsp;file: chapter-2.tex<br>
   section: Chapter 3<br>
-  &emsp;file: subsection-1.tex<br>
-  &emsp;file: subsection-2.tex<br>
+  &emsp;file: chapter-3/subsection-1.tex<br>
+  &emsp;file: chapter-3/subsection-2.tex<br>
   </p>
 
   <p>Now, suppose that we are satisfied with chapters 1 and 2, and are currently
   rewriting chapter 3. We can compile just chapter 3 with the command 
-  <code class="inline">trex -j chapter-3 -r 3-4</code>, since chapter 3 is
+  <code class="inline-code">trex -j chapter-3 -r 3-4</code>, since chapter 3 is
   composed of the third and fourth files in our config file (eventually, I hope
   to include a more intuitive way to do this, like maybe being able to specify
   which section to build).</p>
