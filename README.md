@@ -17,6 +17,9 @@ TreX avoids this by simplifying the configuration setup, and providing short,
 easy-to-remember commands for compilation, all while managing section and
 subsection numbers for you. 
 
+Please visit the [project's website](https://bradencarlson.github.io/trex/) for
+more information.
+
 # Installation
 
 It is recommended to install using cargo. 
@@ -38,4 +41,5 @@ cargo build --release
 
 # Documentation
 
-Currently, there is no documentation for this project. I am working on it!
+Please visit this project's documentation page at [TreX
+documentation](https://bradencarlson.github.io/trex/).
