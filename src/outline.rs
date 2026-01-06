@@ -45,6 +45,7 @@ impl fmt::Display for Outline {
 
         write!(f, "preamble: {}\n", self.preamble);
         write!(f, "Number of Sections: {}\n", self.section_positions.len());
+        write!(f, "subsections: {}\n", self.subsections);
         let mut s_idx = 0;
         let mut idx = 0;
         loop {
