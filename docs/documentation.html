@@ -60,6 +60,7 @@
   <p class="bash">
   class: article<br>
   preamble: preamble.tex<br>
+  subsections: true<br>
 
   section: Linear Equations and Row Reduction<br>
   &emsp;file: lecture-1.tex<br>
@@ -77,7 +78,8 @@
   </p>
   <p>With the configuration setup in this way, running the command</p>
   <p><code class="inline-code"> trex -r 2 -j filename</code></p> 
-  <p>will create the file filename.pdf with the contents of lecture 2. 
+  <p>will create the file filename.pdf with the contents of lecture 2, properly
+  setting the section numbering to 1.2.
   The way this is done is by calling
   pdflatex with the following content:
   <p class="bash">\documentclass{article}<br>
@@ -85,6 +87,7 @@
   \begin{document}<br>
   \setcounter{section}{0}<br>
   \section{Linear Equations and Row Reduction}<br>
+  \setcounter{subsection}{1}
   \input{lecture-2.tex}<br>
   \end{document}
   </p>
