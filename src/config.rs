@@ -69,11 +69,19 @@ fn parse(content: &String) -> Option<Outline> {
         };
 
         // Define the keywords to match against.
+
+        // These are options
         let preamble = "preamble: ";
         let class = "class: ";
+        let subsections = "subsections: ";
+
+        // These form the actual structure of the lecture notes.
         let section = "section: ";
         let file = "file: ";
-        let subsections = "subsections: ";
+
+
+        // Others
+        let comment = "#";
 
         if line.starts_with(preamble) {
             let arg = &line[preamble.len()..];
@@ -98,6 +106,9 @@ fn parse(content: &String) -> Option<Outline> {
             } else {
                 outline.subsections = false;
             }
+        } else if line.starts_with(comment) {
+            // Don't parse this line.
+            continue;
         }
     }
 
