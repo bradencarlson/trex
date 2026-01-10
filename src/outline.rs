@@ -15,7 +15,7 @@ pub struct Outline {
 
     /* This is a list of file names, in the order in which they appeared 
     * in the config file. */
-    pub lecture_files: Vec<String>,
+    pub files: Vec<String>,
 
     /* This the filename of the preamble document. */
     pub preamble: String,
@@ -24,19 +24,28 @@ pub struct Outline {
     pub class: String,
 
     /* Whether or not subsection numbers should be done by TreX. */
-    pub subsections: bool,
+    pub handle_subsections: bool,
 
     /* Whether or not subsection numbers should be done by the TreX. */
     pub handle_sections: bool,
 
-    /* This is a list of indices (in the lecture_files vector) at which new
+    /* This is a list of indices (in the files vector) at which new
     * sections start. For example, if 3 is an element of this vector, then
-    * before the 4th file in lecture_files, a new section should be defined. */
+    * before the 4th file in files, a new section should be defined. */
     pub section_positions: Vec<usize>,
 
     /* This is a list of the section names, in the order in which they
      * appeared in the config file. */
     pub section_names: Vec<String>,
+
+    /* This is a list of indices (in the files vector) at which new
+    * chapters start. For example, if 3 is an element of this vector, then
+    * before the 4th file in files, a new chapter should be defined. */
+    pub chapter_positions: Vec<usize>,
+
+    /* This is a list of the chapter names, in the order in which they
+     * appeared in the config file. */
+    pub chapter_names: Vec<String>,
 }
 
 impl fmt::Display for Outline {
@@ -48,11 +57,11 @@ impl fmt::Display for Outline {
 
         write!(f, "preamble: {}\n", self.preamble);
         write!(f, "Number of Sections: {}\n", self.section_positions.len());
-        write!(f, "subsections: {}\n", self.subsections);
+        write!(f, "handle_subsections: {}\n", self.handle_subsections);
         let mut s_idx = 0;
         let mut idx = 0;
         loop {
-            if idx >= self.lecture_files.len() {
+            if idx >= self.files.len() {
                 break;
             }
             if s_idx < self.section_positions.len() && 
@@ -60,7 +69,7 @@ impl fmt::Display for Outline {
                     write!(f, "section: {}\n", self.section_names.get(s_idx).unwrap());
                     s_idx += 1;
             }
-            write!(f, "\tfile: {}\n", self.lecture_files.get(idx).unwrap());
+            write!(f, "\tfile: {}\n", self.files.get(idx).unwrap());
             idx += 1;
         }
         write!(f, "\nsection positions: {:?}", self.section_positions)
@@ -72,13 +81,15 @@ impl Outline {
         /* Creates a new Outline, with empty fields. */
 
         Outline {
-            lecture_files: Vec::<String>::new(), 
+            files: Vec::<String>::new(), 
             preamble: String::new(), 
             class: String::new(),
-            subsections: false,
+            handle_subsections: false,
             handle_sections: true,
             section_positions: Vec::<usize>::new(),
             section_names: Vec::<String>::new(),
+            chapter_positions: Vec::<usize>::new(),
+            chapter_names: Vec::<String>::new(),
         }
     }
     pub fn get_preamble(&self) -> Option<&String> {
@@ -101,10 +112,10 @@ impl Outline {
          *  None         - if the index is invalid
          */
 
-        self.lecture_files.get(index)
+        self.files.get(index)
     }
-    pub fn subsections(&self) -> bool {
-        /* Returns the value of the subsections parameter. */
-        self.subsections
+    pub fn handle_subsections(&self) -> bool {
+        /* Returns the value of the handle_subsections parameter. */
+        self.handle_subsections
     }
 }

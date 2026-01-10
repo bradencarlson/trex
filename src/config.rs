@@ -73,11 +73,12 @@ fn parse(content: &String) -> Option<Outline> {
         // These are options
         let preamble = "preamble: ";
         let class = "class: ";
-        let subsections = "subsections: ";
+        let handle_subsections = "handle_subsections: ";
         let handle_sections = "handle_sections: ";
 
         // These form the actual structure of the lecture notes.
         let section = "section: ";
+        let chapter = "chapter: ";
         let file = "file: ";
 
 
@@ -91,27 +92,39 @@ fn parse(content: &String) -> Option<Outline> {
             let arg = &line[section.len()..];
             outline.section_names.push(arg.to_string());
             outline.section_positions.push(
-                outline.lecture_files.len().try_into()
+                outline.files.len().try_into()
                     .expect("Number of lecture files should not be this large")
+            );
+        } else if line.starts_with(chapter) {
+            let arg = &line[chapter.len()..];
+            outline.chapter_names.push(arg.to_string());
+            outline.chapter_positions.push(
+                outline.files.len().try_into()
+                    .expect("Number of files should not be this large.")
             );
         } else if line.starts_with(file) {
             let arg = &line[file.len()..];
-            outline.lecture_files.push(arg.to_string());
+            outline.files.push(arg.to_string());
         } else if line.starts_with(class) {
             let arg = &line[class.len()..];
             outline.class = arg.to_string();
-        } else if line.starts_with(subsections) {
-            let arg = &line[subsections.len()..];
+        } else if line.starts_with(handle_subsections) {
+            let arg = &line[handle_subsections.len()..];
             if arg == "true" {
-                outline.subsections = true;
+                outline.handle_subsections = true;
             } else {
-                outline.subsections = false;
+                outline.handle_subsections = false;
             }
         } else if line.starts_with(comment) {
             // Don't parse this line.
             continue;
         } else if line.starts_with(handle_sections) {
-            outline.handle_sections = true;
+            let arg = &line[handle_sections.len()..];
+            if arg == "true" {
+                outline.handle_sections = true;
+            } else {
+                outline.handle_sections = false;
+            }
         }
     }
 

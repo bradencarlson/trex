@@ -139,8 +139,9 @@ impl CMD {
          */
 
         let mut c = String::new();
-        let num_files = self.outline.lecture_files.len();
+        let num_files = self.outline.files.len();
         let num_sections = self.outline.section_positions.len();
+        let num_chapters = self.outline.chapter_positions.len();
         let start = self.range[0]-1;
         let end = self.range[self.range.len()-1];
 
@@ -175,14 +176,16 @@ impl CMD {
         }
 
         if section_idx > 0 {
+            c.push_str("\\setcounter{section}{");
+            c.push_str((section_idx-1).to_string().as_str());
+            c.push_str("}");
+
             if self.outline.handle_sections {
-                c.push_str("\\setcounter{section}{");
-                c.push_str((section_idx-1).to_string().as_str());
+                c.push_str("\\section{");
+                c.push_str(self.outline.section_names[section_idx-1].as_str());
                 c.push_str("}");
             }
-            c.push_str("\\section{");
-            c.push_str(self.outline.section_names[section_idx-1].as_str());
-            c.push_str("}");
+
         }
         
         loop {
@@ -196,22 +199,24 @@ impl CMD {
                         // For now, always use the pdflatex code, eventually, 
                         // this will be changed based on what engine is selected. 
                         _ => {
-                            c.push_str("\\section{");
-                            c.push_str(self.outline.section_names[section_idx].as_str());
-                            c.push_str("}");
+                            if self.outline.handle_sections {
+                                c.push_str("\\section{");
+                                c.push_str(self.outline.section_names[section_idx].as_str());
+                                c.push_str("}");
+                            }
                             section_idx += 1;
                         }
                     }
             }
 
-            if self.outline.subsections() {
+            if self.outline.handle_subsections() {
                 c.push_str("\\setcounter{subsection}{");
                 c.push_str((file_idx - self.outline.section_positions[section_idx-1]).to_string().as_str());
                 c.push_str("}");
             }
 
             c.push_str("\\input{");
-            c.push_str(self.outline.lecture_files[file_idx].as_str());
+            c.push_str(self.outline.files[file_idx].as_str());
             c.push_str("}");
             file_idx += 1;
         }
@@ -237,12 +242,12 @@ mod pdflatex {
         let mut o = Outline::new();
         o.class = String::from("article");
         o.preamble = String::from("preamble.tex");
-        o.lecture_files = vec![String::from("file-1"), String::from("file-2"), 
+        o.files = vec![String::from("file-1"), String::from("file-2"), 
             String::from("file-3"), String::from("file-4"),
             String::from("file-5"), String::from("file-6"), 
             String::from("file-7"), String::from("file-8"), 
             String::from("file-9"), String::from("file-10")];
-        o.subsections = subsections;
+        o.handle_subsections = subsections;
         o.section_positions = vec![0,3,7];
         o.section_names = vec![
             String::from("Files 1-3"), 
