@@ -23,8 +23,11 @@ pub struct Outline {
     /* Holds the class of the document */
     pub class: String,
 
-    /* Whether or not subsection numbers should be done by the program. */
+    /* Whether or not subsection numbers should be done by TreX. */
     pub subsections: bool,
+
+    /* Whether or not subsection numbers should be done by the TreX. */
+    pub handle_sections: bool,
 
     /* This is a list of indices (in the lecture_files vector) at which new
     * sections start. For example, if 3 is an element of this vector, then
@@ -73,6 +76,7 @@ impl Outline {
             preamble: String::new(), 
             class: String::new(),
             subsections: false,
+            handle_sections: true,
             section_positions: Vec::<usize>::new(),
             section_names: Vec::<String>::new(),
         }

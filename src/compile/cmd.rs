@@ -175,9 +175,11 @@ impl CMD {
         }
 
         if section_idx > 0 {
-            c.push_str("\\setcounter{section}{");
-            c.push_str((section_idx-1).to_string().as_str());
-            c.push_str("}");
+            if self.outline.handle_sections {
+                c.push_str("\\setcounter{section}{");
+                c.push_str((section_idx-1).to_string().as_str());
+                c.push_str("}");
+            }
             c.push_str("\\section{");
             c.push_str(self.outline.section_names[section_idx-1].as_str());
             c.push_str("}");
