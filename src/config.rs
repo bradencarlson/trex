@@ -140,12 +140,14 @@ mod tests {
         "class: article
         preamble: preamble.tex
 
+        chapter: Chapter One
         section: Section One
             file: file-1.tex
             file: file-2.tex
             file: file-3.tex
         section: Section Two
             file: file-4.tex
+        chapter: Chapter Two
             file: file-5.tex".to_string()
     }
 
@@ -158,5 +160,9 @@ mod tests {
         assert_eq!(out.section_names[1], "Section Two");
         assert_eq!(out.section_positions[0], 0);
         assert_eq!(out.section_positions[1], 3);
+        assert_eq!(out.chapter_names[0], "Chapter One");
+        assert_eq!(out.chapter_names[1], "Chapter Two");
+        assert_eq!(out.chapter_positions[0], 0);
+        assert_eq!(out.chapter_positions[1], 4);
     }
 }

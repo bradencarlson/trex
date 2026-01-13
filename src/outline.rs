@@ -58,20 +58,53 @@ impl fmt::Display for Outline {
         write!(f, "preamble: {}\n", self.preamble);
         write!(f, "Number of Sections: {}\n", self.section_positions.len());
         write!(f, "handle_subsections: {}\n", self.handle_subsections);
+        let mut c_idx = 0;
         let mut s_idx = 0;
         let mut idx = 0;
+
+        write!(f, "\nindex\tchap\tsec\tfiles\n\n");
+
         loop {
+
+            /* Once this limit is hit, there should not be any more chapters or 
+             * sections to parse. */
             if idx >= self.files.len() {
                 break;
             }
-            if s_idx < self.section_positions.len() && 
-                idx == *self.section_positions.get(s_idx).unwrap() {
-                    write!(f, "section: {}\n", self.section_names.get(s_idx).unwrap());
-                    s_idx += 1;
-            }
-            write!(f, "\tfile: {}\n", self.files.get(idx).unwrap());
+
+
+            write!(f, "{}\t", idx);
+            match self.chapter_positions.get(c_idx) {
+                Some(value) => {
+                    if *value == idx {
+                        write!(f, "{}\t", self.chapter_names.get(c_idx).unwrap());
+                        c_idx += 1;
+                    } else {
+                        write!(f, "\t");
+                    }
+                },
+                None => {write!(f, "\t");},
+            };
+                    
+            match self.section_positions.get(s_idx) {
+                Some(value) => {
+                    if *value == idx {
+                        write!(f, "{}\t", self.section_names.get(s_idx).unwrap());
+                        s_idx += 1;
+                    } else {
+                        write!(f, "\t");
+                    }
+                },
+                None => {write!(f, "\t");},
+            };
+
+            write!(f, "{}\n", self.files.get(idx).unwrap());
+            
             idx += 1;
+
         }
+
+        write!(f, "\nchapter positions: {:?}", self.chapter_positions);
         write!(f, "\nsection positions: {:?}", self.section_positions)
     }
 }
