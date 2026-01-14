@@ -38,6 +38,9 @@ pub struct Outline {
      * appeared in the config file. */
     pub section_names: Vec<String>,
 
+    /* This keeps track of section numbers as they should appear in the final pdf. */
+    pub section_indices: Vec<usize>,
+
     /* This is a list of indices (in the files vector) at which new
     * chapters start. For example, if 3 is an element of this vector, then
     * before the 4th file in files, a new chapter should be defined. */
@@ -46,6 +49,11 @@ pub struct Outline {
     /* This is a list of the chapter names, in the order in which they
      * appeared in the config file. */
     pub chapter_names: Vec<String>,
+
+    /* This keeps track of the chapter numbers as they should appear 
+    * in the final pdf. */
+    pub chapter_indices: Vec<usize>,
+
 }
 
 impl fmt::Display for Outline {
@@ -64,8 +72,11 @@ impl fmt::Display for Outline {
 
         write!(f, "\nchapter positions: {:?}", self.chapter_positions);
         write!(f, "\nchapter names: {:?}", self.chapter_names);
+        write!(f, "\nchapter indices: {:?}", self.chapter_indices);
         write!(f, "\nsection positions: {:?}", self.section_positions);
-        write!(f, "\nsection names: {:?}", self.section_names)
+        write!(f, "\nsection names: {:?}", self.section_names);
+        write!(f, "\nsection indices: {:?}", self.section_indices)
+    
     }
 }
 
@@ -81,8 +92,10 @@ impl Outline {
             handle_sections: true,
             section_positions: Vec::<usize>::new(),
             section_names: Vec::<String>::new(),
+            section_indices: Vec::<usize>::new(),
             chapter_positions: Vec::<usize>::new(),
             chapter_names: Vec::<String>::new(),
+            chapter_indices: Vec::<usize>::new(),
         }
     }
     pub fn get_preamble(&self) -> Option<&String> {
