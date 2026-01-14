@@ -181,6 +181,13 @@ impl CMD {
                     c.push_str(chap.to_string().as_str());
                     c.push_str("}");
                     last_chapter_idx = chap;
+
+                    if self.outline.handle_chapters {
+                        let chap_name = self.outline.chapter_names[file_idx].as_str();
+                        c.push_str("\\chapter{");
+                        c.push_str(chap_name);
+                        c.push_str("}");
+                    }
                 }
 
                 if sec > last_section_idx {
@@ -226,12 +233,22 @@ mod pdflatex {
             String::from("file-7"), String::from("file-8"), 
             String::from("file-9"), String::from("file-10")];
         o.handle_subsections = subsections;
-        o.section_positions = vec![0,3,7];
-        o.section_positions = vec![0,0,0,1,0,0,1,0,0,0];
+        o.section_positions = vec![1,0,0,1,0,0,0,1,0,0];
         o.section_names = vec![
             String::from("Files 1-3"), 
+            String::new(), String::new(),
             String::from("Files 4-7"), 
-            String::from("Files 8-10")];
+            String::new(), String::new(), String::new(),
+            String::from("Files 8-10"), String::new(), String::new()];
+        o.section_indices = vec![1,1,1,2,2,2,2,1,1,1];
+        o.chapter_positions = vec![1,0,0,0,0,0,0,1,0,0];
+        o.chapter_names = vec![
+            String::from("Chapter 1"),
+            String::new(),String::new(),String::new(),String::new(),String::new(),String::new(),
+            String::from("Chapter 2"),
+            String::new(),String::new()];
+        o.chapter_indices = vec![1,1,1,1,1,1,1,2,2,2];
+
         o
     }
 
@@ -244,8 +261,10 @@ mod pdflatex {
         c.jobname = String::from("lecture-6");
 
         let tex = c.get_tex_code();
-        assert_eq!(tex, "\"\\input{preamble.tex}\\begin{document}\\setcounter{section}{1}\
-            \\section{Files 4-7}\\setcounter{subsection}{2}\\input{file-6}\\end{document}\"");
+        assert_eq!(tex, "\"\\input{preamble.tex}\\begin{document}\
+            \\setcounter{chapter}{0}\
+            \\setcounter{section}{1}\
+            \\section{Files 4-7}\\input{file-6}\\end{document}\"");
     }
 
     #[test]
