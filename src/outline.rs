@@ -39,7 +39,7 @@ pub struct Outline {
     pub section_names: Vec<String>,
 
     /* This keeps track of section numbers as they should appear in the final pdf. */
-    pub section_indices: Vec<usize>,
+    pub section_indices: Vec<i32>,
 
     /* This is a list of indices (in the files vector) at which new
     * chapters start. For example, if 3 is an element of this vector, then
@@ -52,7 +52,7 @@ pub struct Outline {
 
     /* This keeps track of the chapter numbers as they should appear 
     * in the final pdf. */
-    pub chapter_indices: Vec<usize>,
+    pub chapter_indices: Vec<i32>,
 
 }
 
@@ -92,10 +92,10 @@ impl Outline {
             handle_sections: true,
             section_positions: Vec::<usize>::new(),
             section_names: Vec::<String>::new(),
-            section_indices: Vec::<usize>::new(),
+            section_indices: Vec::<i32>::new(),
             chapter_positions: Vec::<usize>::new(),
             chapter_names: Vec::<String>::new(),
-            chapter_indices: Vec::<usize>::new(),
+            chapter_indices: Vec::<i32>::new(),
         }
     }
     pub fn get_preamble(&self) -> Option<&String> {

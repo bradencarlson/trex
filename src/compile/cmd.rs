@@ -163,63 +163,41 @@ impl CMD {
         }
 
         let mut file_idx = start;
-        let mut section_idx = 0;
+        let mut last_chapter_idx = -1;
+        let mut last_section_idx = -1;
 
-        /* Figure out which section we need to start with */
-        loop {
-            if section_idx < num_sections &&
-                self.outline.section_positions[section_idx] <= start {
-                    section_idx += 1;
-            } else {
-                break;
-            }
-        }
 
-        if section_idx > 0 {
-            c.push_str("\\setcounter{section}{");
-            c.push_str((section_idx-1).to_string().as_str());
-            c.push_str("}");
-
-            if self.outline.handle_sections {
-                c.push_str("\\section{");
-                c.push_str(self.outline.section_names[section_idx-1].as_str());
-                c.push_str("}");
-            }
-
-        }
-        
         loop {
             if file_idx >= end {
                 break;
             }
 
-            if section_idx < num_sections && 
-                file_idx == self.outline.section_positions[section_idx] {
-                    match self.engine {
-                        // For now, always use the pdflatex code, eventually, 
-                        // this will be changed based on what engine is selected. 
-                        _ => {
-                            if self.outline.handle_sections {
-                                c.push_str("\\section{");
-                                c.push_str(self.outline.section_names[section_idx].as_str());
-                                c.push_str("}");
-                            }
-                            section_idx += 1;
-                        }
-                    }
-            }
+            if self.range.contains(&(file_idx+1)) {
+                let chap = self.outline.chapter_indices[file_idx]-1;
+                let sec = self.outline.section_indices[file_idx]-1;
 
-            if self.outline.handle_subsections() {
-                c.push_str("\\setcounter{subsection}{");
-                c.push_str((file_idx - self.outline.section_positions[section_idx-1]).to_string().as_str());
+                if chap > last_chapter_idx {
+                    c.push_str("\\setcounter{chapter}{");
+                    c.push_str(chap.to_string().as_str());
+                    c.push_str("}");
+                    last_chapter_idx = chap;
+                }
+
+                if sec > last_section_idx {
+                    c.push_str("\\setcounter{section}{");
+                    c.push_str(sec.to_string().as_str());
+                    c.push_str("}");
+                    last_section_idx = sec;
+                }
+                c.push_str("\\include{");
+                c.push_str(self.outline.files[file_idx].as_str());
                 c.push_str("}");
             }
 
-            c.push_str("\\input{");
-            c.push_str(self.outline.files[file_idx].as_str());
-            c.push_str("}");
             file_idx += 1;
+
         }
+
         c
     }
 
@@ -249,6 +227,7 @@ mod pdflatex {
             String::from("file-9"), String::from("file-10")];
         o.handle_subsections = subsections;
         o.section_positions = vec![0,3,7];
+        o.section_positions = vec![0,0,0,1,0,0,1,0,0,0];
         o.section_names = vec![
             String::from("Files 1-3"), 
             String::from("Files 4-7"), 
