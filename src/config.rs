@@ -62,6 +62,13 @@ fn parse(content: &String) -> Option<Outline> {
 
     let mut outline = Outline::new(); 
 
+    let mut file_counter = 0;
+
+    outline.chapter_positions.push(0);
+    outline.chapter_names.push(String::new());
+    outline.section_positions.push(0);
+    outline.section_names.push(String::new());
+
     loop {
         let line = match lines.next() {
             Some(line) => line.trim(),
@@ -81,30 +88,29 @@ fn parse(content: &String) -> Option<Outline> {
         let chapter = "chapter: ";
         let file = "file: ";
 
-
         // Others
         let comment = "#";
+
 
         if line.starts_with(preamble) {
             let arg = &line[preamble.len()..];
             outline.preamble.push_str(arg);
         } else if line.starts_with(section) {
             let arg = &line[section.len()..];
-            outline.section_names.push(arg.to_string());
-            outline.section_positions.push(
-                outline.files.len().try_into()
-                    .expect("Number of lecture files should not be this large")
-            );
+            outline.section_names[file_counter] = arg.to_string();
+            outline.section_positions[file_counter] = 1;
         } else if line.starts_with(chapter) {
             let arg = &line[chapter.len()..];
-            outline.chapter_names.push(arg.to_string());
-            outline.chapter_positions.push(
-                outline.files.len().try_into()
-                    .expect("Number of files should not be this large.")
-            );
+            outline.chapter_names[file_counter] = arg.to_string();
+            outline.chapter_positions[file_counter] = 1;
         } else if line.starts_with(file) {
             let arg = &line[file.len()..];
             outline.files.push(arg.to_string());
+            outline.chapter_positions.push(0);
+            outline.section_positions.push(0);
+            outline.chapter_names.push(String::new());
+            outline.section_names.push(String::new());
+            file_counter += 1;
         } else if line.starts_with(class) {
             let arg = &line[class.len()..];
             outline.class = arg.to_string();
