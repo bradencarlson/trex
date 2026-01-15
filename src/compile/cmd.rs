@@ -195,8 +195,15 @@ impl CMD {
                     c.push_str(sec.to_string().as_str());
                     c.push_str("}");
                     last_section_idx = sec;
+
+                    if self.outline.handle_sections {
+                        let sec_name = self.outline.section_names[file_idx].as_str();
+                        c.push_str("\\section{");
+                        c.push_str(sec_name);
+                        c.push_str("}");
+                    }
                 }
-                c.push_str("\\include{");
+                c.push_str("\\input{");
                 c.push_str(self.outline.files[file_idx].as_str());
                 c.push_str("}");
             }
@@ -222,6 +229,8 @@ impl fmt::Display for CMD {
 #[cfg(test)]
 mod pdflatex {
     use super::*;
+    use crate::outline;
+    use crate::config;
 
     fn create_outline(subsections: bool) -> Outline {
         let mut o = Outline::new();
@@ -236,15 +245,17 @@ mod pdflatex {
         o.section_positions = vec![1,0,0,1,0,0,0,1,0,0];
         o.section_names = vec![
             String::from("Files 1-3"), 
-            String::new(), String::new(),
+            String::from("Files 1-3"), String::from("Files 1-3"),
             String::from("Files 4-7"), 
-            String::new(), String::new(), String::new(),
-            String::from("Files 8-10"), String::new(), String::new()];
+            String::from("Files 4-7"), String::from("Files 4-7"), String::from("Files 4-7"),
+            String::from("Files 8-10"), String::from("Files 8-10"), String::from("Files 8-10")];
         o.section_indices = vec![1,1,1,2,2,2,2,1,1,1];
         o.chapter_positions = vec![1,0,0,0,0,0,0,1,0,0];
         o.chapter_names = vec![
             String::from("Chapter 1"),
-            String::new(),String::new(),String::new(),String::new(),String::new(),String::new(),
+            String::from("Chapter 1"),String::from("Chapter 1"),
+            String::from("Chapter 1"),String::from("Chapter 1"),
+            String::from("Chapter 1"),String::from("Chapter 1"),
             String::from("Chapter 2"),
             String::new(),String::new()];
         o.chapter_indices = vec![1,1,1,1,1,1,1,2,2,2];
@@ -254,7 +265,12 @@ mod pdflatex {
 
     #[test]
     fn lecture_six() {
-        let o: Outline = create_outline(true);
+        // let o: Outline = create_outline(true);
+        let o: Outline = match config::read(
+            "/home/bradencarlson/Documents/trex/examples/default.conf") {
+            Some(outline) => outline,
+            None => Outline::new(),
+        };
         let mut c = CMD::new();
         c.outline = o;
         c.range = vec![6];
@@ -263,6 +279,7 @@ mod pdflatex {
         let tex = c.get_tex_code();
         assert_eq!(tex, "\"\\input{preamble.tex}\\begin{document}\
             \\setcounter{chapter}{0}\
+            \\chapter{Chapter 1}\
             \\setcounter{section}{1}\
             \\section{Files 4-7}\\input{file-6}\\end{document}\"");
     }
