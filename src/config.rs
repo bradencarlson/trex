@@ -150,6 +150,8 @@ fn parse(content: &String) -> Option<Outline> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::config;
+    use crate::outline;
 
     fn default_config() -> String {
         "class: article
@@ -168,16 +170,58 @@ mod tests {
 
     #[test]
     fn test_config() {
-        let out = parse(&default_config()).unwrap();
+        let out = match config::read(
+            "examples/default.conf") {
+            Some(outline) => outline, 
+            None => Outline::new(),
+        };
         assert_eq!(out.preamble, "preamble.tex");
         assert_eq!(out.class, "article");
-        assert_eq!(out.section_names[0], "Section One");
-        assert_eq!(out.section_names[1], "Section Two");
-        assert_eq!(out.section_positions[0], 0);
-        assert_eq!(out.section_positions[1], 3);
-        assert_eq!(out.chapter_names[0], "Chapter One");
-        assert_eq!(out.chapter_names[1], "Chapter Two");
-        assert_eq!(out.chapter_positions[0], 0);
-        assert_eq!(out.chapter_positions[1], 4);
+
+        let mut idx = 0;
+        let num_files = out.files.len();
+
+        loop {
+            if idx >= num_files {
+                break;
+            }
+            
+            /* Check to make sure the chapter indices and names are correct */
+            if idx <= 6 {
+                assert_eq!(out.chapter_names[idx], "Chapter 1");
+                assert_eq!(out.chapter_indices[idx], 1);
+            } else {
+                assert_eq!(out.chapter_names[idx], "Chapter 2");
+                assert_eq!(out.chapter_indices[idx], 2);
+            }
+
+            /* Check to make sure that the section indices and names are correct. */
+            if idx <= 2 {
+                assert_eq!(out.section_names[idx], "Files 1-3");
+                assert_eq!(out.section_indices[idx], 1);
+            } else if idx <= 6 {
+                assert_eq!(out.section_names[idx], "Files 4-7");
+                assert_eq!(out.section_indices[idx], 2);
+            } else {
+                assert_eq!(out.section_names[idx], "Files 8-10");
+                assert_eq!(out.section_indices[idx], 1);
+            }
+
+            /* Make sure that the chapter_positions are correct. */
+            if idx == 0 || idx == 7 {
+                assert_eq!(out.chapter_positions[idx], 1);
+            } else {
+                assert_eq!(out.chapter_positions[idx], 0);
+            }
+
+            /* Finally, make sure that the section_positions are correct. */
+            if idx == 0 || idx == 3 || idx == 7 {
+                assert_eq!(out.section_positions[idx], 1);
+            } else {
+                assert_eq!(out.section_positions[idx], 0);
+            }
+
+            idx += 1;
+        }
     }
 }

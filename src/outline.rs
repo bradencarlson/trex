@@ -33,8 +33,8 @@ pub struct Outline {
     pub handle_subsections: bool,
 
     /* This is a list of indices (in the files vector) at which new
-    * sections start. For example, if 3 is an element of this vector, then
-    * before the 4th file in files, a new section should be defined. */
+    * sections start. For example, if there is a section command before the 3rd file 
+    * listed in the config file, then there will be a 1 in index 2 in this array. */
     pub section_positions: Vec<usize>,
 
     /* This is a list of the section names, in the order in which they
@@ -44,9 +44,7 @@ pub struct Outline {
     /* This keeps track of section numbers as they should appear in the final pdf. */
     pub section_indices: Vec<i32>,
 
-    /* This is a list of indices (in the files vector) at which new
-    * chapters start. For example, if 3 is an element of this vector, then
-    * before the 4th file in files, a new chapter should be defined. */
+    /* List of positions where chapter commands appear. Similar to section_positions */
     pub chapter_positions: Vec<usize>,
 
     /* This is a list of the chapter names, in the order in which they
