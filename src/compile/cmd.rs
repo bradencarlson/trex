@@ -176,6 +176,9 @@ impl CMD {
                 let chap = self.outline.chapter_indices[file_idx]-1;
                 let sec = self.outline.section_indices[file_idx]-1;
 
+                /* Notice that if not chapter commands are found in the config file. 
+                 * Then each of the chapter indices will be zero, so this block will 
+                 * never be run, as desired. The same happens for sections below. */
                 if chap != last_chapter_idx {
                     c.push_str("\\setcounter{chapter}{");
                     c.push_str(chap.to_string().as_str());
@@ -314,21 +317,29 @@ mod pdflatex {
             \\end{document}\"");
     }
 
-    /* #[test]
-     * Since I do not currently have subsection numbering handled, ignore this test 
-     * for now. */
-    fn lectures_1_to_3_nosubs() {
-        let o: Outline = create_outline(false);
+    #[test]
+    fn lectures_1_to_3_with_subsections() {
+        let o: Outline = match config::read(
+            "examples/notes.conf") {
+            Some(outline) => outline, 
+            None => Outline::new(),
+        };
         let mut c = CMD::new();
         c.outline = o;
         c.range = vec![1,2,3];
         c.jobname = String::from("lectures-1-3");
 
+        assert_eq!(c.outline.chapter_indices, vec![0,0,0,0,0,0,0]);
+
         let tex = c.get_tex_code();
         assert_eq!(tex, "\"\\input{preamble.tex}\\begin{document}\\setcounter{section}{0}\
-            \\section{Files 1-3}\\input{file-1}\
-            \\input{file-2}\
-            \\input{file-3}\
+            \\section{Voting Theory}\
+            \\setcounter{subsection}{0}\
+            \\input{lecture-1.tex}\
+            \\setcounter{subsection}{1}\
+            \\input{lecture-2.tex}\
+            \\setcounter{subsection}{2}\
+            \\input{lecture-3.tex}\
             \\end{document}\"");
     }
 
@@ -390,28 +401,38 @@ mod pdflatex {
             \\end{document}\"");
     }
 
-    /* #[test]
-     * Remove this test for now. */
-    fn full_lecture_nosubs() {
-        let o: Outline = create_outline(false);
+    #[test]
+    fn full_lecture_with_subsections() {
+        let o: Outline = match config::read(
+            "examples/notes.conf") {
+            Some(outline) => outline, 
+            None => Outline::new(),
+        };
         let mut c = CMD::new();
         c.outline = o;
-        c.range = vec![1,2,3,4,5,6,7,8,9,10];
+        c.range = vec![1,2,3,4,5,6,7];
         c.jobname = String::from("lectures");
 
         let tex = c.get_tex_code();
-        assert_eq!(tex, "\"\\input{preamble.tex}\\begin{document}\\setcounter{section}{0}\
-            \\section{Files 1-3}\\input{file-1}\
-            \\input{file-2}\
-            \\input{file-3}\
-            \\section{Files 4-7}\\input{file-4}\
-            \\input{file-5}\
-            \\input{file-6}\
-            \\input{file-7}\
-            \\section{Files 8-10}\
-            \\input{file-8}\
-            \\input{file-9}\
-            \\input{file-10}\
+        assert_eq!(tex, "\"\\input{preamble.tex}\\begin{document}\
+            \\setcounter{section}{0}\
+            \\section{Voting Theory}\
+            \\setcounter{subsection}{0}\
+            \\input{lecture-1.tex}\
+            \\setcounter{subsection}{1}\
+            \\input{lecture-2.tex}\
+            \\setcounter{subsection}{2}\
+            \\input{lecture-3.tex}\
+            \\setcounter{subsection}{3}\
+            \\input{lecture-4.tex}\
+            \\setcounter{subsection}{4}\
+            \\input{lecture-5.tex}\
+            \\setcounter{section}{1}\
+            \\section{Weighted Voting Theory}\
+            \\setcounter{subsection}{0}\
+            \\input{lecture-6.tex}\
+            \\setcounter{subsection}{1}\
+            \\input{lecture-7.tex}\
             \\end{document}\"");
     }
 
