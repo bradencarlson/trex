@@ -32,6 +32,17 @@ pub struct Outline {
     /* Whether or not subsection commands should be done by TreX. */
     pub handle_subsections: bool,
 
+    /* List of positions where chapter commands appear. Similar to section_positions */
+    pub chapter_positions: Vec<usize>,
+
+    /* This is a list of the chapter names, in the order in which they
+     * appeared in the config file. */
+    pub chapter_names: Vec<String>,
+
+    /* This keeps track of the chapter numbers as they should appear 
+    * in the final pdf. */
+    pub chapter_indices: Vec<i32>,
+
     /* This is a list of indices (in the files vector) at which new
     * sections start. For example, if there is a section command before the 3rd file 
     * listed in the config file, then there will be a 1 in index 2 in this array. */
@@ -44,16 +55,10 @@ pub struct Outline {
     /* This keeps track of section numbers as they should appear in the final pdf. */
     pub section_indices: Vec<i32>,
 
-    /* List of positions where chapter commands appear. Similar to section_positions */
-    pub chapter_positions: Vec<usize>,
+    /* Keeps track of the current subsection index which should be used, if handle_subsections
+     * is set to true. */
+    pub subsection_indices: Vec<i32>,
 
-    /* This is a list of the chapter names, in the order in which they
-     * appeared in the config file. */
-    pub chapter_names: Vec<String>,
-
-    /* This keeps track of the chapter numbers as they should appear 
-    * in the final pdf. */
-    pub chapter_indices: Vec<i32>,
 
 }
 
@@ -76,7 +81,9 @@ impl fmt::Display for Outline {
         write!(f, "\nchapter indices: {:?}", self.chapter_indices);
         write!(f, "\nsection positions: {:?}", self.section_positions);
         write!(f, "\nsection names: {:?}", self.section_names);
-        write!(f, "\nsection indices: {:?}", self.section_indices)
+        write!(f, "\nsection indices: {:?}", self.section_indices);
+        write!(f, "\nsubsection indices: {:?}", self.subsection_indices)
+            
     
     }
 }
@@ -92,12 +99,13 @@ impl Outline {
             handle_chapters: true,
             handle_sections: true,
             handle_subsections: false,
-            section_positions: Vec::<usize>::new(),
-            section_names: Vec::<String>::new(),
-            section_indices: Vec::<i32>::new(),
             chapter_positions: Vec::<usize>::new(),
             chapter_names: Vec::<String>::new(),
             chapter_indices: Vec::<i32>::new(),
+            section_positions: Vec::<usize>::new(),
+            section_names: Vec::<String>::new(),
+            section_indices: Vec::<i32>::new(),
+            subsection_indices: Vec::<i32>::new(),
         }
     }
     pub fn get_preamble(&self) -> Option<&String> {

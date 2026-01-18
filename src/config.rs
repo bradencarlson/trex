@@ -63,6 +63,7 @@ fn parse(content: &String) -> Option<Outline> {
     let mut file_counter = 0;
     let mut chapter_counter = 0;
     let mut section_counter = 0;
+    let mut subsection_counter  = 0;
     let mut last_chapter_name = String::new();
     let mut last_section_name = String::new();
 
@@ -103,6 +104,7 @@ fn parse(content: &String) -> Option<Outline> {
             outline.section_positions[file_counter] = 1;
             last_section_name = arg.to_string();
             section_counter += 1;
+            subsection_counter = 0;
         } else if line.starts_with(chapter) {
             let arg = &line[chapter.len()..];
             outline.chapter_names[file_counter] = arg.to_string();
@@ -110,6 +112,7 @@ fn parse(content: &String) -> Option<Outline> {
             last_chapter_name = arg.to_string();
             chapter_counter += 1;
             section_counter = 0;
+            subsection_counter = 0;
         } else if line.starts_with(file) {
             let arg = &line[file.len()..];
             outline.files.push(arg.to_string());
@@ -119,6 +122,8 @@ fn parse(content: &String) -> Option<Outline> {
             outline.section_names.push(last_section_name.clone());
             outline.chapter_indices.push(chapter_counter);
             outline.section_indices.push(section_counter);
+            outline.subsection_indices.push(subsection_counter);
+            subsection_counter += 1;
             file_counter += 1;
         } else if line.starts_with(class) {
             let arg = &line[class.len()..];
