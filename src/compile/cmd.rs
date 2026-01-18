@@ -203,6 +203,14 @@ impl CMD {
                         c.push_str("}");
                     }
                 }
+
+                if self.outline.handle_subsections {
+                    let subsec_num = self.outline.subsection_indices[file_idx].to_string();
+                    c.push_str("\\setcounter{subsection}{");
+                    c.push_str(subsec_num.as_str());
+                    c.push_str("}");
+                }
+
                 c.push_str("\\input{");
                 c.push_str(self.outline.files[file_idx].as_str());
                 c.push_str("}");
@@ -265,7 +273,6 @@ mod pdflatex {
 
     #[test]
     fn lecture_six() {
-        // let o: Outline = create_outline(true);
         let o: Outline = match config::read(
             "/home/bradencarlson/Documents/trex/examples/default.conf") {
             Some(outline) => outline,
@@ -347,19 +354,6 @@ mod pdflatex {
             \\input{file-10}\\end{document}\"");
     }
 
-    /* #[test]
-     * Remove this test for now */
-    fn lecture_10_nosubs() {
-        let o: Outline = create_outline(false);
-        let mut c = CMD::new();
-        c.outline = o;
-        c.range = vec![10];
-        c.jobname = String::from("lectures-1-3");
-
-        let tex = c.get_tex_code();
-        assert_eq!(tex, "\"\\input{preamble.tex}\\begin{document}\\setcounter{section}{2}\
-            \\section{Files 8-10}\\input{file-10}\\end{document}\"");
-    }
 
     #[test]
     fn full_lecture() {
