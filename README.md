@@ -5,9 +5,9 @@ languages.
 
 It was created because of the difficulty in setting up make files for use with
 lecture notes, where there is a common preamble, and a collection of notes
-files, one of which was to be selected and used by `pdflatex`. While using
+files, one or more of which was to be selected and used by `pdflatex`. While using
 `make`, the result was a number of make variables which needed to be remembered,
-and a command which was not super easy to remember. 
+and make rules which were complicated and difficult to debug.
 
 Perhaps the greatest downside in using `make` for this task was managing section
 and subsection numbering. This had to be done manually for each lecture via
