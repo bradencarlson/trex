@@ -15,8 +15,8 @@
   <p>The preamble of the document must be contained in it's own file. There must
   not be any \begin{document} or \end{document} commands in any file, since TreX
   will insert there where needed.  
-  Also, since there is the option to specify sections in the config file,
-  it is recommended to either specify all sections in the config file, or
+  Also, since there is the option to specify sections or chapters in the config file,
+  it is recommended to either specify all sections or chapters in the config file, or
   none of them. In the latter case, simply specify each section in the
   project files like normal. See the example for a demonstration of the first
   method.</p>
@@ -41,16 +41,32 @@
   <p class="function-declaration">preamble</p>
   <p class="description">This key is required, and specifies the filename of the
   preamble for the document.</p>
-  <p class="function-declaration">subsections</p>
+  <p class="function-declaration">handle_chapters</p>
+  <p class="description">This optional key specifies whether or not TreX should
+  handle chapter commands or not. Valid values are 'true' or 'false'. The
+  default is 'true'. If this value is set to 'false', TreX will still keep track
+  of and set chapter numbering according to the 
+  <code class="inline-code">chapter</code> commands that it finds in the config
+  file, but will not insert any \chapter{} commands when it goes to compile. If
+  you do not wish for Trex to even keep track of chapter commands, simply do not
+  put any <code class="inline-code">chapter</code> commands in the config
+  file.</p>
+  <p class="function-declaration">handle_sections</p>
+  <p class="description">See 
+  <code class="inline-code">handle_chapters</code>.</p>
+  <p class="function-declaration">handle_subsections</p>
   <p class="description">This optional key specifies whether or not TreX should
   handle subsection numbering or not. Valid values are 'true' or 'false'. The
   default is 'false'. If this value is set to 'true', TreX assumes that each
   file specified in the config file is a separate subsection, and subsection
   numbers are set accordingly.</p>
-  <p class="function-declaration">section</p>
+  <p class="function-declaration">chapter</p>
   <p class="description">This key may appear multiple times in the config
-  document, and each specifies a new section in the document. The value should
-  be the intended section name.</p>
+  document, and each specifies a new chapter in the document. The value should
+  be the intended chapter name.</p>
+  <p class="function-declaration">section</p>
+  <p class="description">See 
+  <code class="inline-code">chapter</code>.</p>
   <p class="function-declaration">file</p>
   <p class="description">This key may appear multiple times in the config file,
   and specifies a file to be included in the document. The value should be the
@@ -60,7 +76,7 @@
   <p class="bash">
   class: article<br>
   preamble: preamble.tex<br>
-  subsections: true<br>
+  handle_subsections: true<br>
 
   section: Linear Equations and Row Reduction<br>
   &emsp;file: lecture-1.tex<br>

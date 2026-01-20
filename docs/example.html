@@ -36,4 +36,45 @@
   <code class="inline-code">trex -j chapter-3 -r 3-4</code>, since chapter 3 is
   composed of the third and fourth files in our config file. The resulting pdf
   will be called chapter-3.pdf.</p>
+
+  <h3>Lecture Notes</h3>
+
+  <p>When compiling lecture notes, one may have a directory structure as
+  follows:</p>
+  <div class="tree">
+  <div style="font-size: 18px;">lectures/</div>
+  <div class="upper level1"> preamble.tex</div>
+  <div class="middle level1"> lecture-1.tex</div>
+  <div class="middle level1"> lecture-2.tex</div>
+  <div class="middle level1"> lecture-3.tex</div>
+  <div class="bottom level1"> lecture-4.tex</div>
+  </div>
+  <p>With this setup, we create the following configuration file:</p>
+
+  <p class="bash">
+  class: article<br>
+  preamble: preamble.tex<br>
+  handle_subsections: true</br>
+
+  section: Row Reduction<br>
+  &emsp;file: lecture-1.tex<br>
+  &emsp;file: lecture-2.tex<br>
+  section: Matrix Algebra<br>
+  &emsp;file: lecture-3.tex<br>
+  &emsp;file: lecture-4.tex<br>
+  </p>
+
+  <p>Now we can compile the 3rd lecture with the following command: 
+  <code class="inline-code">trex -j lecture-3 -r 3</code>. The resulting pdf
+  file will be called lecture-3.pdf. </p>
+  <p>Most notably, lecture-3.pdf will start with a section header, with section
+  name "Matrix Algebra". This section will be labeled as section 2, even though
+  it is the only section to appear in the file, since TreX takes into account
+  the rest of the configuration file when compiling. Since the 
+  <code class="inline-code">handle_subsections</code> option is declared as true
+  in the config file, TreX will also assume that each file is it's own
+  subsection (probably true if these are sequential lecture notes), and will
+  also keep track of the proper subsection number. For lecture 3, this is simply
+  the first subsection.</p>
+
 </div>
