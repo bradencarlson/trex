@@ -9,6 +9,7 @@
 
 use std::collections::HashMap;
 use number_range::NumberRangeOptions;
+use std::process::exit;
 
 use crate::outline::Outline;
 use crate::parse_args;
@@ -42,14 +43,20 @@ pub fn compile(outline: Outline, options: &HashMap<String, String>) {
     };
     let range = match options.get(parse_args::RANGE_ARG) {
         Some(string) => string.as_str(),
-        None => DEFAULT_RANGE,
+        None => {
+            println!("No range given.");
+            exit(1);
+        },
     };
 
     let rng: Vec<usize> = match NumberRangeOptions::default()
         .with_range_sep('-')
         .parse(range) {
             Ok(vec) => vec.collect(),
-            Err(_) => vec![1],
+            Err(_) => {
+                println!("Invalid Range.");
+                exit(2);
+            },
         };
 
     let mut class_options = Vec::<String>::new();
