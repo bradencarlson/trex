@@ -437,6 +437,29 @@ mod pdflatex {
     }
 
     #[test]
+    fn handle_sections_false() {
+        let o: Outline = match config::read(
+            "examples/book.conf") {
+            Some(outline) => outline, 
+            None => Outline::new(),
+        };
+        let mut c = CMD::new();
+        c.outline = o;
+        c.range = vec![2,3];
+        c.jobname = String::from("out");
+
+        let tex = c.get_tex_code();
+
+        assert_eq!(tex,"\"\\input{preamble.tex}\
+            \\begin{document}\
+            \\setcounter{section}{0}\
+            \\input{chapter-1/chapter-1-part-2.tex}\
+            \\input{chapter-2/chapter-2.tex}\
+            \\end{document}\"");
+
+    }
+
+    #[test]
     fn jobname() {
         let o: Outline = create_outline(true);
         let mut c = CMD::new();
