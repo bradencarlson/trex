@@ -277,7 +277,7 @@ mod pdflatex {
     #[test]
     fn lecture_six() {
         let o: Outline = match config::read(
-            "/home/bradencarlson/Documents/trex/examples/default.conf") {
+            "examples/default.conf") {
             Some(outline) => outline,
             None => Outline::new(),
         };
