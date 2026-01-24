@@ -1,3 +1,7 @@
+![GitHub branch check runs](https://img.shields.io/github/check-runs/bradencarlson/trex/master?style=for-the-badge)
+![GitHub last commit](https://img.shields.io/github/last-commit/bradencarlson/trex?style=for-the-badge&color=%2334a392)
+
+
 # TreX
 
 TreX (pronounced 'trek') is a make-like tool designed for multi-file markup
