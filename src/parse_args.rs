@@ -17,6 +17,7 @@ pub const FILENAME_ARG: &str = "-f";
 pub const CLASS_OPTION: &str = "-o";
 pub const DRYRUN_ARG: &str = "-d";
 pub const VERBOSE_ARG: &str = "-v";
+pub const CLEAN_ARG: &str = "-c";
 
 pub fn parse(args: Vec<String>) -> HashMap<String, String> {
     /* Takes in a vector of arguments, considers them in pairs, and if they represent a valid (key,
@@ -69,6 +70,11 @@ pub fn parse(args: Vec<String>) -> HashMap<String, String> {
                 let opt = args.get(idx).expect("Fatal error: No option given after {CLASS_OPTION}" , );
                 map.insert(opt.to_string(), "class_option".to_string());
                 idx += 1;
+                continue;
+            },
+            CLEAN_ARG => {
+                idx += 1;
+                map.insert(String::from(CLEAN_ARG), "true".to_string());
                 continue;
             },
             _ => {}

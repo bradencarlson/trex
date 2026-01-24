@@ -24,6 +24,11 @@ pub fn run(args: &HashMap<String,String>) {
         None => return,
     };
 
+    if let Some(_s) = args.get(parse_args::CLEAN_ARG) {
+        compile::clean();
+        return
+    }
+
     if let Some(_s) = args.get(parse_args::VERBOSE_ARG) {
         println!("The outline I read was:\n\n{}\n", outline);
     }

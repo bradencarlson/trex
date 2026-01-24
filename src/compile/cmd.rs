@@ -41,12 +41,7 @@ impl CMD {
 
     }
     pub fn run(&self) {
-        /* Runs this command 
-         *
-         * Parameters: 
-         *  options - a HashMap of additional options to use while 
-         *            running this command. 
-         */
+        /* Runs this command */
 
         let mut command_list = self.command_list();
         match self.engine {

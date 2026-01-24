@@ -23,6 +23,9 @@ mod cmd;
 use cmd::CMD;
 use cmd::Engine;
 
+pub fn clean() {
+    /* Removes auxiliary files created during the compilation process. */
+}
 
 pub fn compile(outline: Outline, options: &HashMap<String, String>) {
     /* parses some of the options found in the options passed, then creates
@@ -77,7 +80,6 @@ pub fn compile(outline: Outline, options: &HashMap<String, String>) {
         cmd.run();
     }
 }
-
 
 fn create_command(proposed_engine: &str, jobname: &str, 
     range: Vec<usize>, outline: Outline,class_options: Vec<String>) -> CMD {
