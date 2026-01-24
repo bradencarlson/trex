@@ -10,6 +10,7 @@
 use std::collections::HashMap;
 use number_range::NumberRangeOptions;
 use std::process::exit;
+use std::process::Command;
 
 use crate::outline::Outline;
 use crate::parse_args;
@@ -23,8 +24,18 @@ mod cmd;
 use cmd::CMD;
 use cmd::Engine;
 
-pub fn clean() {
+pub fn clean(options: &HashMap<String,String>) {
     /* Removes auxiliary files created during the compilation process. */
+    match options.get(parse_args::ENGINE_ARG) {
+        _ => {
+            let mut c = Command::new(String::from("rm")); 
+            c.args([String::from("-I"),
+                String::from("*.aux"),
+                String::from("*.toc"),
+                String::from("*.log")]);
+            c.status().expect("Something went wrong during cleaning");
+        }
+    }
 }
 
 pub fn compile(outline: Outline, options: &HashMap<String, String>) {
