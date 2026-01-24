@@ -10,12 +10,13 @@
 use std::collections::HashMap;
 use std::fs;
 
-pub const RANGE_ARG: &str = "-r";
-pub const ENGINE_ARG: &str = "-e";
-pub const JOBNAME_ARG: &str = "-j";
-pub const FILENAME_ARG: &str = "-f";
-pub const CLASS_OPTION: &str = "-o";
 pub const DRYRUN_ARG: &str = "-d";
+pub const ENGINE_ARG: &str = "-e";
+pub const FILENAME_ARG: &str = "-f";
+pub const HELP_ARG: &str = "-h";
+pub const JOBNAME_ARG: &str = "-j";
+pub const CLASS_OPTION: &str = "-o";
+pub const RANGE_ARG: &str = "-r";
 pub const VERBOSE_ARG: &str = "-v";
 
 pub fn parse(args: Vec<String>) -> HashMap<String, String> {
@@ -69,6 +70,11 @@ pub fn parse(args: Vec<String>) -> HashMap<String, String> {
                 let opt = args.get(idx).expect("Fatal error: No option given after {CLASS_OPTION}" , );
                 map.insert(opt.to_string(), "class_option".to_string());
                 idx += 1;
+                continue;
+            },
+            HELP_ARG => {
+                idx += 1;
+                map.insert(String::from(HELP_ARG), String::from("true"));
                 continue;
             },
             _ => {}
