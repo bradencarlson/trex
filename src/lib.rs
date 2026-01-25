@@ -15,11 +15,13 @@ pub mod compile;
 const help_message: &str = "\
 TreX Help Page\n\
 \n\
-Compiles multi-file markup languages.\n
+Compiles multi-file markup languages. Currently, only LaTeX is supported. 
+TreX reads the structure of your document from a configuration file (default
+location is ./trex.conf), then runs pdflatex with the appropriate options.\n
 Command line options: \n
   -d  Perform a dry run, do not compile.\n
   -e  Select an engine, default is 'pdflatex'.\n
-  -f  Specify a config file other than the default: 'trex.conf'.\n
+  -f  Specify a config file other than the default: './trex.conf'.\n
   -h  Show this help page.\n
   -j  Specify jobname (name of output file, do not include file extension).\n
   -o  Specify a class option.\n
