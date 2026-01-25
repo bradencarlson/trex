@@ -10,12 +10,13 @@
 use std::collections::HashMap;
 use std::fs;
 
-pub const RANGE_ARG: &str = "-r";
-pub const ENGINE_ARG: &str = "-e";
-pub const JOBNAME_ARG: &str = "-j";
-pub const FILENAME_ARG: &str = "-f";
-pub const CLASS_OPTION: &str = "-o";
 pub const DRYRUN_ARG: &str = "-d";
+pub const ENGINE_ARG: &str = "-e";
+pub const FILENAME_ARG: &str = "-f";
+pub const HELP_ARG: &str = "-h";
+pub const JOBNAME_ARG: &str = "-j";
+pub const CLASS_OPTION: &str = "-o";
+pub const RANGE_ARG: &str = "-r";
 pub const VERBOSE_ARG: &str = "-v";
 pub const CLEAN_ARG: &str = "-c";
 
@@ -72,9 +73,15 @@ pub fn parse(args: Vec<String>) -> HashMap<String, String> {
                 idx += 1;
                 continue;
             },
+<<<<<<< HEAD
             CLEAN_ARG => {
                 idx += 1;
                 map.insert(String::from(CLEAN_ARG), "true".to_string());
+=======
+            HELP_ARG => {
+                idx += 1;
+                map.insert(String::from(HELP_ARG), String::from("true"));
+>>>>>>> help
                 continue;
             },
             _ => {}
