@@ -73,15 +73,14 @@ pub fn parse(args: Vec<String>) -> HashMap<String, String> {
                 idx += 1;
                 continue;
             },
-<<<<<<< HEAD
             CLEAN_ARG => {
                 idx += 1;
                 map.insert(String::from(CLEAN_ARG), "true".to_string());
-=======
+                continue
+            },
             HELP_ARG => {
                 idx += 1;
                 map.insert(String::from(HELP_ARG), String::from("true"));
->>>>>>> help
                 continue;
             },
             _ => {}

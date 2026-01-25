@@ -50,7 +50,7 @@ pub fn run(args: &HashMap<String,String>) {
     };
 
     if let Some(_s) = args.get(parse_args::CLEAN_ARG) {
-        compile::clean(outline);
+        compile::clean(args);
         return
     }
 
