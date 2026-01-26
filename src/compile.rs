@@ -68,8 +68,10 @@ pub fn compile(outline: Outline, options: &HashMap<String, String>) {
         .parse(range) {
             Ok(vec) => vec.collect(),
             Err(_) => {
-                println!("Invalid Range.");
-                exit(2);
+                let v: Vec<usize> = generate_range_from_name(range, &outline);
+                println!("{:?}", v);
+                v
+                //exit(2);
             },
         };
 
@@ -121,6 +123,21 @@ fn create_command(proposed_engine: &str, jobname: &str,
     cmd.class_options = class_options;
 
     cmd
+}
+
+fn generate_range_from_name(name: &str, outline: &Outline) -> Vec<usize> {
+    let mut v: Vec<usize> = Vec::<usize>::new();
+
+    let mut idx: usize = 1;
+
+    for sec in outline.section_names.iter() {
+        if sec == name {
+            v.push(idx);
+        }
+        idx += 1;
+    }
+
+    return v;
 }
 
 #[cfg(test)]
