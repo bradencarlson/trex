@@ -679,6 +679,33 @@ mod pdflatex {
     }
 
     #[test]
+    fn chapter_name_as_range() {
+        let o: Outline = match config::read(
+            "examples/default.conf" ) {
+            Some(outline) => outline, 
+            None => Outline::new(),
+        };
+
+        let mut c = CMD::new();
+        c.outline = o;
+        c.range = generate_range_from_name("Chapter 2", &c.outline);
+
+        let t = c.get_tex_code();
+
+        assert_eq!(t, "\"\
+            \\input{preamble.tex}\
+            \\begin{document}\
+            \\setcounter{chapter}{1}\
+            \\chapter{Chapter 2}\
+            \\setcounter{section}{0}\
+            \\section{Files 8-10}\
+            \\input{file-8}\
+            \\input{file-9}\
+            \\input{file-10}\
+            \\end{document}\"");
+    }
+
+    #[test]
     fn jobname() {
         let o: Outline = create_outline(true);
         let mut c = CMD::new();
