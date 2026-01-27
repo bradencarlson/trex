@@ -376,7 +376,6 @@ fn generate_range_from_name(name: &str, outline: &Outline) -> Vec<usize> {
 
     if was_section == 0 {
         for chap in outline.chapter_names.iter() {
-            println!("Comparing: {} and {}", chap, name);
             if idx <= num_files && chap == name {
                 v.push(idx);
             }
@@ -384,7 +383,6 @@ fn generate_range_from_name(name: &str, outline: &Outline) -> Vec<usize> {
         }
     }
 
-    println!("{:?}", v);
 
     return v;
 }
