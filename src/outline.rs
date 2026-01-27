@@ -3,8 +3,8 @@
  * Author: Braden Carlson
  * Date: September 2025
  *
- * Provides the Outline struct, which is used to hold the structure of the 
- * document which is to be compiled. 
+ * Provides the Outline struct, which is used to hold the structure of the
+ * document which is to be compiled.
  */
 
 use std::fmt;
@@ -13,7 +13,7 @@ use std::fmt;
 pub struct Outline {
     /* Holds the outline of the lecture notes. */
 
-    /* This is a list of file names, in the order in which they appeared 
+    /* This is a list of file names, in the order in which they appeared
     * in the config file. */
     pub files: Vec<String>,
 
@@ -39,12 +39,12 @@ pub struct Outline {
      * appeared in the config file. */
     pub chapter_names: Vec<String>,
 
-    /* This keeps track of the chapter numbers as they should appear 
+    /* This keeps track of the chapter numbers as they should appear
     * in the final pdf. */
     pub chapter_indices: Vec<i32>,
 
     /* This is a list of indices (in the files vector) at which new
-    * sections start. For example, if there is a section command before the 3rd file 
+    * sections start. For example, if there is a section command before the 3rd file
     * listed in the config file, then there will be a 1 in index 2 in this array. */
     pub section_positions: Vec<usize>,
 
@@ -66,7 +66,7 @@ impl fmt::Display for Outline {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         /* Prints out information about the outline, including the total number of sections found,
          * location of the preamble file, and all sections and lecture files found, in the order
-         * that they were found in.  
+         * that they were found in.
          */
 
         write!(f, "preamble: {}\n", self.preamble);
@@ -83,8 +83,8 @@ impl fmt::Display for Outline {
         write!(f, "\nsection names: {:?}", self.section_names);
         write!(f, "\nsection indices: {:?}", self.section_indices);
         write!(f, "\nsubsection indices: {:?}", self.subsection_indices)
-            
-    
+
+
     }
 }
 
@@ -93,8 +93,8 @@ impl Outline {
         /* Creates a new Outline, with empty fields. */
 
         Outline {
-            files: Vec::<String>::new(), 
-            preamble: String::new(), 
+            files: Vec::<String>::new(),
+            preamble: String::new(),
             class: String::new(),
             handle_chapters: true,
             handle_sections: true,
@@ -118,12 +118,12 @@ impl Outline {
         }
     }
     pub fn get_lecture(&self, index: usize) -> Option<&String> {
-        /* Returns the lecture file at the given index, if it exists. 
+        /* Returns the lecture file at the given index, if it exists.
          *
-         * Parameters: 
+         * Parameters:
          *  index   - the index of the lecture file to get.
          *
-         * Returns: 
+         * Returns:
          *  Some(String) - if the index is valid
          *  None         - if the index is invalid
          */

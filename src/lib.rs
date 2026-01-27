@@ -15,7 +15,7 @@ pub mod compile;
 const help_message: &str = "\
 TreX Help Page\n\
 \n\
-Compiles multi-file markup languages. Currently, only LaTeX is supported. 
+Compiles multi-file markup languages. Currently, only LaTeX is supported.
 TreX reads the structure of your document from a configuration file (default
 location is ./trex.conf), then runs pdflatex with the appropriate options.\n
 Command line options: \n
@@ -45,7 +45,7 @@ pub fn run(args: &HashMap<String,String>) {
     };
 
     let outline = match config::read(filename) {
-        Some(outline) => outline, 
+        Some(outline) => outline,
         None => return,
     };
 

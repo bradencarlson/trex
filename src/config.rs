@@ -1,5 +1,5 @@
 /* config.rs
- * 
+ *
  * Author: Braden Carlson
  * Date: September 2025
  *
@@ -11,7 +11,7 @@ use std::fs;
 
 use crate::outline::Outline;
 
-/* This is the default config file, if no filepath is passed to the read 
+/* This is the default config file, if no filepath is passed to the read
  * function, this will be searched for. */
 pub const DEFAULT_CONFIG: &str = "trex.conf";
 
@@ -23,17 +23,17 @@ file: file-1.tex";
 
 pub fn read(path: &str) -> Option<Outline> {
     /* Reads the config file and parses the result into an Outline struct.
-     * 
-     * Parameters: 
-     *  path - the filepath to read. 
      *
-     * Returns: 
+     * Parameters:
+     *  path - the filepath to read.
+     *
+     * Returns:
      *  Option<Outline> - The outline of the lecture notes is reading the config file is
      *                               succesful. An Error if it is not.
      */
 
     let config = match fs::read_to_string(&path) {
-        Ok(string) => string, 
+        Ok(string) => string,
         Err(_) => MINIMAL_CONFIG.to_string(),
      };
 
@@ -42,24 +42,24 @@ pub fn read(path: &str) -> Option<Outline> {
 
 fn parse(content: &String) -> Option<Outline> {
     /* Parses the string passed line by line looking for keywords that should
-     * be found in the config file. This method looks for string of the form 
+     * be found in the config file. This method looks for string of the form
      *
      *  keyword: value
      *
      * and if the keyword is valid, value is added to the Outline structure
-     * to be returned to the caller. 
+     * to be returned to the caller.
      *
-     * Parameters: 
+     * Parameters:
      *  content - The string to parse. It is ok for content to posses newline
-     *            characters, in fact, it is expected. 
+     *            characters, in fact, it is expected.
      *
-     * Returns: 
+     * Returns:
      *  Outline - an Outline struct containing the information about the
-     *            outline of the lecture notes. 
+     *            outline of the lecture notes.
      */
 
     let mut lines = content.lines();
-    let mut outline = Outline::new(); 
+    let mut outline = Outline::new();
     let mut file_counter = 0;
     let mut chapter_counter = 0;
     let mut section_counter = 0;
@@ -155,29 +155,13 @@ fn parse(content: &String) -> Option<Outline> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::config;
     use crate::outline;
-
-    fn default_config() -> String {
-        "class: article
-        preamble: preamble.tex
-
-        chapter: Chapter One
-        section: Section One
-            file: file-1.tex
-            file: file-2.tex
-            file: file-3.tex
-        section: Section Two
-            file: file-4.tex
-        chapter: Chapter Two
-            file: file-5.tex".to_string()
-    }
 
     #[test]
     fn test_config() {
-        let out = match config::read(
+        let out = match read(
             "examples/default.conf") {
-            Some(outline) => outline, 
+            Some(outline) => outline,
             None => Outline::new(),
         };
         assert_eq!(out.preamble, "preamble.tex");
@@ -190,7 +174,7 @@ mod tests {
             if idx >= num_files {
                 break;
             }
-            
+
             /* Check to make sure the chapter indices and names are correct */
             if idx <= 6 {
                 assert_eq!(out.chapter_names[idx], "Chapter 1");

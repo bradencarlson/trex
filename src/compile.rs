@@ -31,7 +31,7 @@ pub struct CMD {
     pub range: Vec<usize>,
     pub outline: Outline,
     pub class_options: Vec<String>,
-} 
+}
 
 impl CMD {
     pub fn new() -> CMD {
@@ -46,6 +46,7 @@ impl CMD {
         }
 
     }
+
     pub fn run(&self) {
         /* Runs this command */
 
@@ -62,9 +63,9 @@ impl CMD {
     }
 
     fn command_list(&self) -> Vec<String> {
-        /*  Generates a list of parameters to be passed to a shell. 
+        /*  Generates a list of parameters to be passed to a shell.
          *
-         *  Returns: 
+         *  Returns:
          *    Vec<String> - a list of strings which will be passed to a shell when this command is
          *                  run.
          */
@@ -76,19 +77,19 @@ impl CMD {
                 l.push("latex".to_string());
                 let mut j = String::from("-jobname=");
                 j.push_str( match self.jobname.as_str() {
-                    "" => "out", 
+                    "" => "out",
                     _ => self.jobname.as_str(),
                 });
                 l.push(j);
             },
 
-            /* Engine::PDFLATEX is the default, so it is not specified and 
+            /* Engine::PDFLATEX is the default, so it is not specified and
              * is caught here. */
             _ => {
                 l.push("pdflatex".to_string());
                 let mut j = String::from("-jobname=");
                 j.push_str( match self.jobname.as_str() {
-                    "" => "out", 
+                    "" => "out",
                     _ => self.jobname.as_str(),
                 });
                 l.push(j);
@@ -100,10 +101,10 @@ impl CMD {
 
     fn get_tex_code(&self) -> String {
         /* Gets the TeX code of the document, based on the specified range and the structure of the
-         * outline file. 
+         * outline file.
          *
-         * Returns: 
-         *  String - a string of TeX code. 
+         * Returns:
+         *  String - a string of TeX code.
          */
 
         let mut t = String::new();
@@ -124,18 +125,18 @@ impl CMD {
         t.push_str("\\begin{document}");
 
         t.push_str(self.get_document_content().as_str());
-        
+
         t.push_str("\\end{document}");
-        
+
         t.push_str("\"");
         t
     }
 
     fn get_document_content(&self) -> String {
         /* Used by get_tex_code to obtain the TeX code of the document based on the range which was
-         * passed to this command. 
+         * passed to this command.
          *
-         * Returns: 
+         * Returns:
          *  String - a string of TeX code
          */
 
@@ -150,15 +151,15 @@ impl CMD {
 
         /* Determine the maximum section position, this will be used to
          * make sure that the section positions do not exceed the number of
-         * files which are to be input. 
+         * files which are to be input.
          */
         for num in &self.outline.section_positions {
             if *num > max {
                 max = *num;
-            } 
+            }
         }
         if max >= num_files {
-            println!("There is something wrong with the outline, the 
+            println!("There is something wrong with the outline, the
                 position of the last section is greater than the number of files present.");
             return c
         }
@@ -177,8 +178,8 @@ impl CMD {
                 let chap = self.outline.chapter_indices[file_idx]-1;
                 let sec = self.outline.section_indices[file_idx]-1;
 
-                /* Notice that if not chapter commands are found in the config file. 
-                 * Then each of the chapter indices will be zero, so this block will 
+                /* Notice that if no chapter commands are found in the config file.
+                 * Then each of the chapter indices will be zero, so this block will
                  * never be run, as desired. The same happens for sections below. */
                 if chap != last_chapter_idx {
                     c.push_str("\\setcounter{chapter}{");
@@ -242,7 +243,7 @@ pub fn clean(options: &HashMap<String,String>) {
     /* Removes auxiliary files created during the compilation process. */
     match options.get(parse_args::ENGINE_ARG) {
         _ => {
-            let mut c = Command::new(String::from("rm")); 
+            let mut c = Command::new(String::from("rm"));
             c.args([String::from("-I"),
                 String::from("*.aux"),
                 String::from("*.toc"),
@@ -254,9 +255,9 @@ pub fn clean(options: &HashMap<String,String>) {
 
 pub fn compile(outline: Outline, options: &HashMap<String, String>) {
     /* parses some of the options found in the options passed, then creates
-     * the appropriate command and runs it. 
+     * the appropriate command and runs it.
      *
-     * Parameters: 
+     * Parameters:
      *  outline - the outline of the lecture notes to use
      *  options - options to use when creating the command
      */
@@ -283,7 +284,6 @@ pub fn compile(outline: Outline, options: &HashMap<String, String>) {
             Ok(vec) => vec.collect(),
             Err(_) => {
                 let v: Vec<usize> = generate_range_from_name(range, &outline);
-                println!("{:?}", v);
                 v
                 //exit(2);
             },
@@ -308,17 +308,17 @@ pub fn compile(outline: Outline, options: &HashMap<String, String>) {
     }
 }
 
-fn create_command(proposed_engine: &str, jobname: &str, 
+fn create_command(proposed_engine: &str, jobname: &str,
     range: Vec<usize>, outline: Outline,class_options: Vec<String>) -> CMD {
-    /* Creates a command object which can then be run to compile the document. 
+    /* Creates a command object which can then be run to compile the document.
      *
-     * Parameters: 
+     * Parameters:
      *  proposed_engine - the engine to use
      *  jobname         - the jobname to use
      *  range           - the range of files to compile
-     *  outline         - the outline to use 
+     *  outline         - the outline to use
      *
-     * Returns: 
+     * Returns:
      *  CMD             - the command which the caller can run
      */
 
@@ -340,22 +340,57 @@ fn create_command(proposed_engine: &str, jobname: &str,
 }
 
 fn generate_range_from_name(name: &str, outline: &Outline) -> Vec<usize> {
+    /* Generates a valid range from a given section or chapter name.
+     *
+     * Parameters:
+     *   name    - the section/chapter name.
+     *   outline - the outline which has been read.
+     *
+     * Returns:
+     *   A vector containing the relevant file numbers to be included in
+     *   the output.
+     */
     let mut v: Vec<usize> = Vec::<usize>::new();
 
     let mut idx: usize = 1;
+    let mut was_section = 0;
+    let num_files = outline.files.len();
 
     for sec in outline.section_names.iter() {
-        if sec == name {
+        /* Currently, it seems that while parsing the configuration
+         * file, the resulting Outline contains one too many section
+         * and chapter names. While this does not affect compilation if
+         * a regular range is given, using iterators here picks up those
+         * extra values, and throws an error later. This will need to be
+         * fixed in the config module. For now, do a simple check to
+         * make sure that only valid file numbers are spit out. */
+        if idx <= num_files && sec == name {
+            was_section = 1;
             v.push(idx);
         }
         idx += 1;
     }
 
+    // reset idx to 1
+    idx = 1;
+
+    if was_section == 0 {
+        for chap in outline.chapter_names.iter() {
+            println!("Comparing: {} and {}", chap, name);
+            if idx <= num_files && chap == name {
+                v.push(idx);
+            }
+            idx += 1;
+        }
+    }
+
+    println!("{:?}", v);
+
     return v;
 }
 
 #[cfg(test)]
-mod tests {
+mod command_tests {
     use super::*;
 
     fn generate(engine: &str) -> CMD {
@@ -374,7 +409,7 @@ mod tests {
         let c = generate("pdflatex");
 
         assert!( match c.engine {
-            Engine::PDFLATEX => true, 
+            Engine::PDFLATEX => true,
             _ => false
         });
     }
@@ -385,12 +420,12 @@ mod tests {
         let c = generate("latex");
 
         assert!( match c.engine {
-            Engine::LATEX => true, 
+            Engine::LATEX => true,
             _ => false
         });
     }
 
-    
+
 }
 
 #[cfg(test)]
@@ -403,17 +438,17 @@ mod pdflatex {
         let mut o = Outline::new();
         o.class = String::from("article");
         o.preamble = String::from("preamble.tex");
-        o.files = vec![String::from("file-1"), String::from("file-2"), 
+        o.files = vec![String::from("file-1"), String::from("file-2"),
             String::from("file-3"), String::from("file-4"),
-            String::from("file-5"), String::from("file-6"), 
-            String::from("file-7"), String::from("file-8"), 
+            String::from("file-5"), String::from("file-6"),
+            String::from("file-7"), String::from("file-8"),
             String::from("file-9"), String::from("file-10")];
         o.handle_subsections = subsections;
         o.section_positions = vec![1,0,0,1,0,0,0,1,0,0];
         o.section_names = vec![
-            String::from("Files 1-3"), 
+            String::from("Files 1-3"),
             String::from("Files 1-3"), String::from("Files 1-3"),
-            String::from("Files 4-7"), 
+            String::from("Files 4-7"),
             String::from("Files 4-7"), String::from("Files 4-7"), String::from("Files 4-7"),
             String::from("Files 8-10"), String::from("Files 8-10"), String::from("Files 8-10")];
         o.section_indices = vec![1,1,1,2,2,2,2,1,1,1];
@@ -454,7 +489,7 @@ mod pdflatex {
     fn lectures_1_to_3() {
         let o: Outline = match config::read(
             "examples/default.conf") {
-            Some(outline) => outline, 
+            Some(outline) => outline,
             None => Outline::new(),
         };
 
@@ -477,7 +512,7 @@ mod pdflatex {
     fn lectures_1_to_3_with_subsections() {
         let o: Outline = match config::read(
             "examples/notes.conf") {
-            Some(outline) => outline, 
+            Some(outline) => outline,
             None => Outline::new(),
         };
         let mut c = CMD::new();
@@ -503,7 +538,7 @@ mod pdflatex {
     fn lecture_10() {
         let o: Outline = match config::read(
             "examples/default.conf") {
-            Some(outline) => outline, 
+            Some(outline) => outline,
             None => Outline::new(),
         };
 
@@ -561,7 +596,7 @@ mod pdflatex {
     fn full_lecture_with_subsections() {
         let o: Outline = match config::read(
             "examples/notes.conf") {
-            Some(outline) => outline, 
+            Some(outline) => outline,
             None => Outline::new(),
         };
         let mut c = CMD::new();
@@ -596,7 +631,7 @@ mod pdflatex {
     fn handle_sections_false() {
         let o: Outline = match config::read(
             "examples/book.conf") {
-            Some(outline) => outline, 
+            Some(outline) => outline,
             None => Outline::new(),
         };
         let mut c = CMD::new();
@@ -616,6 +651,34 @@ mod pdflatex {
     }
 
     #[test]
+    fn section_name_as_range() {
+        let o: Outline = match config::read(
+            "examples/default.conf" ) {
+            Some(outline) => outline,
+            None => Outline::new(),
+        };
+
+        let mut c = CMD::new();
+        c.outline = o;
+        c.range = generate_range_from_name("Files 4-7", &c.outline);
+
+        let t = c.get_tex_code();
+
+        assert_eq!(t, "\"\
+            \\input{preamble.tex}\
+            \\begin{document}\
+            \\setcounter{chapter}{0}\
+            \\chapter{Chapter 1}\
+            \\setcounter{section}{1}\
+            \\section{Files 4-7}\
+            \\input{file-4}\
+            \\input{file-5}\
+            \\input{file-6}\
+            \\input{file-7}\
+            \\end{document}\"");
+    }
+
+    #[test]
     fn jobname() {
         let o: Outline = create_outline(true);
         let mut c = CMD::new();
@@ -624,7 +687,7 @@ mod pdflatex {
         c.jobname = String::from("lectures");
 
         let l = c.command_list();
-        
+
         assert_eq!(l[1], "-jobname=lectures");
     }
 
@@ -637,7 +700,7 @@ mod pdflatex {
         c.jobname = String::from("lectures");
 
         let l = c.command_list();
-        
+
         assert_eq!(l[0], "pdflatex");
     }
 
@@ -645,7 +708,7 @@ mod pdflatex {
     fn nopres_option() {
         let o: Outline = match config::read(
             "examples/default.conf") {
-            Some(outline) => outline, 
+            Some(outline) => outline,
             None => Outline::new(),
         };
         let mut c = CMD::new();
@@ -669,7 +732,7 @@ mod pdflatex {
     fn two_options() {
         let o: Outline = match config::read(
             "examples/default.conf") {
-            Some(outline) => outline, 
+            Some(outline) => outline,
             None => Outline::new(),
         };
         let mut c = CMD::new();
@@ -677,7 +740,7 @@ mod pdflatex {
         c.range = vec![6];
         c.jobname = String::from("lecture-6");
         c.class_options = vec![
-            String::from("nopresentation"), 
+            String::from("nopresentation"),
             String::from("12pt")];
 
         let tex = c.get_tex_code();
