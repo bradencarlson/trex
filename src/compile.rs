@@ -680,7 +680,7 @@ mod pdflatex {
     fn chapter_name_as_range() {
         let o: Outline = match config::read(
             "examples/default.conf" ) {
-            Some(outline) => outline, 
+            Some(outline) => outline,
             None => Outline::new(),
         };
 

@@ -25,7 +25,9 @@ Command line options: \n
   -h  Show this help page.\n
   -j  Specify jobname (name of output file, do not include file extension).\n
   -o  Specify a class option.\n
-  -r  Specify a range of files.\n
+  -r  Specify a range of files. This can be a valid range of numbers (i.e.
+      1-3,6-9,11) or a specific section or chapter name as it appears in the
+      config file.\n
   -v  Enable verbose output.\n";
 
 
