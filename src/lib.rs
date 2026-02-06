@@ -19,6 +19,7 @@ Compiles multi-file markup languages. Currently, only LaTeX is supported.
 TreX reads the structure of your document from a configuration file (default
 location is ./trex.conf), then runs pdflatex with the appropriate options.\n
 Command line options: \n
+  -c  Clean up. Removes all auxiliary files created when compiling.\n
   -d  Perform a dry run, do not compile.\n
   -e  Select an engine, default is 'pdflatex'.\n
   -f  Specify a config file other than the default: './trex.conf'.\n
