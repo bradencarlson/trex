@@ -1,0 +1,30 @@
+digraph {
+        s [label="start"]
+        c [label="compile"]
+        e [label="if *.aux exists"]
+        h [label="hash *.aux"]
+        m [label="if *.pdf exists"]
+        comp [label="two hashes?"]
+        diff [label="they differ"]
+        end [label="end"]
+        search [label="search *.aux"]
+
+        s -> e
+
+        e -> h [label="1"]
+        e -> c [label="0"]
+        h -> m [label="0,1"] 
+        m -> c [label="0"]
+        c -> h [label="0,1"]
+        m -> comp [label="1"]
+        comp -> diff [label="1"]
+        diff -> c [label="1"]
+        diff -> end [label="0"]
+
+        comp -> search [label="0"]
+        search -> c [label="1"]
+        search -> end [label="0"]
+
+
+
+}
