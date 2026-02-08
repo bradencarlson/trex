@@ -2,8 +2,8 @@ digraph {
         s [label="start"]
         c [label="compile"]
         e [label="*.aux exists"]
-        h [label="hash *.aux"]
-        m [label="*.pdf exists"]
+        h1 [label="hash *.aux"]
+        h2 [label="hash *.aux"]
         comp [label="two hashes?"]
         diff [label="they differ"]
         end [label="end"]
@@ -14,12 +14,11 @@ digraph {
 
         s -> e
 
-        e -> h [label="1"]
+        e -> h1 [label="1"]
         e -> c [label="0"]
-        h -> m [label="0,1"] 
-        m -> c [label="0"]
-        c -> h [label="0,1"]
-        m -> search_bib [label="1"]
+        h1 -> c [label="0,1"] 
+        c -> h2 [label="0,1"]
+        h2 -> search_bib [label="0,1"]
         search_bib -> e_bbl [label="1"]
         e_bbl -> bib [label="0"]
         e_bbl -> comp [label="1"]
