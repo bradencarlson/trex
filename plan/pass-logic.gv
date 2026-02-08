@@ -1,13 +1,16 @@
 digraph {
         s [label="start"]
         c [label="compile"]
-        e [label="if *.aux exists"]
+        e [label="*.aux exists"]
         h [label="hash *.aux"]
-        m [label="if *.pdf exists"]
+        m [label="*.pdf exists"]
         comp [label="two hashes?"]
         diff [label="they differ"]
         end [label="end"]
         search [label="search *.aux"]
+        search_bib [label="search *.aux for bib"]
+        bib [label="run bibtex"]
+        e_bbl [label="*.bbl exists"]
 
         s -> e
 
@@ -16,7 +19,13 @@ digraph {
         h -> m [label="0,1"] 
         m -> c [label="0"]
         c -> h [label="0,1"]
-        m -> comp [label="1"]
+        m -> search_bib [label="1"]
+        search_bib -> e_bbl [label="1"]
+        e_bbl -> bib [label="0"]
+        e_bbl -> comp [label="1"]
+        bib -> c [label="0,1"]
+        search_bib -> comp [label="0"]
+        
         comp -> diff [label="1"]
         diff -> c [label="1"]
         diff -> end [label="0"]
