@@ -242,9 +242,11 @@ impl fmt::Display for CMD {
 
 pub fn clean(options: &HashMap<String,String>) {
     /* Removes auxiliary files created during the compilation process. */
+    let pdflatex = String::from("pdflatex");
     match options.get(parse_args::ENGINE_ARG) {
-        _ => {
+       Some(pdflatex) => {
             let mut files = Vec::<String>::new();
+            let file_types = vec![".aux", ".log", ".toc", ".bbl", ".blg"];
             if let Ok(dir) = fs::read_dir(".") {
                 for entry in dir {
                     if let Ok(e) = entry {
@@ -252,21 +254,31 @@ pub fn clean(options: &HashMap<String,String>) {
                             .expect("Something went wrong reading directory")
                             .is_file();
                         if e_is_file {
-                            println!("{:?}", e.path());
+                            let name = e.file_name();
+                            let filename = name.to_str()
+                                .expect("Something went wrong.");
+                            let mut valid = false;
+                            for ending in file_types.iter() {
+                                if filename.ends_with(ending) {
+                                    files.push(filename.to_string());
+                                }
+                            }
                         }
                     }
 
                 }
             }
-            /*
+
+            println!("Files to be removed: {:?}", files);
             let mut c = Command::new(String::from("rm"));
-            c.args([String::from("-I"),
-                String::from("*.aux"),
-                String::from("*.toc"),
-                String::from("*.log")]);
+            c.arg("-I");
+            c.args(files);
             c.status().expect("Something went wrong during cleaning");
-            */
-        }
+
+       }
+       None => {
+           println!("Nothing to do!");
+       }
     }
 }
 
