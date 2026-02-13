@@ -12,6 +12,7 @@ use number_range::NumberRangeOptions;
 use std::process::exit;
 use std::process::Command;
 use std::fmt;
+use std::fs;
 
 use crate::outline::Outline;
 use crate::parse_args;
@@ -243,12 +244,28 @@ pub fn clean(options: &HashMap<String,String>) {
     /* Removes auxiliary files created during the compilation process. */
     match options.get(parse_args::ENGINE_ARG) {
         _ => {
+            let mut files = Vec::<String>::new();
+            if let Ok(dir) = fs::read_dir(".") {
+                for entry in dir {
+                    if let Ok(e) = entry {
+                        let e_is_file = e.file_type()
+                            .expect("Something went wrong reading directory")
+                            .is_file();
+                        if e_is_file {
+                            println!("{:?}", e.path());
+                        }
+                    }
+
+                }
+            }
+            /*
             let mut c = Command::new(String::from("rm"));
             c.args([String::from("-I"),
                 String::from("*.aux"),
                 String::from("*.toc"),
                 String::from("*.log")]);
             c.status().expect("Something went wrong during cleaning");
+            */
         }
     }
 }
