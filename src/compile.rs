@@ -226,6 +226,16 @@ impl CMD {
 
         }
 
+        if self.outline.bib_style.len() > 0 {
+            c.push_str("\\bibliographystyle{");
+            c.push_str(self.outline.bib_style.as_str());
+            c.push_str("}");
+
+            c.push_str("\\bibliography{");
+            c.push_str(self.outline.bib_file.as_str());
+            c.push_str("}");
+        }
+
         c
     }
 
@@ -806,6 +816,33 @@ mod pdflatex {
             \\setcounter{section}{1}\
             \\section{Files 4-7}\
             \\input{file-6}\\end{document}\"");
+    }
+
+    #[test]
+    fn bibliography() {
+        let o: Outline = match config::read(
+            "examples/default-with-bib.conf") {
+            Some(outline) => outline,
+            None => Outline::new()
+        };
+        let mut c = CMD::new();
+        c.outline = o;
+        c.range = vec![4];
+        c.jobname = String::from("out");
+
+        let tex = c.get_tex_code();
+
+        assert_eq!(tex, "\"\\input{preamble.tex}\
+            \\begin{document}\
+            \\setcounter{chapter}{0}\
+            \\chapter{Chapter 1}\
+            \\setcounter{section}{1}\
+            \\section{Files 4-7}\
+            \\input{file-4}\
+            \\bibliographystyle{plain}\
+            \\bibliography{sources.bib}\
+            \\end{document}\"");
+
     }
 
 }

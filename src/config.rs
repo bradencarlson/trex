@@ -90,6 +90,8 @@ fn parse(content: &String) -> Option<Outline> {
         let section = "section: ";
         let chapter = "chapter: ";
         let file = "file: ";
+        let bib_style = "bib_style: ";
+        let bib_file = "bibliography: ";
 
         // Others
         let comment = "#";
@@ -145,6 +147,12 @@ fn parse(content: &String) -> Option<Outline> {
             } else {
                 outline.handle_sections = false;
             }
+        } else if line.starts_with(bib_style) {
+            let arg = &line[bib_style.len()..];
+            outline.bib_style = String::from(arg);
+        } else if line.starts_with(bib_file) {
+            let arg = &line[bib_file.len()..];
+            outline.bib_file = String::from(arg);
         }
     }
 
