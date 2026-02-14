@@ -845,4 +845,20 @@ mod pdflatex {
 
     }
 
+
+    #[test]
+    fn section_num_arg() {
+        let o: Outline = match config::read(
+            "examples/default.conf") {
+            Some(outline) => outline, 
+            None => Outline::new()
+        };
+
+        let arg = "s1";
+        let v = generate_range_from_name(arg, &o);
+        
+        assert_eq!(v, vec![1,2,3]);
+        
+    }
+
 }
