@@ -151,6 +151,25 @@ body {
  * Documentation Page
  **************************************************/
 
+.doc-table {
+  border: 1px solid var(--white);
+  border-collapse: collapse;
+}
+
+.doc-td {
+  padding: 3px;
+  min-width: 50px;
+}
+
+.doc-td:nth-child(odd) {
+  border-right: 1px solid var(--white);
+  text-align: center;
+}
+
+tr:nth-child(even) {
+  background: var(--block-code-background);
+}
+
 .documentation {
   background-color: var(--background);
   display: inline-block;
