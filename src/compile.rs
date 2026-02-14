@@ -427,6 +427,11 @@ fn generate_range_from_name(name: &str, outline: &Outline) -> Vec<usize> {
     idx = 1;
 
     if !processed {
+        /* If the given arg starts with s, and was not a section or chapter
+         * name, then we assume that there is no chapters in the document
+         * (otherwise they would have specified this as the argument), so we
+         * pick up all files whose corresponding section number matches the
+         * number given.  */
         if name.starts_with("s") {
             let num = &name[1..];
             let num_actual: i32 = i32::from_str(num).unwrap_or(1);
@@ -435,6 +440,44 @@ fn generate_range_from_name(name: &str, outline: &Outline) -> Vec<usize> {
                     v.push(idx);
                 }
                 idx += 1;
+            }
+        }
+
+        if name.starts_with("c") {
+            let nums: Vec<&str> = name[1..].split(char::is_alphabetic).collect();
+            let num_one: i32 = match nums.get(0) {
+                Some(num) => i32::from_str(num).unwrap_or(1),
+                None => 1
+            };
+            let num_two: i32 = match nums.get(1) {
+                Some(num) => i32::from_str(num).unwrap_or(-1),
+                None => -1
+            };
+            if num_two == -1 {
+                /* The user wants an entire chapter, no need to check section
+                 * indicies here. */
+                for chap in outline.chapter_indices.iter() {
+                    if *chap == num_one {
+                        v.push(idx);
+                    }
+                    idx += 1;
+                }
+            } else {
+                /* The user wants a specific section of a given chapter */
+                idx = 0;
+                while idx < num_files {
+                    let chap = &outline.chapter_indices;
+                    let sec = &outline.section_indices;
+
+                    let chap_idx = chap.get(idx).unwrap_or(&-1);
+                    let sec_idx = sec.get(idx).unwrap_or(&-1);
+
+                    if *chap_idx == num_one && *sec_idx == num_two {
+                        v.push(idx + 1);
+                    }
+                    
+                    idx += 1;
+                }
             }
         }
     }
@@ -866,16 +909,48 @@ mod pdflatex {
     #[test]
     fn section_num_arg() {
         let o: Outline = match config::read(
-            "examples/default.conf") {
+            "examples/notes.conf") {
             Some(outline) => outline, 
             None => Outline::new()
         };
 
         let arg = "s1";
         let v = generate_range_from_name(arg, &o);
+
+        let arg2 = "s2";
+        let v2 = generate_range_from_name(arg2, &o);
         
-        assert_eq!(v, vec![1,2,3]);
+        assert_eq!(v, vec![1,2,3,4,5]);
+        assert_eq!(v2, vec![6,7]);
         
+    }
+
+    #[test]
+    fn chapter_num_arg() {
+        let o: Outline = match config::read(
+            "examples/default.conf") {
+            Some(outline) => outline, 
+            None => Outline::new()
+        };
+
+        let arg = "c1";
+        let v = generate_range_from_name(arg, &o);
+
+        assert_eq!(v, vec![1,2,3,4,5,6,7]);
+    }
+
+    #[test]
+    fn chapter_and_section_num() {
+        let o: Outline = match config::read(
+            "examples/default.conf" ) {
+            Some(outline) => outline, 
+            None => Outline::new()
+        };
+
+        let arg = "c1s2";
+        let v = generate_range_from_name(arg, &o);
+
+        assert_eq!(v, vec![4,5,6,7]);
     }
 
 }
