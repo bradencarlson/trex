@@ -32,7 +32,7 @@
   </p>
 
   <p>Now, suppose that we are satisfied with chapters 1 and 2, and are currently
-  rewriting chapter 3. We can compile just chapter 3 with the command 
+  rewriting chapter 3. We can compile just chapter 3 with the command
   <code class="inline-code">trex -j chapter-3 -r 3-4</code>, since chapter 3 is
   composed of the third and fourth files in our config file. The resulting pdf
   will be called chapter-3.pdf.</p>
@@ -64,13 +64,13 @@
   &emsp;file: lecture-4.tex<br>
   </p>
 
-  <p>Now we can compile the 3rd lecture with the following command: 
+  <p>Now we can compile the 3rd lecture with the following command:
   <code class="inline-code">trex -j lecture-3 -r 3</code>. The resulting pdf
   file will be called lecture-3.pdf. </p>
   <p>Most notably, lecture-3.pdf will start with a section header, with section
   name "Matrix Algebra". This section will be labeled as section 2, even though
   it is the only section to appear in the file, since TreX takes into account
-  the rest of the configuration file when compiling. Since the 
+  the rest of the configuration file when compiling. Since the
   <code class="inline-code">handle_subsections</code> option is declared as true
   in the config file, TreX will also assume that each file is it's own
   subsection (probably true if these are sequential lecture notes), and will
