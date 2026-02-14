@@ -8,6 +8,7 @@
  */
 
 use std::collections::HashMap;
+use std::str::FromStr;
 use number_range::NumberRangeOptions;
 use std::process::exit;
 use std::process::Command;
@@ -392,7 +393,7 @@ fn generate_range_from_name(name: &str, outline: &Outline) -> Vec<usize> {
     let mut v: Vec<usize> = Vec::<usize>::new();
 
     let mut idx: usize = 1;
-    let mut was_section = 0;
+    let mut processed = false;
     let num_files = outline.files.len();
 
     for sec in outline.section_names.iter() {
@@ -404,7 +405,7 @@ fn generate_range_from_name(name: &str, outline: &Outline) -> Vec<usize> {
          * fixed in the config module. For now, do a simple check to
          * make sure that only valid file numbers are spit out. */
         if idx <= num_files && sec == name {
-            was_section = 1;
+            processed = true;
             v.push(idx);
         }
         idx += 1;
@@ -413,12 +414,28 @@ fn generate_range_from_name(name: &str, outline: &Outline) -> Vec<usize> {
     // reset idx to 1
     idx = 1;
 
-    if was_section == 0 {
+    if !processed {
         for chap in outline.chapter_names.iter() {
             if idx <= num_files && chap == name {
+                processed = true;
                 v.push(idx);
             }
             idx += 1;
+        }
+    }
+
+    idx = 1;
+
+    if !processed {
+        if name.starts_with("s") {
+            let num = &name[1..];
+            let num_actual: i32 = i32::from_str(num).unwrap_or(1);
+            for sec in outline.section_indices.iter() {
+                if *sec == num_actual {
+                    v.push(idx);
+                }
+                idx += 1;
+            }
         }
     }
 
