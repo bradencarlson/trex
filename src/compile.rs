@@ -437,6 +437,7 @@ fn generate_range_from_name(name: &str, outline: &Outline) -> Vec<usize> {
             let num_actual: i32 = i32::from_str(num).unwrap_or(1);
             for sec in outline.section_indices.iter() {
                 if *sec == num_actual {
+                    processed = true;
                     v.push(idx);
                 }
                 idx += 1;
@@ -458,6 +459,7 @@ fn generate_range_from_name(name: &str, outline: &Outline) -> Vec<usize> {
                  * indicies here. */
                 for chap in outline.chapter_indices.iter() {
                     if *chap == num_one {
+                        processed = true;
                         v.push(idx);
                     }
                     idx += 1;
@@ -473,11 +475,26 @@ fn generate_range_from_name(name: &str, outline: &Outline) -> Vec<usize> {
                     let sec_idx = sec.get(idx).unwrap_or(&-1);
 
                     if *chap_idx == num_one && *sec_idx == num_two {
+                        processed = true;
                         v.push(idx + 1);
                     }
                     
                     idx += 1;
                 }
+            }
+        }
+
+    }
+
+    idx = 1;
+
+    /* Finally, if nothing else worked, check to see if the argument was the
+     * 'all' keyword */
+    if !processed {
+        if name == "all" {
+            for file in outline.files.iter() {
+                v.push(idx);
+                idx += 1;
             }
         }
     }
@@ -951,6 +968,20 @@ mod pdflatex {
         let v = generate_range_from_name(arg, &o);
 
         assert_eq!(v, vec![4,5,6,7]);
+    }
+
+    #[test]
+    fn select_all() {
+        let o: Outline = match config::read(
+            "examples/default.conf") {
+            Some(outline) => outline, 
+            None => Outline::new()
+        };
+
+        let arg = "all";
+        let v = generate_range_from_name(arg, &o);
+
+        assert_eq!(v, vec![1,2,3,4,5,6,7,8,9,10]);
     }
 
 }
