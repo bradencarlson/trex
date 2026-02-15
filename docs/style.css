@@ -121,7 +121,7 @@ body {
 }
 
 .splash-description {
-  font-size: 15pt;
+  font-size: 16pt;
   font-family: var(--font);
   text-align: left;
 }
@@ -135,13 +135,15 @@ body {
   display: inline-block;
   padding-left: 15%;
   padding-right: 15%;
-  font-size: 18pt;
+  font-size: 12pt;
 }
 
 .bash {
   background-color: var(--block-code-background);
+  width: inherit;
+  display: block;
   color: var(--font);
-  font-size: 12pt;
+  font-size: 10pt;
   font-family: "monospace";
   border-radius: 5px;
   padding: 5px;
@@ -175,12 +177,12 @@ tr:nth-child(even) {
   display: inline-block;
   padding-left: 15%;
   padding-right: 15%;
-  font-size: 13pt;
+  font-size: 12pt;
 }
 
 .inline-code {
   color: var(--yellow);
-  font-size: 11pt;
+  font-size: 10pt;
 }
 
 .code-block {

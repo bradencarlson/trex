@@ -35,7 +35,7 @@
   <p>Any line in the config file starting with a <code class="inline-code">#</code>
   is a comment and will not be parsed by TreX.</p>
 
-  <h5>Key Value Pairs</h5>
+  <h4>Key Value Pairs</h4>
   <table class="doc-table">
           <tr>
                   <td class="doc-td">class</td>
@@ -102,9 +102,9 @@
                   <td class="doc-td">The file where bibliography entries are stored.</td>
           </tr>
   </table>
-  <h5>Example Config</h5>
-  <p>Below is an example config file from a series of lecture notes.
-  <p class="bash">
+  <h4>Example Config</h4>
+  <p>Below is an example config file from a series of lecture notes.</p>
+  <code class="bash">
   class: article<br>
   preamble: preamble.tex<br>
   handle_subsections: true<br>
@@ -122,14 +122,14 @@
   &emsp;file: lecture-8.tex<br>
   &emsp;file: lecture-9.tex<br>
   &emsp;file: lecture-10.tex<br>
-  </p>
+  </code>
   <p>With the configuration setup in this way, running the command</p>
   <p><code class="inline-code"> trex -r 2 -j filename</code></p>
   <p>will create the file filename.pdf with the contents of lecture 2, properly
   setting the section numbering to 1.2.
   The way this is done is by calling
-  pdflatex with the following content:
-  <p class="bash">\documentclass{article}<br>
+  pdflatex with the following content:</p>
+  <code class="bash">\documentclass{article}<br>
   \input{preamble.tex}<br>
   \begin{document}<br>
   \setcounter{section}{0}<br>
@@ -137,7 +137,7 @@
   \setcounter{subsection}{1}
   \input{lecture-2.tex}<br>
   \end{document}
-  </p>
+  </code>
   <p>Please note that the command line option <code class="inline-code">-r 2</code>
   specifies to select the file contents of the second <code class="inline-code">
   file</code> listed in the config file, and does not have anything to do with
@@ -146,18 +146,26 @@
   <h3>Command Line Options</h3>
   <table class="doc-table">
           <tr>
-                  <td class="doc-td">-r</td>
-                  <td class="doc-td">The range to compile. The total number, N, of times the
-                  file key appears in the config file defines the maximum number for the
-                  range. Otherwise this can be any subset of {1,2,...,N}. For example, to
-                  compile only the first file, use <code class="inline-code">-r 1</code>. To
-                  compile files 1-3 and file 5, use <code class="inline-code">-r 1-3,5</code>.
-                  The default is 1.</td>
+                  <td class="doc-td">-c</td>
+                  <td class="doc-td">Clean up auxiliary files from compiling, if
+                  any. Currently, if no <code class="inline-code">engine</code>
+                  is passed to TreX, nothing will be done.</td>
+          </tr>
+          <tr>
+                  <td class="doc-td">-d</td>
+                  <td class="doc-td">Dry run option. Instead of compiling the document,
+                  print out the command that would be run.</td>
           </tr>
           <tr>
                   <td class="doc-td">-e</td>
                   <td class="doc-td">The engine to use when compiling. Currently the only
                   engine available is pdflatex. This option should not currently be used.</td>
+          </tr>
+          <tr>
+                  <td class="doc-td">-f</td>
+                  <td class="doc-td">The config file to use. If you do not wish to use
+                  the default config file, specify the location of the config file with this
+                  option.</td>
           </tr>
           <tr>
                   <td class="doc-td">-j</td>
@@ -167,25 +175,80 @@
                   default is "out".</td>
           </tr>
           <tr>
-                  <td class="doc-td">-f</td>
-                  <td class="doc-td">The config file to use. If you do not wish to use
-                  the default config file, specify the location of the config file with this
-                  option.</td>
-          </tr>
-          <tr>
                   <td class="doc-td">-o</td>
                   <td class="doc-td">Pass options to the compiler. For example, to pass
                   the 12pt option to the article class, use <code class="inline-code">-o 12pt</code>
                   and use <code class="inline-code">class: article</code> in the config file.</td>
           </tr>
           <tr>
-                  <td class="doc-td">-d</td>
-                  <td class="doc-td">Dry run option. Instead of compiling the document,
-                  print out the command that would be run.</td>
+                  <td class="doc-td">-r</td>
+                  <td class="doc-td">The range of files to include when
+                  compiling. See the range specification section for more
+                  details.</td>
           </tr>
           <tr>
                   <td class="doc-td">-v</td>
                   <td class="doc-td">Verbose output. This will force TreX to print out
                   what it finds in the config file, as well as the command that it will run.</td>
           </tr>
+  </table>
+  <h4>Range Specification</h4>
+
+  <p>When using the <code class="inline-code">-r</code> option. The value must
+  be exactly one of the valid range specifications found in the following
+  table.</p>
+
+  <table class="doc-table">
+          <tr>
+                  <td class="doc-td">Range</td>
+                  <td class="doc-td">If N is the total number of times the
+                  <code class="inline-code">file</code> keyword appears in the
+                  config file, then any subset of {1,2,...,N} specifies exactly
+                  which files to include. For example, to include only the third
+                  file listed in the config, use <code class="inline-code">-r 3</code>.
+                  Other valid ranges include <code class="inline-code">-r 1-3</code>,
+                  <code class="inline-code">-r 3-5,7-9</code>, and
+                  <code class="inline-code">-r 3,5,9-11</code>.</td>
+          </tr>
+          <tr>
+                  <td class="doc-td">Chapter/section name</td>
+                  <td class="doc-td">Any chapter or section name as specified in the config
+                          file. For example <code class="inline-code">-r
+                                  "Chapter 2"</code>.
+                  </td>
+          </tr>
+          <tr>
+                  <td class="doc-td">Chapter number</td>
+                  <td class="doc-td">If N is the total number of times that the
+                  <code class="inline-code">chapter</code> keyword appears in
+                  the file, then the range <code class="inline-code">-r cn</code>,
+                  where n is a number between 1 and N, selects all files
+                  belonging to the n<sup>th</sup> chapter listed in the config file.</tr>
+          </tr>
+          <tr>
+                  <td class="doc-td">Chapter/section number</td>
+                  <td class="doc-td">If there are both <code class="inline-code">chapter</code>
+                  and <code class="inline-code">section</code> commands
+                  in the config file, you may select a particular section of a
+                  particular chapter by using the range
+                  <code class="inline-code">-r cnsm</code>, where n specifies to
+                  use the n<sup>th</sup> chapter and m the m<sup>th</sup>
+                  section in that chapter. For example, to compile section 2 of
+                  chapter 3, use <code class="inline-code">-r c3s2</code>.
+                  </td>
+          </tr>
+          <tr>
+                  <td class="doc-td">Section number</td>
+                  <td class="doc-td">If N is the total number of times the
+                  <code class="inline-code">section</code> keyword appears in
+                  the config file, then the range <code class="inline-code">-r sn</code>,
+                  where n is a number between 1 and N, selects all files
+                  belonging to the n<sup>th</sup> section listed in the config
+                  file. Note that if there are <code class="inline-code">chapter</code>
+                  commands listed in the config file, this may not work as
+                  expected. If this is the case, it is recommended to use a
+                  chapter/section number instead.</td>
+          </tr>
+  </table>
+
 </div>
