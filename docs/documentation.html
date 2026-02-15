@@ -1,7 +1,7 @@
 <div id="documentation" class="documentation">
   <h2>Documentation</h2>
   <h3>Project Setup</h3>
-  <p>Before using TreX, it is necessary to have your project set up properly. 
+  <p>Before using TreX, it is necessary to have your project set up properly.
   TreX takes separate files, each listed in the configuration file, and options
   passed via the command line, and creates a compile command that is to be
   run.</p>
@@ -11,10 +11,10 @@
   <p>If your project contains many pieces, of which you wish to compile a subset
   at a time (i.e. lecture notes, chapters of a book, etc.), Then there is some
   preliminary work you must do to ensure that TreX can succesfully compile your
-  project.</p> 
+  project.</p>
   <p>The preamble of the document must be contained in it's own file. There must
   not be any \begin{document} or \end{document} commands in any file, since TreX
-  will insert there where needed.  
+  will insert these where needed.
   Also, since there is the option to specify sections or chapters in the config file,
   it is recommended to either specify all sections or chapters in the config file, or
   none of them. In the latter case, simply specify each section in the
@@ -22,58 +22,89 @@
   method.</p>
   <h3>Configuration</h3>
   <p>All configuration for TreX is done through a simple file located in the
-  root directory of your project. The default config file name is 
+  root directory of your project. The default config file name is
   <code class="inline-code">trex.conf</code>. Other config files can be used by
   specifying the <code class="inline-code">-f</code> option, documented below.</p>
 
-  <p>The content of the config file is a sequence of key value pairs of the form 
+  <p>The content of the config file is a sequence of key value pairs of the form
   <code class="inline-code">key: value</code>. Notice that there is no space before the
   semicolon, but there is one afterwards. This is the only spacing which is
   important in the config file, any white space at the beginning or end of a
   line will be ignored.</p>
 
-  <h5>Key Value Pairs</h5>
-  <p class="function-declaration">class</p>
-  <p class="description">This key is required, and simply specifies the
-          document class of the file. For example, the value could be
-          <code class="inline-code">article</code>,
-          <code class="inline-code">book</code>, etc.</p>
-  <p class="function-declaration">preamble</p>
-  <p class="description">This key is required, and specifies the filename of the
-  preamble for the document.</p>
-  <p class="function-declaration">handle_chapters</p>
-  <p class="description">This optional key specifies whether or not TreX should
-  handle chapter commands or not. Valid values are 'true' or 'false'. The
-  default is 'true'. If this value is set to 'false', TreX will still keep track
-  of and set chapter numbering according to the 
-  <code class="inline-code">chapter</code> commands that it finds in the config
-  file, but will not insert any \chapter{} commands when it goes to compile. If
-  you do not wish for Trex to even keep track of chapter commands, simply do not
-  put any <code class="inline-code">chapter</code> commands in the config
-  file.</p>
-  <p class="function-declaration">handle_sections</p>
-  <p class="description">See 
-  <code class="inline-code">handle_chapters</code>.</p>
-  <p class="function-declaration">handle_subsections</p>
-  <p class="description">This optional key specifies whether or not TreX should
-  handle subsection numbering or not. Valid values are 'true' or 'false'. The
-  default is 'false'. If this value is set to 'true', TreX assumes that each
-  file specified in the config file is a separate subsection, and subsection
-  numbers are set accordingly.</p>
-  <p class="function-declaration">chapter</p>
-  <p class="description">This key may appear multiple times in the config
-  document, and each specifies a new chapter in the document. The value should
-  be the intended chapter name.</p>
-  <p class="function-declaration">section</p>
-  <p class="description">See 
-  <code class="inline-code">chapter</code>.</p>
-  <p class="function-declaration">file</p>
-  <p class="description">This key may appear multiple times in the config file,
-  and specifies a file to be included in the document. The value should be the
-  filename of the file to be included.</p> 
-  <h5>Example Config</h5>
-  <p>Below is an example config file from a series of lecture notes. 
-  <p class="bash">
+  <p>Any line in the config file starting with a <code class="inline-code">#</code>
+  is a comment and will not be parsed by TreX.</p>
+
+  <h4>Key Value Pairs</h4>
+  <table class="doc-table">
+          <tr>
+                  <td class="doc-td">class</td>
+                  <td class="doc-td">This key is required, and simply specifies the
+                          document class of the file. For example, the value could be
+                          <code class="inline-code">article</code>,
+                          <code class="inline-code">book</code>, etc.</td>
+          </tr>
+          <tr>
+                  <td class="doc-td">preamble</td>
+                  <td class="doc-td">This key is required, and specifies the filename of the
+                  preamble for the document.</td>
+          </tr>
+          <tr>
+                  <td class="doc-td">handle_chapters</td>
+                  <td class="doc-td">This optional key specifies whether or not TreX should
+                  handle chapter commands or not. Valid values are 'true' or 'false'. The
+                  default is 'true'. If this value is set to 'false', TreX will still keep track
+                  of and set chapter numbering according to the
+                  <code class="inline-code">chapter</code> commands that it finds in the config
+                  file, but will not insert any \chapter{} commands when it goes to compile. If
+                  you do not wish for Trex to even keep track of chapter commands, simply do not
+                  put any <code class="inline-code">chapter</code> commands in the config
+                  file.</td>
+          </tr>
+          <tr>
+                  <td class="doc-td">handle_sections</td>
+                  <td class="doc-td">See
+                  <code class="inline-code">handle_chapters</code>.</td>
+          </tr>
+          <tr>
+                  <td class="doc-td">handle_subsections</td>
+                  <td class="doc-td">This optional key specifies whether or not TreX should
+                  handle subsection numbering or not. Valid values are 'true' or 'false'. The
+                  default is 'false'. If this value is set to 'true', TreX assumes that each
+                  file specified in the config file is a separate subsection, and subsection
+                  numbers are set accordingly.</td>
+          </tr>
+          <tr>
+                  <td class="doc-td">chapter</td>
+                  <td class="doc-td">This key may appear multiple times in the config
+                  document, and each specifies a new chapter in the document. The value should
+                  be the intended chapter name.</td>
+          </tr>
+          <tr>
+                  <td class="doc-td">section</td>
+                  <td class="doc-td">See
+                  <code class="inline-code">chapter</code>.</td>
+          </tr>
+          <tr>
+                  <td class="doc-td">file</td>
+                  <td class="doc-td">This key may appear multiple times in the config file,
+                  and specifies a file to be included in the document. The value should be the
+                  filename of the file to be included.</td>
+          </tr>
+          <tr>
+                  <td class="doc-td">bib_style</td>
+                  <td class="doc-td">Defines the style of the biliography. This value should
+                  be the value you wish to pass to <code class="inline-code">\bibliographystyle</code>
+                  in LaTeX.</td>
+          </tr>
+          <tr>
+                  <td class="doc-td">bibliography</td>
+                  <td class="doc-td">The file where bibliography entries are stored.</td>
+          </tr>
+  </table>
+  <h4>Example Config</h4>
+  <p>Below is an example config file from a series of lecture notes.</p>
+  <code class="bash">
   class: article<br>
   preamble: preamble.tex<br>
   handle_subsections: true<br>
@@ -91,14 +122,14 @@
   &emsp;file: lecture-8.tex<br>
   &emsp;file: lecture-9.tex<br>
   &emsp;file: lecture-10.tex<br>
-  </p>
+  </code>
   <p>With the configuration setup in this way, running the command</p>
-  <p><code class="inline-code"> trex -r 2 -j filename</code></p> 
+  <p><code class="inline-code"> trex -r 2 -j filename</code></p>
   <p>will create the file filename.pdf with the contents of lecture 2, properly
   setting the section numbering to 1.2.
   The way this is done is by calling
-  pdflatex with the following content:
-  <p class="bash">\documentclass{article}<br>
+  pdflatex with the following content:</p>
+  <code class="bash">\documentclass{article}<br>
   \input{preamble.tex}<br>
   \begin{document}<br>
   \setcounter{section}{0}<br>
@@ -106,40 +137,130 @@
   \setcounter{subsection}{1}
   \input{lecture-2.tex}<br>
   \end{document}
-  </p>
+  </code>
   <p>Please note that the command line option <code class="inline-code">-r 2</code>
   specifies to select the file contents of the second <code class="inline-code">
   file</code> listed in the config file, and does not have anything to do with
   the file name.</p>
 
   <h3>Command Line Options</h3>
-  <p class="function-declaration">-r</p>
-  <p class="description">The range to compile. The total number, N, of times the
-  file key appears in the config file defines the maximum number for the
-  range. Otherwise this can be any subset of {1,2,...,N}. For example, to
-  compile only the first file, use <code class="inline-code">-r 1</code>. To
-  compile files 1-3 and file 5, use <code class="inline-code">-r 1-3,5</code>. 
-  The default is 1.</p>
-  <p class="function-declaration">-e</p>
-  <p class="description">The engine to use when compiling. Currently the only
-  engine available is pdflatex. This option should not currently be used.</p>
-  <p class="function-declaration">-j</p>
-  <p class="description">The jobname. This specifies the filename of the
-  compiled document. For example, to specify that the output file should be
-  named exam-1.pdf, use <code class="inline-code">-j exam-1</code>. The
-  default is "out".</p>
-  <p class="function-declaration">-f</p>
-  <p class="description">The config file to use. If you do not wish to use
-  the default config file, specify the location of the config file with this
-  option.</p>
-  <p class="function-declaration">-o</p>
-  <p class="description">Pass options to the compiler. For example, to pass
-  the 12pt option to the article class, use <code class="inline-code">-o 12pt</code> 
-  and use <code class="inline-code">class: article</code> in the config file.</p>
-  <p class="function-declaration">-d</p>
-  <p class="description">Dry run option. Instead of compiling the document,
-  print out the command that would be run.</p>
-  <p class="function-declaration">-v</p>
-  <p class="description">Verbose output. This will force TreX to print out
-  what it finds in the config file, as well as the command that it will run.</p>
+  <table class="doc-table">
+          <tr>
+                  <td class="doc-td">-c</td>
+                  <td class="doc-td">Clean up auxiliary files from compiling, if
+                  any. Currently, if no <code class="inline-code">engine</code>
+                  is passed to TreX, nothing will be done.</td>
+          </tr>
+          <tr>
+                  <td class="doc-td">-d</td>
+                  <td class="doc-td">Dry run option. Instead of compiling the document,
+                  print out the command that would be run.</td>
+          </tr>
+          <tr>
+                  <td class="doc-td">-e</td>
+                  <td class="doc-td">The engine to use when compiling. Currently the only
+                  engine available is pdflatex. This option should not currently be used.</td>
+          </tr>
+          <tr>
+                  <td class="doc-td">-f</td>
+                  <td class="doc-td">The config file to use. If you do not wish to use
+                  the default config file, specify the location of the config file with this
+                  option.</td>
+          </tr>
+          <tr>
+                  <td class="doc-td">-h</td>
+                  <td class="doc-td">Print out a summary of the command line
+                  options which are available. Nothing else is done if this
+                  option is specified.</td>
+          </tr>
+          <tr>
+                  <td class="doc-td">-j</td>
+                  <td class="doc-td">The jobname. This specifies the filename of the
+                  compiled document. For example, to specify that the output file should be
+                  named exam-1.pdf, use <code class="inline-code">-j exam-1</code>. The
+                  default is "out".</td>
+          </tr>
+          <tr>
+                  <td class="doc-td">-o</td>
+                  <td class="doc-td">Pass options to the compiler. For example, to pass
+                  the 12pt option to the article class, use <code class="inline-code">-o 12pt</code>
+                  and use <code class="inline-code">class: article</code> in the config file.</td>
+          </tr>
+          <tr>
+                  <td class="doc-td">-r</td>
+                  <td class="doc-td">The range of files to include when
+                  compiling. See the range specification section for more
+                  details.</td>
+          </tr>
+          <tr>
+                  <td class="doc-td">-v</td>
+                  <td class="doc-td">Verbose output. This will force TreX to print out
+                  what it finds in the config file, as well as the command that it will run.</td>
+          </tr>
+  </table>
+  <h4>Range Specification</h4>
+
+  <p>When using the <code class="inline-code">-r</code> option. The value must
+  be exactly one of the valid range specifications found in the following
+  table.</p>
+
+  <table class="doc-table">
+          <tr>
+                  <td class="doc-td">Range</td>
+                  <td class="doc-td">If N is the total number of times the
+                  <code class="inline-code">file</code> keyword appears in the
+                  config file, then any subset of {1,2,...,N} specifies exactly
+                  which files to include. For example, to include only the third
+                  file listed in the config, use <code class="inline-code">-r 3</code>.
+                  Other valid ranges include <code class="inline-code">-r 1-3</code>,
+                  <code class="inline-code">-r 3-5,7-9</code>, and
+                  <code class="inline-code">-r 3,5,9-11</code>.</td>
+          </tr>
+          <tr>
+                  <td class="doc-td">Chapter/section name</td>
+                  <td class="doc-td">Any chapter or section name as specified in the config
+                          file. For example <code class="inline-code">-r
+                                  "Chapter 2"</code>.
+                  </td>
+          </tr>
+          <tr>
+                  <td class="doc-td">Chapter number</td>
+                  <td class="doc-td">If N is the total number of times that the
+                  <code class="inline-code">chapter</code> keyword appears in
+                  the file, then the range <code class="inline-code">-r cn</code>,
+                  where n is a number between 1 and N, selects all files
+                  belonging to the n<sup>th</sup> chapter listed in the config file.</tr>
+          </tr>
+          <tr>
+                  <td class="doc-td">Chapter/section number</td>
+                  <td class="doc-td">If there are both <code class="inline-code">chapter</code>
+                  and <code class="inline-code">section</code> commands
+                  in the config file, you may select a particular section of a
+                  particular chapter by using the range
+                  <code class="inline-code">-r cnsm</code>, where n specifies to
+                  use the n<sup>th</sup> chapter and m the m<sup>th</sup>
+                  section in that chapter. For example, to compile section 2 of
+                  chapter 3, use <code class="inline-code">-r c3s2</code>.
+                  </td>
+          </tr>
+          <tr>
+                  <td class="doc-td">Section number</td>
+                  <td class="doc-td">If N is the total number of times the
+                  <code class="inline-code">section</code> keyword appears in
+                  the config file, then the range <code class="inline-code">-r sn</code>,
+                  where n is a number between 1 and N, selects all files
+                  belonging to the n<sup>th</sup> section listed in the config
+                  file. Note that if there are <code class="inline-code">chapter</code>
+                  commands listed in the config file, this may not work as
+                  expected. If this is the case, it is recommended to use a
+                  chapter/section number instead.</td>
+          </tr>
+          <tr>
+                  <td class="doc-td">All</td>
+                  <td class="doc-td">By using the range
+                  <code class="inline-code">-r all</code>,
+                  all files are selected for compiliation.</td>
+          </tr>
+  </table>
+
 </div>

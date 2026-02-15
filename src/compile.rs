@@ -8,6 +8,7 @@
  */
 
 use std::collections::HashMap;
+use std::str::FromStr;
 use number_range::NumberRangeOptions;
 use std::process::exit;
 use std::process::Command;
@@ -226,6 +227,16 @@ impl CMD {
 
         }
 
+        if self.outline.bib_style.len() > 0 {
+            c.push_str("\\bibliographystyle{");
+            c.push_str(self.outline.bib_style.as_str());
+            c.push_str("}");
+
+            c.push_str("\\bibliography{");
+            c.push_str(self.outline.bib_file.as_str());
+            c.push_str("}");
+        }
+
         c
     }
 
@@ -382,7 +393,7 @@ fn generate_range_from_name(name: &str, outline: &Outline) -> Vec<usize> {
     let mut v: Vec<usize> = Vec::<usize>::new();
 
     let mut idx: usize = 1;
-    let mut was_section = 0;
+    let mut processed = false;
     let num_files = outline.files.len();
 
     for sec in outline.section_names.iter() {
@@ -394,7 +405,7 @@ fn generate_range_from_name(name: &str, outline: &Outline) -> Vec<usize> {
          * fixed in the config module. For now, do a simple check to
          * make sure that only valid file numbers are spit out. */
         if idx <= num_files && sec == name {
-            was_section = 1;
+            processed = true;
             v.push(idx);
         }
         idx += 1;
@@ -403,12 +414,88 @@ fn generate_range_from_name(name: &str, outline: &Outline) -> Vec<usize> {
     // reset idx to 1
     idx = 1;
 
-    if was_section == 0 {
+    if !processed {
         for chap in outline.chapter_names.iter() {
             if idx <= num_files && chap == name {
+                processed = true;
                 v.push(idx);
             }
             idx += 1;
+        }
+    }
+
+    idx = 1;
+
+    if !processed {
+        /* If the given arg starts with s, and was not a section or chapter
+         * name, then we assume that there is no chapters in the document
+         * (otherwise they would have specified this as the argument), so we
+         * pick up all files whose corresponding section number matches the
+         * number given.  */
+        if name.starts_with("s") {
+            let num = &name[1..];
+            let num_actual: i32 = i32::from_str(num).unwrap_or(1);
+            for sec in outline.section_indices.iter() {
+                if *sec == num_actual {
+                    processed = true;
+                    v.push(idx);
+                }
+                idx += 1;
+            }
+        }
+
+        if name.starts_with("c") {
+            let nums: Vec<&str> = name[1..].split(char::is_alphabetic).collect();
+            let num_one: i32 = match nums.get(0) {
+                Some(num) => i32::from_str(num).unwrap_or(1),
+                None => 1
+            };
+            let num_two: i32 = match nums.get(1) {
+                Some(num) => i32::from_str(num).unwrap_or(-1),
+                None => -1
+            };
+            if num_two == -1 {
+                /* The user wants an entire chapter, no need to check section
+                 * indicies here. */
+                for chap in outline.chapter_indices.iter() {
+                    if *chap == num_one {
+                        processed = true;
+                        v.push(idx);
+                    }
+                    idx += 1;
+                }
+            } else {
+                /* The user wants a specific section of a given chapter */
+                idx = 0;
+                while idx < num_files {
+                    let chap = &outline.chapter_indices;
+                    let sec = &outline.section_indices;
+
+                    let chap_idx = chap.get(idx).unwrap_or(&-1);
+                    let sec_idx = sec.get(idx).unwrap_or(&-1);
+
+                    if *chap_idx == num_one && *sec_idx == num_two {
+                        processed = true;
+                        v.push(idx + 1);
+                    }
+                    
+                    idx += 1;
+                }
+            }
+        }
+
+    }
+
+    idx = 1;
+
+    /* Finally, if nothing else worked, check to see if the argument was the
+     * 'all' keyword */
+    if !processed {
+        if name == "all" {
+            for file in outline.files.iter() {
+                v.push(idx);
+                idx += 1;
+            }
         }
     }
 
@@ -806,6 +893,95 @@ mod pdflatex {
             \\setcounter{section}{1}\
             \\section{Files 4-7}\
             \\input{file-6}\\end{document}\"");
+    }
+
+    #[test]
+    fn bibliography() {
+        let o: Outline = match config::read(
+            "examples/default-with-bib.conf") {
+            Some(outline) => outline,
+            None => Outline::new()
+        };
+        let mut c = CMD::new();
+        c.outline = o;
+        c.range = vec![4];
+        c.jobname = String::from("out");
+
+        let tex = c.get_tex_code();
+
+        assert_eq!(tex, "\"\\input{preamble.tex}\
+            \\begin{document}\
+            \\setcounter{chapter}{0}\
+            \\chapter{Chapter 1}\
+            \\setcounter{section}{1}\
+            \\section{Files 4-7}\
+            \\input{file-4}\
+            \\bibliographystyle{plain}\
+            \\bibliography{sources.bib}\
+            \\end{document}\"");
+
+    }
+
+
+    #[test]
+    fn section_num_arg() {
+        let o: Outline = match config::read(
+            "examples/notes.conf") {
+            Some(outline) => outline, 
+            None => Outline::new()
+        };
+
+        let arg = "s1";
+        let v = generate_range_from_name(arg, &o);
+
+        let arg2 = "s2";
+        let v2 = generate_range_from_name(arg2, &o);
+        
+        assert_eq!(v, vec![1,2,3,4,5]);
+        assert_eq!(v2, vec![6,7]);
+        
+    }
+
+    #[test]
+    fn chapter_num_arg() {
+        let o: Outline = match config::read(
+            "examples/default.conf") {
+            Some(outline) => outline, 
+            None => Outline::new()
+        };
+
+        let arg = "c1";
+        let v = generate_range_from_name(arg, &o);
+
+        assert_eq!(v, vec![1,2,3,4,5,6,7]);
+    }
+
+    #[test]
+    fn chapter_and_section_num() {
+        let o: Outline = match config::read(
+            "examples/default.conf" ) {
+            Some(outline) => outline, 
+            None => Outline::new()
+        };
+
+        let arg = "c1s2";
+        let v = generate_range_from_name(arg, &o);
+
+        assert_eq!(v, vec![4,5,6,7]);
+    }
+
+    #[test]
+    fn select_all() {
+        let o: Outline = match config::read(
+            "examples/default.conf") {
+            Some(outline) => outline, 
+            None => Outline::new()
+        };
+
+        let arg = "all";
+        let v = generate_range_from_name(arg, &o);
+
+        assert_eq!(v, vec![1,2,3,4,5,6,7,8,9,10]);
     }
 
 }

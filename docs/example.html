@@ -18,24 +18,26 @@
   that the config file is located at the root of the project directory.
   We can then create our config file as follows.</p>
 
-  <p class="bash">
+  <code class="bash">
   class: article<br>
-  preamble: preamble.tex<br>
-
+  preamble: preamble.tex<br><br>
   chapter: Awesome Title<br>
   &emsp;file: chapter-1.tex<br>
   chapter: Awesome Title 2<br>
   &emsp;file: chapter-2.tex<br>
   chapter: Awesome Title 3<br>
+  &emsp;# Notice the full paths here <br>
   &emsp;file: chapter-3/subsection-1.tex<br>
   &emsp;file: chapter-3/subsection-2.tex<br>
-  </p>
+  </code>
 
   <p>Now, suppose that we are satisfied with chapters 1 and 2, and are currently
-  rewriting chapter 3. We can compile just chapter 3 with the command 
-  <code class="inline-code">trex -j chapter-3 -r 3-4</code>, since chapter 3 is
-  composed of the third and fourth files in our config file. The resulting pdf
-  will be called chapter-3.pdf.</p>
+  rewriting chapter 3. We can compile just chapter 3 with any of the following
+  commands:</p>
+  <code class="bash">trex -j chapter-3 -r 3-4<br>
+          trex -j chapter-3 -r "Awesome Title 3"<br>
+  trex -j chapter-3 -r c3
+  </code>
 
   <h3>Lecture Notes</h3>
 
@@ -54,8 +56,7 @@
   <p class="bash">
   class: article<br>
   preamble: preamble.tex<br>
-  handle_subsections: true</br>
-
+  handle_subsections: true<br><br>
   section: Row Reduction<br>
   &emsp;file: lecture-1.tex<br>
   &emsp;file: lecture-2.tex<br>
@@ -64,13 +65,13 @@
   &emsp;file: lecture-4.tex<br>
   </p>
 
-  <p>Now we can compile the 3rd lecture with the following command: 
+  <p>Now we can compile the 3rd lecture with the following command:
   <code class="inline-code">trex -j lecture-3 -r 3</code>. The resulting pdf
   file will be called lecture-3.pdf. </p>
   <p>Most notably, lecture-3.pdf will start with a section header, with section
   name "Matrix Algebra". This section will be labeled as section 2, even though
   it is the only section to appear in the file, since TreX takes into account
-  the rest of the configuration file when compiling. Since the 
+  the rest of the configuration file when compiling. Since the
   <code class="inline-code">handle_subsections</code> option is declared as true
   in the config file, TreX will also assume that each file is it's own
   subsection (probably true if these are sequential lecture notes), and will

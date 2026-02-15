@@ -59,6 +59,12 @@ pub struct Outline {
      * is set to true. */
     pub subsection_indices: Vec<i32>,
 
+    /* The bibliography style, if any */
+    pub bib_style: String,
+
+    /* The bibliography file, if any */
+    pub bib_file: String
+
 
 }
 
@@ -106,6 +112,8 @@ impl Outline {
             section_names: Vec::<String>::new(),
             section_indices: Vec::<i32>::new(),
             subsection_indices: Vec::<i32>::new(),
+            bib_style: String::new(),
+            bib_file: String::new()
         }
     }
     pub fn get_preamble(&self) -> Option<&String> {
