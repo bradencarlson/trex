@@ -9,7 +9,6 @@ use std::collections::HashMap;
 
 pub mod parse_args;
 pub mod config;
-pub mod outline;
 pub mod compile;
 
 const help_message: &str = "\
