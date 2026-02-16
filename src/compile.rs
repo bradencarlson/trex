@@ -18,6 +18,8 @@ use std::fs;
 use crate::config::Outline;
 use crate::parse_args;
 
+mod tex;
+
 const DEFAULT_ENGINE: &str = "pdflatex";
 const DEFAULT_RANGE: &str = "1";
 const DEFAULT_JOBNAME: &str = "job";
@@ -55,7 +57,7 @@ impl CMD {
         let mut command_list = self.command_list();
         match self.engine {
             Engine::PDFLATEX => {
-                command_list.push( self.get_tex_code() );
+                command_list.push( tex::get_tex_code(&self.range, &self.outline, &self.class_options) );
             },
             _ => {}
         };
@@ -101,145 +103,6 @@ impl CMD {
         l
     }
 
-    fn get_tex_code(&self) -> String {
-        /* Gets the TeX code of the document, based on the specified range and the structure of the
-         * outline file.
-         *
-         * Returns:
-         *  String - a string of TeX code.
-         */
-
-        let mut t = String::new();
-        t.push_str("\"");
-
-        for option in &self.class_options {
-            t.push_str("\\PassOptionsToClass{");
-            t.push_str(option.as_str());
-            t.push_str("}{");
-            t.push_str(self.outline.class.as_str());
-            t.push_str("}");
-        }
-
-        t.push_str("\\input{");
-        t.push_str(self.outline.preamble.as_str());
-        t.push_str("}");
-
-        t.push_str("\\begin{document}");
-
-        t.push_str(self.get_document_content().as_str());
-
-        t.push_str("\\end{document}");
-
-        t.push_str("\"");
-        t
-    }
-
-    fn get_document_content(&self) -> String {
-        /* Used by get_tex_code to obtain the TeX code of the document based on the range which was
-         * passed to this command.
-         *
-         * Returns:
-         *  String - a string of TeX code
-         */
-
-        let mut c = String::new();
-        let num_files = self.outline.files.len();
-        let num_sections = self.outline.section_positions.len();
-        let num_chapters = self.outline.chapter_positions.len();
-        let start = self.range[0]-1;
-        let end = self.range[self.range.len()-1];
-
-        let mut max: usize = 0;
-
-        /* Determine the maximum section position, this will be used to
-         * make sure that the section positions do not exceed the number of
-         * files which are to be input.
-         */
-        for num in &self.outline.section_positions {
-            if *num > max {
-                max = *num;
-            }
-        }
-        if max >= num_files {
-            println!("There is something wrong with the outline, the
-                position of the last section is greater than the number of files present.");
-            return c
-        }
-
-        let mut file_idx = start;
-        let mut last_chapter_idx = -1;
-        let mut last_section_idx = -1;
-
-
-        loop {
-            if file_idx >= end {
-                break;
-            }
-
-            if self.range.contains(&(file_idx+1)) {
-                let chap = self.outline.chapter_indices[file_idx]-1;
-                let sec = self.outline.section_indices[file_idx]-1;
-
-                /* Notice that if no chapter commands are found in the config file.
-                 * Then each of the chapter indices will be zero, so this block will
-                 * never be run, as desired. The same happens for sections below. */
-                if chap != last_chapter_idx {
-                    c.push_str("\\setcounter{chapter}{");
-                    c.push_str(chap.to_string().as_str());
-                    c.push_str("}");
-                    last_chapter_idx = chap;
-
-                    if self.outline.handle_chapters {
-                        let chap_name = self.outline.chapter_names[file_idx].as_str();
-                        c.push_str("\\chapter{");
-                        c.push_str(chap_name);
-                        c.push_str("}");
-                    }
-                }
-
-                if sec != last_section_idx {
-                    c.push_str("\\setcounter{section}{");
-                    c.push_str(sec.to_string().as_str());
-                    c.push_str("}");
-                    last_section_idx = sec;
-
-                    if self.outline.handle_sections {
-                        let sec_name = self.outline.section_names[file_idx].as_str();
-                        c.push_str("\\section{");
-                        c.push_str(sec_name);
-                        c.push_str("}");
-                    }
-                }
-
-                if self.outline.handle_subsections {
-                    let subsec_num = self.outline.subsection_indices[file_idx].to_string();
-                    c.push_str("\\setcounter{subsection}{");
-                    c.push_str(subsec_num.as_str());
-                    c.push_str("}");
-                }
-
-                c.push_str("\\input{");
-                c.push_str(self.outline.files[file_idx].as_str());
-                c.push_str("}");
-            }
-
-            file_idx += 1;
-
-        }
-
-        if self.outline.bib_style.len() > 0 {
-            c.push_str("\\bibliographystyle{");
-            c.push_str(self.outline.bib_style.as_str());
-            c.push_str("}");
-
-            c.push_str("\\bibliography{");
-            c.push_str(self.outline.bib_file.as_str());
-            c.push_str("}");
-        }
-
-        c
-    }
-
 
 }
 
@@ -247,7 +110,7 @@ impl fmt::Display for CMD {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "{:?}\n", self.command_list());
         write!(f, "The code appended to the command will be:\n");
-        write!(f, "{}", self.get_tex_code())
+        write!(f, "{}", tex::get_tex_code(&self.range, &self.outline, &self.class_options))
     }
 }
 
@@ -590,7 +453,7 @@ mod pdflatex {
         c.range = vec![6];
         c.jobname = String::from("lecture-6");
 
-        let tex = c.get_tex_code();
+        let tex = tex::get_tex_code(&c.range, &c.outline, &c.class_options);
         assert_eq!(tex, "\"\\input{preamble.tex}\\begin{document}\
             \\setcounter{chapter}{0}\
             \\chapter{Chapter 1}\
@@ -611,7 +474,7 @@ mod pdflatex {
         c.range = vec![1,2,3];
         c.jobname = String::from("lectures-1-3");
 
-        let tex = c.get_tex_code();
+        let tex = tex::get_tex_code(&c.range, &c.outline, &c.class_options);
         assert_eq!(tex, "\"\\input{preamble.tex}\\begin{document}\
             \\setcounter{chapter}{0}\\chapter{Chapter 1}\
             \\setcounter{section}{0}\
@@ -635,7 +498,7 @@ mod pdflatex {
 
         assert_eq!(c.outline.chapter_indices, vec![0,0,0,0,0,0,0]);
 
-        let tex = c.get_tex_code();
+        let tex = tex::get_tex_code(&c.range, &c.outline, &c.class_options);
         assert_eq!(tex, "\"\\input{preamble.tex}\\begin{document}\\setcounter{section}{0}\
             \\section{Voting Theory}\
             \\setcounter{subsection}{0}\
@@ -660,7 +523,7 @@ mod pdflatex {
         c.range = vec![10];
         c.jobname = String::from("lectures-1-3");
 
-        let tex = c.get_tex_code();
+        let tex = tex::get_tex_code(&c.range, &c.outline, &c.class_options);
         assert_eq!(tex, "\"\\input{preamble.tex}\\begin{document}\
             \\setcounter{chapter}{1}\
             \\chapter{Chapter 2}\
@@ -682,7 +545,7 @@ mod pdflatex {
         c.range = vec![1,2,3,4,5,6,7,8,9,10];
         c.jobname = String::from("lectures");
 
-        let tex = c.get_tex_code();
+        let tex = tex::get_tex_code(&c.range, &c.outline, &c.class_options);
         assert_eq!(tex, "\"\\input{preamble.tex}\\begin{document}\
             \\setcounter{chapter}{0}\
             \\chapter{Chapter 1}\
@@ -717,7 +580,7 @@ mod pdflatex {
         c.range = vec![1,2,3,4,5,6,7];
         c.jobname = String::from("lectures");
 
-        let tex = c.get_tex_code();
+        let tex = tex::get_tex_code(&c.range, &c.outline, &c.class_options);
         assert_eq!(tex, "\"\\input{preamble.tex}\\begin{document}\
             \\setcounter{section}{0}\
             \\section{Voting Theory}\
@@ -752,7 +615,7 @@ mod pdflatex {
         c.range = vec![2,3];
         c.jobname = String::from("out");
 
-        let tex = c.get_tex_code();
+        let tex = tex::get_tex_code(&c.range, &c.outline, &c.class_options);
 
         assert_eq!(tex,"\"\\input{preamble.tex}\
             \\begin{document}\
@@ -775,7 +638,7 @@ mod pdflatex {
         c.outline = o;
         c.range = generate_range_from_name("Files 4-7", &c.outline);
 
-        let t = c.get_tex_code();
+        let t = tex::get_tex_code(&c.range, &c.outline, &c.class_options);
 
         assert_eq!(t, "\"\
             \\input{preamble.tex}\
@@ -803,7 +666,7 @@ mod pdflatex {
         c.outline = o;
         c.range = generate_range_from_name("Chapter 2", &c.outline);
 
-        let t = c.get_tex_code();
+        let t = tex::get_tex_code(&c.range, &c.outline, &c.class_options);
 
         assert_eq!(t, "\"\
             \\input{preamble.tex}\
@@ -858,7 +721,7 @@ mod pdflatex {
         c.class_options = vec![
             String::from("nopresentation")];
 
-        let tex = c.get_tex_code();
+        let tex = tex::get_tex_code(&c.range, &c.outline, &c.class_options);
         assert_eq!(tex, "\"\\PassOptionsToClass{nopresentation}{article}\
             \\input{preamble.tex}\\begin{document}\
             \\setcounter{chapter}{0}\
@@ -883,7 +746,7 @@ mod pdflatex {
             String::from("nopresentation"),
             String::from("12pt")];
 
-        let tex = c.get_tex_code();
+        let tex = tex::get_tex_code(&c.range, &c.outline, &c.class_options);
         assert_eq!(tex, "\"\\PassOptionsToClass{nopresentation}{article}\
             \\PassOptionsToClass{12pt}{article}\
             \\input{preamble.tex}\\begin{document}\
@@ -906,7 +769,7 @@ mod pdflatex {
         c.range = vec![4];
         c.jobname = String::from("out");
 
-        let tex = c.get_tex_code();
+        let tex = tex::get_tex_code(&c.range, &c.outline, &c.class_options);
 
         assert_eq!(tex, "\"\\input{preamble.tex}\
             \\begin{document}\
