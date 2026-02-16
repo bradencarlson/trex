@@ -12,6 +12,9 @@
 
 use std::process::Command;
 use std::fs;
+use std::io;
+use std::hash::DefaultHasher;
+use std::hash::{Hash, Hasher};
 
 use crate::config::Outline;
 use super::CMD;
@@ -58,6 +61,11 @@ pub fn run(cmd: &CMD) {
      * Paramters: 
      *   cmd - the CMD struct from which to read the outline, jobname, etc.
      */
+
+    let mut main: String = cmd.jobname.clone();
+    let mut aux: String = cmd.jobname.clone();
+    main.push_str(".tex");
+    aux.push_str(".aux");
     run_pdflatex(cmd);
 }
 
@@ -245,6 +253,13 @@ fn get_document_content(range: &Vec<usize>, outline: &Outline) -> String {
     }
 
     c
+}
+
+fn get_file_hash(filename: &String) -> Result<u64, io::Error> {
+    let mut t = DefaultHasher::new();
+    let file = fs::read(filename)?;
+    file.hash(& mut t);
+    Ok(t.finish())
 }
 
 #[cfg(test)]
