@@ -12,6 +12,7 @@
 
 use std::process::Command;
 use std::fs;
+use std::fs::File;
 use std::io;
 use std::hash::DefaultHasher;
 use std::hash::{Hash, Hasher};
@@ -81,13 +82,55 @@ pub fn run(cmd: &CMD) {
         Some(h) => bib_hashes.push(h),
         None => {}
     };
-    run_pdflatex(cmd);
+    while true {
+        println!("compiling {}", &cmd.jobname);
+        run_pdflatex(cmd);
 
-    match get_file_hash(&aux) {
-        Some(h) => aux_hashes.push(h),
-        None => {}
-    };
-    println!("Current number of aux hashes: {}", aux_hashes.len);
+        match get_file_hash(&aux) {
+            Some(h) => aux_hashes.push(h),
+            None => {}
+        };
+
+        let mut aux_content = String::new();
+
+        println!("Trying to get file contents of {}", &aux);
+        match get_file_contents(&aux, &mut aux_content ) {
+            Ok(()) => {},
+            Err(e) => {
+                println!("{}", e);
+            }
+        };
+
+        if aux_content.contains("bibstyle") || aux_content.contains("bibdata") {
+            println!("running bibtex on {}", &bbl);
+            run_bibtex(cmd);
+            match get_file_hash(&bbl) {
+                Some(h) => bib_hashes.push(h),
+                None => {}
+            };
+
+            if bib_hashes.len == 2 {
+                if bib_hashes.one.unwrap_or(0) != bib_hashes.two.unwrap_or(0) {
+                    continue;
+                }
+            }
+        }
+
+        if aux_hashes.len == 2 {
+            if aux_hashes.one.unwrap_or(0) != aux_hashes.two.unwrap_or(0) {
+                continue;
+            } else {
+                break;
+            }
+        } else {
+            if aux_content.contains("newlabel") {
+                continue;
+            } else {
+                break;
+            }
+        }
+    }
+
 }
 
 fn run_pdflatex(cmd: &CMD) {
@@ -108,6 +151,16 @@ fn run_pdflatex(cmd: &CMD) {
     c.args(&cl[1..]);
     c.status().expect("Something went wrong compiling the document.");
     
+}
+
+fn run_bibtex(cmd: &CMD) {
+    let mut cl = Vec::<String>::new();
+    cl.push("bibtex".to_string());
+    cl.push(cmd.jobname.clone());
+
+    let mut c = Command::new(&cl[0]);
+    c.args(&cl[1..]);
+    c.status().expect("Something went wrong while running bibtex.");
 }
 
 fn get_pdflatex_command_list(jobname: &String, range: &Vec<usize>,
@@ -282,8 +335,15 @@ fn get_file_hash(filename: &str) -> Option<u64> {
         Ok(f) => f, 
         Err(_) => return None
     };
-    file.hash(& mut t);
+    file.hash(&mut t);
     Some(t.finish())
+}
+
+fn get_file_contents(filename: &str, contents: &mut str) -> Result<(), &'static str> {
+    match fs::read_to_string(filename) {
+        Ok(_a) => return Ok(()),
+        Err(_e) => return Err("File not found, or not readable.")
+    };
 }
 
 #[cfg(test)]
