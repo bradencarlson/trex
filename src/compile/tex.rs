@@ -1,13 +1,73 @@
+/* tex.rs
+ *
+ * Author: Braden Carlson
+ * Date: February 2026
+ *
+ * Implements the neccesary logic for the compilation of tex documents using
+ * pdflatex. There are a few public functions: 
+ *   clean        - clean up auxiliary files
+ *   run          - compile the document
+ *   get_tex_code - get the actual tex code which will be used.
+ */ 
+
 use std::process::Command;
+use std::fs;
 
 use crate::config::Outline;
 use super::CMD;
 
+pub fn clean() {
+    /* Cleans up auxiliary files created when compiling a tex document. */
+
+    let mut files = Vec::<String>::new();
+    let file_types = vec![".aux", ".log", ".toc", ".bbl", ".blg"];
+    if let Ok(dir) = fs::read_dir(".") {
+        for entry in dir {
+            if let Ok(e) = entry {
+                let e_is_file = e.file_type()
+                    .expect("Something went wrong reading directory")
+                    .is_file();
+                if e_is_file {
+                    let name = e.file_name();
+                    let filename = name.to_str()
+                        .expect("Something went wrong.");
+                    let mut valid = false;
+                    for ending in file_types.iter() {
+                        if filename.ends_with(ending) {
+                            files.push(filename.to_string());
+                        }
+                    }
+                }
+            }
+
+        }
+    }
+
+    println!("Files to be removed: {:?}", files);
+    let mut c = Command::new(String::from("rm"));
+    c.arg("-I");
+    c.args(files);
+    c.status().expect("Something went wrong during cleaning");
+}
+
 pub fn run(cmd: &CMD) {
+    /* Compiles the document using the parameters in the CMD struct passed to
+     * the function. This will take care of multiple passes, running bibtex
+     * if needed, etc.
+     *
+     * Paramters: 
+     *   cmd - the CMD struct from which to read the outline, jobname, etc.
+     */
     run_pdflatex(cmd);
 }
 
 fn run_pdflatex(cmd: &CMD) {
+    /* Runs pdflatex with the appropriate tex code. 
+     *
+     * Paramters: 
+     *   cmd - the CMD struct from which to read the outline, jobname, etc.
+     */
+
     let cl = get_pdflatex_command_list(
         &cmd.jobname, 
         &cmd.range,
@@ -23,11 +83,20 @@ fn run_pdflatex(cmd: &CMD) {
 
 fn get_pdflatex_command_list(jobname: &String, range: &Vec<usize>,
     outline: &Outline, class_options: &Vec<String>) -> Vec<String> {
+    /* Generates the actual list of strings which should make up the command
+     * that is to be run when running pdflatex.
+     *
+     * Parameters: 
+     *   jobname       - the name (without extension) of the output file.
+     *   range         - the range of files to include.
+     *   outline       - the outline of the document.
+     *   class_options - any options which are to be passed to the class.
+     */
 
     let mut cl = Vec::<String>::new();
 
     cl.push("pdflatex".to_string());
-    let mut j = String::from("-jobname");
+    let mut j = String::from("-jobname=");
     if jobname == "" {
         j.push_str("out");
     } else {
@@ -182,6 +251,7 @@ fn get_document_content(range: &Vec<usize>, outline: &Outline) -> String {
 mod pdflatex {
     use super::*;
     use crate::config;
+    use crate::config::Outline;
     use crate::compile;
 
     fn create_outline(subsections: bool) -> Outline {
@@ -457,26 +527,42 @@ mod pdflatex {
 
     #[test]
     fn jobname() {
-        let o: Outline = create_outline(true);
+        let o: Outline = match config::read(
+            "examples/default.conf") {
+            Some(outline) => outline,
+            None => Outline::new(),
+        };
         let mut c = compile::CMD::new();
         c.outline = o;
         c.range = vec![1,2,3,4,5,6,7,8,9,10];
         c.jobname = String::from("lectures");
 
-        let l = c.command_list();
+        let l = get_pdflatex_command_list(
+            &c.jobname,
+            &c.range,
+            &c.outline,
+            &c.class_options);
 
         assert_eq!(l[1], "-jobname=lectures");
     }
 
     #[test]
     fn engine() {
-        let o: Outline = create_outline(true);
+        let o: Outline = match config::read(
+            "examples/default.conf") {
+            Some(outline) => outline,
+            None => Outline::new()
+        };
         let mut c = compile::CMD::new();
         c.outline = o;
         c.range = vec![1,2,3,4,5,6,7,8,9,10];
         c.jobname = String::from("lectures");
 
-        let l = c.command_list();
+        let l = get_pdflatex_command_list(
+            &c.jobname,
+            &c.range,
+            &c.outline,
+            &c.class_options);
 
         assert_eq!(l[0], "pdflatex");
     }

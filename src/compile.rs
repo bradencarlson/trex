@@ -13,7 +13,6 @@ use number_range::NumberRangeOptions;
 use std::process::exit;
 use std::process::Command;
 use std::fmt;
-use std::fs;
 
 use crate::config::Outline;
 use crate::parse_args;
@@ -62,51 +61,17 @@ impl CMD {
         };
     }
 
-    fn command_list(&self) -> Vec<String> {
-        /*  Generates a list of parameters to be passed to a shell.
-         *
-         *  Returns:
-         *    Vec<String> - a list of strings which will be passed to a shell when this command is
-         *                  run.
-         */
-
-        let mut l = Vec::<String>::new();
-
-        match self.engine {
-            Engine::LATEX => {
-                l.push("latex".to_string());
-                let mut j = String::from("-jobname=");
-                j.push_str( match self.jobname.as_str() {
-                    "" => "out",
-                    _ => self.jobname.as_str(),
-                });
-                l.push(j);
-            },
-
-            /* Engine::PDFLATEX is the default, so it is not specified and
-             * is caught here. */
-            _ => {
-                l.push("pdflatex".to_string());
-                let mut j = String::from("-jobname=");
-                j.push_str( match self.jobname.as_str() {
-                    "" => "out",
-                    _ => self.jobname.as_str(),
-                });
-                l.push(j);
-            },
-        };
-
-        l
-    }
-
-
 }
 
 impl fmt::Display for CMD {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{:?}\n", self.command_list());
         write!(f, "The code appended to the command will be:\n");
-        write!(f, "{}", tex::get_tex_code(&self.range, &self.outline, &self.class_options))
+        match self.engine {
+            _ => {
+                write!(f, "{}", tex::get_tex_code(&self.range, &self.outline, &self.class_options))
+            } 
+        }
+
     }
 }
 
@@ -114,41 +79,12 @@ pub fn clean(options: &HashMap<String,String>) {
     /* Removes auxiliary files created during the compilation process. */
     let pdflatex = String::from("pdflatex");
     match options.get(parse_args::ENGINE_ARG) {
-       Some(pdflatex) => {
-            let mut files = Vec::<String>::new();
-            let file_types = vec![".aux", ".log", ".toc", ".bbl", ".blg"];
-            if let Ok(dir) = fs::read_dir(".") {
-                for entry in dir {
-                    if let Ok(e) = entry {
-                        let e_is_file = e.file_type()
-                            .expect("Something went wrong reading directory")
-                            .is_file();
-                        if e_is_file {
-                            let name = e.file_name();
-                            let filename = name.to_str()
-                                .expect("Something went wrong.");
-                            let mut valid = false;
-                            for ending in file_types.iter() {
-                                if filename.ends_with(ending) {
-                                    files.push(filename.to_string());
-                                }
-                            }
-                        }
-                    }
-
-                }
-            }
-
-            println!("Files to be removed: {:?}", files);
-            let mut c = Command::new(String::from("rm"));
-            c.arg("-I");
-            c.args(files);
-            c.status().expect("Something went wrong during cleaning");
-
-       }
-       None => {
+        Some(pdflatex) => {
+            tex::clean();
+        }
+        None => {
            println!("Nothing to do!");
-       }
+        }
     }
 }
 
