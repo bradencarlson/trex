@@ -138,3 +138,447 @@ fn get_document_content(range: &Vec<usize>, outline: &Outline) -> String {
 
     c
 }
+
+#[cfg(test)]
+mod pdflatex {
+    use super::*;
+    use crate::config;
+    use crate::compile;
+
+    fn create_outline(subsections: bool) -> Outline {
+        let mut o = Outline::new();
+        o.class = String::from("article");
+        o.preamble = String::from("preamble.tex");
+        o.files = vec![String::from("file-1"), String::from("file-2"),
+            String::from("file-3"), String::from("file-4"),
+            String::from("file-5"), String::from("file-6"),
+            String::from("file-7"), String::from("file-8"),
+            String::from("file-9"), String::from("file-10")];
+        o.handle_subsections = subsections;
+        o.section_positions = vec![1,0,0,1,0,0,0,1,0,0];
+        o.section_names = vec![
+            String::from("Files 1-3"),
+            String::from("Files 1-3"), String::from("Files 1-3"),
+            String::from("Files 4-7"),
+            String::from("Files 4-7"), String::from("Files 4-7"), String::from("Files 4-7"),
+            String::from("Files 8-10"), String::from("Files 8-10"), String::from("Files 8-10")];
+        o.section_indices = vec![1,1,1,2,2,2,2,1,1,1];
+        o.chapter_positions = vec![1,0,0,0,0,0,0,1,0,0];
+        o.chapter_names = vec![
+            String::from("Chapter 1"),
+            String::from("Chapter 1"),String::from("Chapter 1"),
+            String::from("Chapter 1"),String::from("Chapter 1"),
+            String::from("Chapter 1"),String::from("Chapter 1"),
+            String::from("Chapter 2"),
+            String::new(),String::new()];
+        o.chapter_indices = vec![1,1,1,1,1,1,1,2,2,2];
+
+        o
+    }
+
+    #[test]
+    fn lecture_six() {
+        let o: Outline = match config::read(
+            "examples/default.conf") {
+            Some(outline) => outline,
+            None => Outline::new(),
+        };
+        let mut c = compile::CMD::new();
+        c.outline = o;
+        c.range = vec![6];
+        c.jobname = String::from("lecture-6");
+
+        let tex = get_tex_code(&c.range, &c.outline, &c.class_options);
+        assert_eq!(tex, "\"\\input{preamble.tex}\\begin{document}\
+            \\setcounter{chapter}{0}\
+            \\chapter{Chapter 1}\
+            \\setcounter{section}{1}\
+            \\section{Files 4-7}\\input{file-6}\\end{document}\"");
+    }
+
+    #[test]
+    fn lectures_1_to_3() {
+        let o: Outline = match config::read(
+            "examples/default.conf") {
+            Some(outline) => outline,
+            None => Outline::new(),
+        };
+
+        let mut c = compile::CMD::new();
+        c.outline = o;
+        c.range = vec![1,2,3];
+        c.jobname = String::from("lectures-1-3");
+
+        let tex = get_tex_code(&c.range, &c.outline, &c.class_options);
+        assert_eq!(tex, "\"\\input{preamble.tex}\\begin{document}\
+            \\setcounter{chapter}{0}\\chapter{Chapter 1}\
+            \\setcounter{section}{0}\
+            \\section{Files 1-3}\\input{file-1}\
+            \\input{file-2}\
+            \\input{file-3}\
+            \\end{document}\"");
+    }
+
+    #[test]
+    fn lectures_1_to_3_with_subsections() {
+        let o: Outline = match config::read(
+            "examples/notes.conf") {
+            Some(outline) => outline,
+            None => Outline::new(),
+        };
+        let mut c = compile::CMD::new();
+        c.outline = o;
+        c.range = vec![1,2,3];
+        c.jobname = String::from("lectures-1-3");
+
+        assert_eq!(c.outline.chapter_indices, vec![0,0,0,0,0,0,0]);
+
+        let tex = get_tex_code(&c.range, &c.outline, &c.class_options);
+        assert_eq!(tex, "\"\\input{preamble.tex}\\begin{document}\\setcounter{section}{0}\
+            \\section{Voting Theory}\
+            \\setcounter{subsection}{0}\
+            \\input{lecture-1.tex}\
+            \\setcounter{subsection}{1}\
+            \\input{lecture-2.tex}\
+            \\setcounter{subsection}{2}\
+            \\input{lecture-3.tex}\
+            \\end{document}\"");
+    }
+
+    #[test]
+    fn lecture_10() {
+        let o: Outline = match config::read(
+            "examples/default.conf") {
+            Some(outline) => outline,
+            None => Outline::new(),
+        };
+
+        let mut c = compile::CMD::new();
+        c.outline = o;
+        c.range = vec![10];
+        c.jobname = String::from("lectures-1-3");
+
+        let tex = get_tex_code(&c.range, &c.outline, &c.class_options);
+        assert_eq!(tex, "\"\\input{preamble.tex}\\begin{document}\
+            \\setcounter{chapter}{1}\
+            \\chapter{Chapter 2}\
+            \\setcounter{section}{0}\
+            \\section{Files 8-10}\
+            \\input{file-10}\\end{document}\"");
+    }
+
+
+    #[test]
+    fn full_lecture() {
+        let o: Outline = match config::read(
+            "examples/default.conf") {
+            Some(outline) => outline,
+            None => Outline::new(),
+        };
+        let mut c = compile::CMD::new();
+        c.outline = o;
+        c.range = vec![1,2,3,4,5,6,7,8,9,10];
+        c.jobname = String::from("lectures");
+
+        let tex = get_tex_code(&c.range, &c.outline, &c.class_options);
+        assert_eq!(tex, "\"\\input{preamble.tex}\\begin{document}\
+            \\setcounter{chapter}{0}\
+            \\chapter{Chapter 1}\
+            \\setcounter{section}{0}\
+            \\section{Files 1-3}\\input{file-1}\
+            \\input{file-2}\
+            \\input{file-3}\
+            \\setcounter{section}{1}\
+            \\section{Files 4-7}\\input{file-4}\
+            \\input{file-5}\
+            \\input{file-6}\
+            \\input{file-7}\
+            \\setcounter{chapter}{1}\
+            \\chapter{Chapter 2}\
+            \\setcounter{section}{0}\
+            \\section{Files 8-10}\
+            \\input{file-8}\
+            \\input{file-9}\
+            \\input{file-10}\
+            \\end{document}\"");
+    }
+
+    #[test]
+    fn full_lecture_with_subsections() {
+        let o: Outline = match config::read(
+            "examples/notes.conf") {
+            Some(outline) => outline,
+            None => Outline::new(),
+        };
+        let mut c = compile::CMD::new();
+        c.outline = o;
+        c.range = vec![1,2,3,4,5,6,7];
+        c.jobname = String::from("lectures");
+
+        let tex = get_tex_code(&c.range, &c.outline, &c.class_options);
+        assert_eq!(tex, "\"\\input{preamble.tex}\\begin{document}\
+            \\setcounter{section}{0}\
+            \\section{Voting Theory}\
+            \\setcounter{subsection}{0}\
+            \\input{lecture-1.tex}\
+            \\setcounter{subsection}{1}\
+            \\input{lecture-2.tex}\
+            \\setcounter{subsection}{2}\
+            \\input{lecture-3.tex}\
+            \\setcounter{subsection}{3}\
+            \\input{lecture-4.tex}\
+            \\setcounter{subsection}{4}\
+            \\input{lecture-5.tex}\
+            \\setcounter{section}{1}\
+            \\section{Weighted Voting Theory}\
+            \\setcounter{subsection}{0}\
+            \\input{lecture-6.tex}\
+            \\setcounter{subsection}{1}\
+            \\input{lecture-7.tex}\
+            \\end{document}\"");
+    }
+
+    #[test]
+    fn handle_sections_false() {
+        let o: Outline = match config::read(
+            "examples/book.conf") {
+            Some(outline) => outline,
+            None => Outline::new(),
+        };
+        let mut c = compile::CMD::new();
+        c.outline = o;
+        c.range = vec![2,3];
+        c.jobname = String::from("out");
+
+        let tex = get_tex_code(&c.range, &c.outline, &c.class_options);
+
+        assert_eq!(tex,"\"\\input{preamble.tex}\
+            \\begin{document}\
+            \\setcounter{section}{0}\
+            \\input{chapter-1/chapter-1-part-2.tex}\
+            \\input{chapter-2/chapter-2.tex}\
+            \\end{document}\"");
+
+    }
+
+    #[test]
+    fn section_name_as_range() {
+        let o: Outline = match config::read(
+            "examples/default.conf" ) {
+            Some(outline) => outline,
+            None => Outline::new(),
+        };
+
+        let mut c = compile::CMD::new();
+        c.outline = o;
+        c.range = compile::generate_range_from_name("Files 4-7", &c.outline);
+
+        let t = get_tex_code(&c.range, &c.outline, &c.class_options);
+
+        assert_eq!(t, "\"\
+            \\input{preamble.tex}\
+            \\begin{document}\
+            \\setcounter{chapter}{0}\
+            \\chapter{Chapter 1}\
+            \\setcounter{section}{1}\
+            \\section{Files 4-7}\
+            \\input{file-4}\
+            \\input{file-5}\
+            \\input{file-6}\
+            \\input{file-7}\
+            \\end{document}\"");
+    }
+
+    #[test]
+    fn chapter_name_as_range() {
+        let o: Outline = match config::read(
+            "examples/default.conf" ) {
+            Some(outline) => outline,
+            None => Outline::new(),
+        };
+
+        let mut c = compile::CMD::new();
+        c.outline = o;
+        c.range = compile::generate_range_from_name("Chapter 2", &c.outline);
+
+        let t = get_tex_code(&c.range, &c.outline, &c.class_options);
+
+        assert_eq!(t, "\"\
+            \\input{preamble.tex}\
+            \\begin{document}\
+            \\setcounter{chapter}{1}\
+            \\chapter{Chapter 2}\
+            \\setcounter{section}{0}\
+            \\section{Files 8-10}\
+            \\input{file-8}\
+            \\input{file-9}\
+            \\input{file-10}\
+            \\end{document}\"");
+    }
+
+    #[test]
+    fn jobname() {
+        let o: Outline = create_outline(true);
+        let mut c = compile::CMD::new();
+        c.outline = o;
+        c.range = vec![1,2,3,4,5,6,7,8,9,10];
+        c.jobname = String::from("lectures");
+
+        let l = c.command_list();
+
+        assert_eq!(l[1], "-jobname=lectures");
+    }
+
+    #[test]
+    fn engine() {
+        let o: Outline = create_outline(true);
+        let mut c = compile::CMD::new();
+        c.outline = o;
+        c.range = vec![1,2,3,4,5,6,7,8,9,10];
+        c.jobname = String::from("lectures");
+
+        let l = c.command_list();
+
+        assert_eq!(l[0], "pdflatex");
+    }
+
+    #[test]
+    fn nopres_option() {
+        let o: Outline = match config::read(
+            "examples/default.conf") {
+            Some(outline) => outline,
+            None => Outline::new(),
+        };
+        let mut c = compile::CMD::new();
+        c.outline = o;
+        c.range = vec![6];
+        c.jobname = String::from("lecture-6");
+        c.class_options = vec![
+            String::from("nopresentation")];
+
+        let tex = get_tex_code(&c.range, &c.outline, &c.class_options);
+        assert_eq!(tex, "\"\\PassOptionsToClass{nopresentation}{article}\
+            \\input{preamble.tex}\\begin{document}\
+            \\setcounter{chapter}{0}\
+            \\chapter{Chapter 1}\
+            \\setcounter{section}{1}\
+            \\section{Files 4-7}\
+            \\input{file-6}\\end{document}\"");
+    }
+
+    #[test]
+    fn two_options() {
+        let o: Outline = match config::read(
+            "examples/default.conf") {
+            Some(outline) => outline,
+            None => Outline::new(),
+        };
+        let mut c = compile::CMD::new();
+        c.outline = o;
+        c.range = vec![6];
+        c.jobname = String::from("lecture-6");
+        c.class_options = vec![
+            String::from("nopresentation"),
+            String::from("12pt")];
+
+        let tex = get_tex_code(&c.range, &c.outline, &c.class_options);
+        assert_eq!(tex, "\"\\PassOptionsToClass{nopresentation}{article}\
+            \\PassOptionsToClass{12pt}{article}\
+            \\input{preamble.tex}\\begin{document}\
+            \\setcounter{chapter}{0}\
+            \\chapter{Chapter 1}\
+            \\setcounter{section}{1}\
+            \\section{Files 4-7}\
+            \\input{file-6}\\end{document}\"");
+    }
+
+    #[test]
+    fn bibliography() {
+        let o: Outline = match config::read(
+            "examples/default-with-bib.conf") {
+            Some(outline) => outline,
+            None => Outline::new()
+        };
+        let mut c = compile::CMD::new();
+        c.outline = o;
+        c.range = vec![4];
+        c.jobname = String::from("out");
+
+        let tex = get_tex_code(&c.range, &c.outline, &c.class_options);
+
+        assert_eq!(tex, "\"\\input{preamble.tex}\
+            \\begin{document}\
+            \\setcounter{chapter}{0}\
+            \\chapter{Chapter 1}\
+            \\setcounter{section}{1}\
+            \\section{Files 4-7}\
+            \\input{file-4}\
+            \\bibliographystyle{plain}\
+            \\bibliography{sources.bib}\
+            \\end{document}\"");
+
+    }
+
+
+    #[test]
+    fn section_num_arg() {
+        let o: Outline = match config::read(
+            "examples/notes.conf") {
+            Some(outline) => outline, 
+            None => Outline::new()
+        };
+
+        let arg = "s1";
+        let v = compile::generate_range_from_name(arg, &o);
+
+        let arg2 = "s2";
+        let v2 = compile::generate_range_from_name(arg2, &o);
+        
+        assert_eq!(v, vec![1,2,3,4,5]);
+        assert_eq!(v2, vec![6,7]);
+        
+    }
+
+    #[test]
+    fn chapter_num_arg() {
+        let o: Outline = match config::read(
+            "examples/default.conf") {
+            Some(outline) => outline, 
+            None => Outline::new()
+        };
+
+        let arg = "c1";
+        let v = compile::generate_range_from_name(arg, &o);
+
+        assert_eq!(v, vec![1,2,3,4,5,6,7]);
+    }
+
+    #[test]
+    fn chapter_and_section_num() {
+        let o: Outline = match config::read(
+            "examples/default.conf" ) {
+            Some(outline) => outline, 
+            None => Outline::new()
+        };
+
+        let arg = "c1s2";
+        let v = compile::generate_range_from_name(arg, &o);
+
+        assert_eq!(v, vec![4,5,6,7]);
+    }
+
+    #[test]
+    fn select_all() {
+        let o: Outline = match config::read(
+            "examples/default.conf") {
+            Some(outline) => outline, 
+            None => Outline::new()
+        };
+
+        let arg = "all";
+        let v = compile::generate_range_from_name(arg, &o);
+
+        assert_eq!(v, vec![1,2,3,4,5,6,7,8,9,10]);
+    }
+
+}
