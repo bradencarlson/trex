@@ -17,6 +17,7 @@ use std::hash::DefaultHasher;
 use std::hash::{Hash, Hasher};
 
 use crate::config::Outline;
+use crate::utils::stack::TwoStack;
 use super::CMD;
 
 pub fn clean() {
@@ -66,6 +67,11 @@ pub fn run(cmd: &CMD) {
     let mut aux: String = cmd.jobname.clone();
     main.push_str(".tex");
     aux.push_str(".aux");
+
+    // Define a stack with maximum height 2 to hold the hashes for the aux 
+    // and bib files.
+    let aux_hashes: TwoStack<u64> = TwoStack::new();
+    let bib_hashes: TwoStack<u64> = TwoStack::new();
     run_pdflatex(cmd);
 }
 

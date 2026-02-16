@@ -10,6 +10,7 @@ use std::collections::HashMap;
 pub mod parse_args;
 pub mod config;
 pub mod compile;
+pub mod utils;
 
 const help_message: &str = "\
 TreX Help Page\n\
