@@ -1,35 +1,52 @@
 
 
 pub mod stack {
-    pub struct TwoStack<'a,T> {
-        pub one: Option<&'a T>,
-        pub two: Option<&'a T>,
+    pub struct TwoStack<T: Clone> {
+        pub one: Option<T>,
+        pub two: Option<T>,
         pub len: usize,
     }
 
-    impl<'a,T> TwoStack<'a,T> {
-        pub fn new() -> TwoStack<'a,T> {
+    impl<T: Clone> TwoStack<T> {
+        pub fn new() -> TwoStack<T> {
             TwoStack {one: None, two: None, len: 0}
         }
-        pub fn push(&mut self, item: &'a T) {
-            self.two = self.one;
-            self.one = Some(item);
-            if let Some(_a) = self.two {
-                self.len = 2;
-            } else {
-                self.len = 1;
-            }
+        pub fn push(&mut self, item: T) {
+
+            match &self.one {
+                Some(t) => {
+                    self.two = Some(t.clone());
+                    self.one = Some(item);
+                    self.len = 2;
+                },
+                None => {
+                    self.one = Some(item);
+                    self.len = 1;
+                }
+            };
+
         }
-        pub fn pop(&mut self) -> Option<&'a T> {
-            let a = self.one;
-            self.one = self.two;
-            self.two = None;
-            if let Some(_b) = self.one {
-                self.len = 1; 
-            } else {
-                self.len = 0;
+        pub fn pop(&mut self) -> Option<T> {
+            match &self.one {
+                Some(t) => {
+                    let a = t.clone();
+                    match &self.two {
+                        Some(s) => {
+                            self.one = Some(s.clone());
+                            self.len = 1;
+                        },
+                        None => {
+                            self.one = None;
+                            self.len = 0;
+                        }
+                    }
+                    return Some(a);
+                },
+                None => {
+                    self.len = 0;
+                    return None;
+                }
             }
-            a
         }
 
     }
@@ -51,7 +68,7 @@ mod stack_tests {
     fn one_item() {
         let mut s: TwoStack<i64> = TwoStack::new();
         let a = i64::from(12);
-        s.push(&a);
+        s.push(a);
 
         assert_eq!(s.len, 1);
     }
@@ -61,11 +78,11 @@ mod stack_tests {
         let mut s: TwoStack<i64> = TwoStack::new();
         let a = i64::from(12);
         let b = i64::from(23);
-        s.push(&a);
-        s.push(&b);
+        s.push(a);
+        s.push(b);
 
-        assert_eq!(s.one, Some(b).as_ref());
-        assert_eq!(s.two, Some(a).as_ref());
+        assert_eq!(s.one, Some(23));
+        assert_eq!(s.two, Some(12));
         assert_eq!(s.len, 2);
     }
 
@@ -76,13 +93,13 @@ mod stack_tests {
         let b = i64::from(34);
         let c = i64::from(123);
 
-        s.push(&a);
-        s.push(&b);
-        s.push(&c);
+        s.push(a);
+        s.push(b);
+        s.push(c);
 
         assert_eq!(s.len, 2);
-        assert_eq!(s.one, Some(c).as_ref());
-        assert_eq!(s.two, Some(b).as_ref());
+        assert_eq!(s.one, Some(123));
+        assert_eq!(s.two, Some(34));
     }
 
     #[test]
@@ -90,10 +107,10 @@ mod stack_tests {
         let mut s: TwoStack<i64> = TwoStack::new();
         let a = i64::from(23);
         let b = i64::from(12);
-        s.push(&a);
+        s.push(a);
 
         let c = s.pop();
-        assert_eq!(c, Some(23).as_ref());
+        assert_eq!(c, Some(23));
         assert_eq!(s.len, 0);
     }
 }

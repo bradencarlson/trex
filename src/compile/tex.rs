@@ -63,16 +63,31 @@ pub fn run(cmd: &CMD) {
      *   cmd - the CMD struct from which to read the outline, jobname, etc.
      */
 
-    let mut main: String = cmd.jobname.clone();
     let mut aux: String = cmd.jobname.clone();
-    main.push_str(".tex");
+    let mut bbl: String = cmd.jobname.clone();
     aux.push_str(".aux");
+    bbl.push_str(".bbl");
 
     // Define a stack with maximum height 2 to hold the hashes for the aux 
     // and bib files.
-    let aux_hashes: TwoStack<u64> = TwoStack::new();
-    let bib_hashes: TwoStack<u64> = TwoStack::new();
+    let mut aux_hashes: TwoStack<u64> = TwoStack::new();
+    let mut bib_hashes: TwoStack<u64> = TwoStack::new();
+
+    match get_file_hash(&aux) {
+        Some(h) => aux_hashes.push(h),
+        None => {}
+    };
+    match get_file_hash(&bbl) {
+        Some(h) => bib_hashes.push(h),
+        None => {}
+    };
     run_pdflatex(cmd);
+
+    match get_file_hash(&aux) {
+        Some(h) => aux_hashes.push(h),
+        None => {}
+    };
+    println!("Current number of aux hashes: {}", aux_hashes.len);
 }
 
 fn run_pdflatex(cmd: &CMD) {
@@ -261,11 +276,14 @@ fn get_document_content(range: &Vec<usize>, outline: &Outline) -> String {
     c
 }
 
-fn get_file_hash(filename: &String) -> Result<u64, io::Error> {
+fn get_file_hash(filename: &str) -> Option<u64> {
     let mut t = DefaultHasher::new();
-    let file = fs::read(filename)?;
+    let file = match fs::read(filename) {
+        Ok(f) => f, 
+        Err(_) => return None
+    };
     file.hash(& mut t);
-    Ok(t.finish())
+    Some(t.finish())
 }
 
 #[cfg(test)]
