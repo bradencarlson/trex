@@ -1,4 +1,43 @@
+use std::process::Command;
+
 use crate::config::Outline;
+use super::CMD;
+
+pub fn run(cmd: &CMD) {
+    run_pdflatex(cmd);
+}
+
+fn run_pdflatex(cmd: &CMD) {
+    let cl = get_pdflatex_command_list(
+        &cmd.jobname, 
+        &cmd.range,
+        &cmd.outline,
+        &cmd.class_options
+    );
+
+    let mut c = Command::new(&cl[0]);
+    c.args(&cl[1..]);
+    c.status().expect("Something went wrong compiling the document.");
+    
+}
+
+fn get_pdflatex_command_list(jobname: &String, range: &Vec<usize>,
+    outline: &Outline, class_options: &Vec<String>) -> Vec<String> {
+
+    let mut cl = Vec::<String>::new();
+
+    cl.push("pdflatex".to_string());
+    let mut j = String::from("-jobname");
+    if jobname == "" {
+        j.push_str("out");
+    } else {
+        j.push_str(jobname.as_str());
+    }
+    cl.push(j);
+    cl.push(get_tex_code(range, outline, class_options));
+
+    cl
+}
 
 pub fn get_tex_code(range: &Vec<usize>, outline: &Outline, class_options: &Vec<String>) -> String {
     /* Gets the TeX code of the document, based on the specified range and the structure of the
@@ -524,7 +563,7 @@ mod pdflatex {
     fn section_num_arg() {
         let o: Outline = match config::read(
             "examples/notes.conf") {
-            Some(outline) => outline, 
+            Some(outline) => outline,
             None => Outline::new()
         };
 
@@ -533,17 +572,17 @@ mod pdflatex {
 
         let arg2 = "s2";
         let v2 = compile::generate_range_from_name(arg2, &o);
-        
+
         assert_eq!(v, vec![1,2,3,4,5]);
         assert_eq!(v2, vec![6,7]);
-        
+
     }
 
     #[test]
     fn chapter_num_arg() {
         let o: Outline = match config::read(
             "examples/default.conf") {
-            Some(outline) => outline, 
+            Some(outline) => outline,
             None => Outline::new()
         };
 
@@ -557,7 +596,7 @@ mod pdflatex {
     fn chapter_and_section_num() {
         let o: Outline = match config::read(
             "examples/default.conf" ) {
-            Some(outline) => outline, 
+            Some(outline) => outline,
             None => Outline::new()
         };
 
@@ -571,7 +610,7 @@ mod pdflatex {
     fn select_all() {
         let o: Outline = match config::read(
             "examples/default.conf") {
-            Some(outline) => outline, 
+            Some(outline) => outline,
             None => Outline::new()
         };
 

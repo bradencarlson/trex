@@ -54,16 +54,12 @@ impl CMD {
     pub fn run(&self) {
         /* Runs this command */
 
-        let mut command_list = self.command_list();
         match self.engine {
             Engine::PDFLATEX => {
-                command_list.push( tex::get_tex_code(&self.range, &self.outline, &self.class_options) );
+                tex::run(&self);
             },
             _ => {}
         };
-        let mut c = Command::new(&command_list[0]);
-        c.args(&command_list[1..]);
-        c.status().expect("Something went wrong while compiling the document.");
     }
 
     fn command_list(&self) -> Vec<String> {
