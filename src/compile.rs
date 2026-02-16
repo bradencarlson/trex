@@ -15,7 +15,7 @@ use std::process::Command;
 use std::fmt;
 use std::fs;
 
-use crate::outline::Outline;
+use crate::config::Outline;
 use crate::parse_args;
 
 const DEFAULT_ENGINE: &str = "pdflatex";
@@ -545,7 +545,6 @@ mod command_tests {
 #[cfg(test)]
 mod pdflatex {
     use super::*;
-    use crate::outline;
     use crate::config;
 
     fn create_outline(subsections: bool) -> Outline {
