@@ -10,7 +10,7 @@
  *   get_tex_code - get the actual tex code which will be used.
  */ 
 
-use std::process::Command;
+use std::process::{Command, Stdio};
 use std::fs;
 use std::fs::File;
 use std::io;
@@ -93,10 +93,12 @@ pub fn run(cmd: &CMD) {
 
         let mut aux_content = String::new();
 
-        println!("Trying to get file contents of {}", &aux);
-        match get_file_contents(&aux, &mut aux_content ) {
-            Ok(()) => {},
+        match fs::read_to_string(&aux) {
+            Ok(text) => {
+                aux_content = text;
+            },
             Err(e) => {
+                println!("Something went wrong getting aux contents.");
                 println!("{}", e);
             }
         };
@@ -111,6 +113,7 @@ pub fn run(cmd: &CMD) {
 
             if bib_hashes.len == 2 {
                 if bib_hashes.one.unwrap_or(0) != bib_hashes.two.unwrap_or(0) {
+                    println!("There are two bib hashes, and they differ, recompiling.");
                     continue;
                 }
             }
@@ -118,12 +121,14 @@ pub fn run(cmd: &CMD) {
 
         if aux_hashes.len == 2 {
             if aux_hashes.one.unwrap_or(0) != aux_hashes.two.unwrap_or(0) {
+                println!("There are two aux hashes, and they differ, recompiling.");
                 continue;
             } else {
                 break;
             }
         } else {
             if aux_content.contains("newlabel") {
+                println!("newlables detected... compiling again.");
                 continue;
             } else {
                 break;
@@ -337,13 +342,6 @@ fn get_file_hash(filename: &str) -> Option<u64> {
     };
     file.hash(&mut t);
     Some(t.finish())
-}
-
-fn get_file_contents(filename: &str, contents: &mut str) -> Result<(), &'static str> {
-    match fs::read_to_string(filename) {
-        Ok(_a) => return Ok(()),
-        Err(_e) => return Err("File not found, or not readable.")
-    };
 }
 
 #[cfg(test)]
