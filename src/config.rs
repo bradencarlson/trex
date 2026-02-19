@@ -89,7 +89,7 @@ impl fmt::Display for Outline {
          */
 
         write!(f, "preamble: {}\n", self.preamble);
-        write!(f, "Number of Sections: {}\n", self.section_positions.len());
+        write!(f, "Number of Files: {}\n", self.files.len());
         write!(f, "handle_subsections: {}\n", self.handle_subsections);
         let mut c_idx = 0;
         let mut s_idx = 0;
@@ -203,11 +203,6 @@ fn parse(content: &String) -> Option<Outline> {
     let mut last_chapter_name = String::new();
     let mut last_section_name = String::new();
 
-    outline.chapter_positions.push(0);
-    outline.chapter_names.push(String::new());
-    outline.section_positions.push(0);
-    outline.section_names.push(String::new());
-
     loop {
         let line = match lines.next() {
             Some(line) => line.trim(),
@@ -238,15 +233,21 @@ fn parse(content: &String) -> Option<Outline> {
             outline.preamble.push_str(arg);
         } else if line.starts_with(section) {
             let arg = &line[section.len()..];
-            outline.section_names[file_counter] = arg.to_string();
-            outline.section_positions[file_counter] = 1;
+            if file_counter > 0 {
+                outline.section_positions[file_counter] = 1;
+            } else {
+                outline.section_positions.push(1);
+            }
             last_section_name = arg.to_string();
             section_counter += 1;
             subsection_counter = 0;
         } else if line.starts_with(chapter) {
             let arg = &line[chapter.len()..];
-            outline.chapter_names[file_counter] = arg.to_string();
-            outline.chapter_positions[file_counter] = 1;
+            if file_counter > 0 {
+                outline.chapter_positions[file_counter] = 1;
+            } else {
+                outline.chapter_positions.push(1);
+            }
             last_chapter_name = arg.to_string();
             chapter_counter += 1;
             section_counter = 0;
@@ -355,5 +356,9 @@ mod tests {
 
             idx += 1;
         }
+        assert_eq!(out.section_names.len(), num_files);
+        assert_eq!(out.chapter_names.len(), num_files);
+        assert_eq!(out.chapter_indices.len(), num_files);
+        assert_eq!(out.section_indices.len(), num_files);
     }
 }
