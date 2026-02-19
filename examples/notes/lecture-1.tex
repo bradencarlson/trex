@@ -1,0 +1,153 @@
+\subsection{Plurality Method}
+
+\content{% main
+\begin{definition} A \textbf{preference ballot} is a ballot in which each voter ranks the
+choices according to preference. 
+\end{definition}
+}{% presentation
+\vspace{2in}
+}{% nopresentation
+\vspace{2in}
+}{% comments
+Draw out what a simple preference ballot for one voter might look like. What
+does the total data look like? Note that we usually combine the preference
+ballots that look similar. 
+}
+
+\content{
+\begin{definition} A \textbf{Preference schedule} is a condensed way of
+writing out several preference ballots. 
+\end{definition}
+}{% presentation
+\vspace{2in}
+}{% nopresentation
+\vspace{2in}
+}{% comments
+Draw an example. Notice that the total number of votes is the sum of the numbers
+above each column. 
+}
+
+\content{
+        \begin{example} Let's look the following vote. \\
+        \begin{tabular}{|l|c|c|c|c|}
+        \hline
+        & 1 & 3 & 3 & 3 \\
+        \hline
+        1st Choice  & A & A & O & H \\
+        \hline
+        2nd Choice  & O & H &H&A \\
+        \hline
+        3rd Choice & H&O&A&O \\
+        \hline
+        \end{tabular}
+        \end{example}
+}{% presentation
+\vspace{3in}
+}{% nopresentation
+\vspace{2in}
+}{% comments
+How do we determine who wins? \\
+Introduce the plurality method!\\
+How many voters are there? Who has the most 1st
+place votes?  
+}
+
+
+\content{
+        \begin{example} Now you try it!\\
+        \begin{tabular}{|l|c|c|c|c|}
+        \hline
+        & 10& 8 & 4 & 3 \\
+        \hline
+        1st choice & A & B & C & B \\
+        \hline
+        2nd choice & B & C & B & A \\
+        \hline
+        3nd choice & C & A & A & C \\
+        \hline
+        \end{tabular}
+        \begin{enumerate}
+        \item How many voters are there? 
+        \item How many first place votes does $B$ have? 
+        \item Who wins under the plurality method? 
+        \end{enumerate}
+        \end{example}
+}{% presentation
+\vspace{1in}
+}{% nopresentation
+\vspace{1in}
+}{% comments
+}
+
+\content{
+        \begin{example} Let's look the vote from before. \\
+        \begin{tabular}{|l|c|c|c|c|}
+        \hline
+        & 1 & 3 & 3 & 3 \\
+        \hline
+        1st Choice  & A & A & O & H \\
+        \hline
+        2nd Choice  & O & H &H&A \\
+        \hline
+        3rd Choice & H&O&A&O \\
+        \hline
+        \end{tabular}
+        \end{example}
+        What could go wrong here? 
+}{% presentation
+\vspace{4in}
+}{% nopresentation
+\vspace{2in}
+}{% comments
+What happens if one of the options is no longer available? \\
+Start to do a pairwise comparison. Notice that when $H$ is compared to $A$, $H$
+seems to be preffered, but did not win. Is that fair? What does it mean to have
+a fair election?
+}
+
+
+\content{
+\begin{definition} A \textbf{fairness criterion} is a statement which seems like
+it should be true during an election.
+\end{definition}
+}{% presentation
+}{% nopresentation
+}{% comments
+}
+
+\content{
+We have now run into our very first Fairness Criterion!\\
+
+\begin{definition} \textbf{(Condercet Criterion)} If there is a choice which is
+preffered in every one-to-one comparison to the other choices, that choice
+should win the election. That choice (if it exists) is called the
+\textbf{Condocet Candidate}.
+\end{definition}
+}{% presentation
+}{% nopresentation
+}{% comments
+}
+
+
+\content{
+\begin{example} Your turn again! Which option wins the following vote using the
+plurality method? Is there a Condorcet Candidate? If there is one, did they win
+the election? \\ 
+\begin{tabular}{|l|c|c|c|c|c|}
+\hline
+& 44 & 14 & 70 & 22 & 80 \\
+\hline
+1st Choice & G & G &M&M&B\\
+\hline
+2nd Choice &M&B&G&B&M\\
+\hline
+3rd Choice &B&M&B&G&G\\
+\hline
+\end{tabular}
+\end{example}
+}{% presentation
+\vspace{3in}
+}{% nopresentation
+\vspace{2in}
+}{% comments
+}

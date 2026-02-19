@@ -533,13 +533,13 @@ mod pdflatex {
             \\input{lecture-3.tex}\
             \\setcounter{subsection}{3}\
             \\input{lecture-4.tex}\
-            \\setcounter{subsection}{4}\
-            \\input{lecture-5.tex}\
             \\setcounter{section}{1}\
             \\section{Weighted Voting Theory}\
             \\setcounter{subsection}{0}\
-            \\input{lecture-6.tex}\
+            \\input{lecture-5.tex}\
             \\setcounter{subsection}{1}\
+            \\input{lecture-6.tex}\
+            \\setcounter{subsection}{2}\
             \\input{lecture-7.tex}\
             \\end{document}\"");
     }
@@ -756,8 +756,8 @@ mod pdflatex {
         let arg2 = "s2";
         let v2 = compile::generate_range_from_name(arg2, &o);
 
-        assert_eq!(v, vec![1,2,3,4,5]);
-        assert_eq!(v2, vec![6,7]);
+        assert_eq!(v, vec![1,2,3,4]);
+        assert_eq!(v2, vec![5,6,7]);
 
     }
 
