@@ -1,0 +1,151 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{mathcommands}
+
+\newcommand{\supp}{\text{supp}}
+
+% Commands for calculus
+\def\pd#1#2{\frac{\partial #1}{\partial #2}}
+\def\spd#1#2{\frac{\partial^2 #1}{\partial #2^2}}
+
+% Commands for linear algebra (matrices and vectors)
+\newcommand{\la}{\left\langle}
+\newcommand{\ra}{\right\rangle}
+\def\myvec#1{{\bf#1}}
+
+% Commands for standard sets in mathematics.
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Nzero}{\mathbb{N}_0}
+
+% Commands for trigonometric functions that automatically provide the correctly sized delimeters.
+\def\mysin#1{\text{sin}\left(#1\right)}
+\def\mycos#1{\text{cos}\left(#1\right)}
+\def\mytan#1{\text{tan}\left(#1\right)}
+\def\mycsc#1{\text{csc}\left(#1\right)}
+\def\mysec#1{\text{sec}\left(#1\right)}
+\def\mycot#1{\text{cot}\left(#1\right)}
+
+\def\sinsq#1{\text{sin}^2\left(#1\right)}
+\def\cossq#1{\text{cos}^2\left(#1\right)}
+
+\def\cis#1{\text{cis}\left(#1\right)}
+
+% standard commands for algebra
+\def\tr#1{\text{tr}\left(#1\right)}
+\def\det(#1){\text{det}\left(#1\right)}
+\def\im#1{\text{Im}\left(#1\right)}
+\def\aut#1{\text{Aut}\left(#1\right)}
+\def\inn#1{\text{Inn}\left(#1\right)}
+\def\gal(#1){\text{Gal}\left(#1\right)}
+
+% Provides commands for standard Number Theory notaion.
+\def\lcm#1{\text{lcm}\left(#1\right)}
+\def\mod#1{\hspace{8pt}(\text{mod } #1)}
+
+% Provides the new counter for the theorem, lemmas and corollaries.
+\newcounter{theorem}[subsection]
+\newcounter{theoremHref}
+\setcounter{theoremHref}{0}
+%% Due to my use of custom environments, the hyperref package was acting up, 
+% so there is an additional counter, to make sure each theorem and such gets 
+% it's own unique label, but this means that for this to work properly, you have 
+% to put the line 
+%
+%    \renewcommand{\theHtheorem}{mythm.\thesection.\thetheorem}
+%
+% in the preamble after loading the hyperref package. 
+
+% Provides the theorem environment.
+\newenvironment{theorem}{
+    \refstepcounter{theorem}
+    \refstepcounter{theoremHref}
+    \ifnum\value{subsection}>0
+    \makeatletter
+    \def\@currentlabel{\thesubsection.\thetheorem}%
+    \makeatother
+    \else
+    \makeatletter
+    \def\@currentlabel{\thesection.\thetheorem}%
+    \makeatother
+    \fi
+    \vspace{5pt}\par\noindent\textbf{Theorem \@currentlabel}\hspace{5pt}\itshape
+}{
+    \normalfont\vspace{5pt}\par
+}
+
+% Provides the lemma environment.
+\newenvironment{lemma}{
+    \refstepcounter{theorem}
+    \refstepcounter{theoremHref}
+    \makeatletter
+    \ifnum\value{subsection}>0
+    \def\@currentlabel{\thesubsection.\thetheorem}%
+    \else
+    \def\@currentlabel{\thesection.\thetheorem}%
+    \fi
+    \makeatother
+    \vspace{5pt}\par\noindent\textbf{Lemma \@currentlabel}\hspace{5pt}\itshape
+}{
+    \normalfont\vspace{5pt}\par
+}
+
+% Provides the corollary environment.
+\newenvironment{corollary}{
+    \refstepcounter{theorem}
+    \refstepcounter{theoremHref}
+    \makeatletter
+    \ifnum\value{subsection}>0
+    \def\@currentlabel{\thesubsection.\thetheorem}%
+    \else
+    \def\@currentlabel{\thesection.\thetheorem}%
+    \fi
+    \makeatother
+    \vspace{5pt}\par\noindent\textbf{Corollary \@currentlabel}\hspace{5pt}\itshape
+}{
+    \normalfont\vspace{5pt}\par
+}
+
+% Provides the proof environment
+\newenvironment{proof}{
+    \vspace{5pt}\par\noindent\textit{Proof.}\ 
+}{
+    \hfill$\square$\vspace{5pt}\par
+}
+
+% Provides the definition environment
+\newenvironment{definition}{
+        \refstepcounter{theorem}
+        \refstepcounter{theoremHref}
+        \makeatletter
+            \ifnum\value{subsection}>0
+            \def\@currentlabel{\thesubsection.\thetheorem}%
+            \else
+            \def\@currentlabel{\thesection.\thetheorem}%
+            \fi
+        \makeatother
+        \vspace{5pt}\par\noindent\textbf{Definition \@currentlabel}\hspace{5pt}
+}{
+    \vspace{5pt}\par
+}
+
+% Provides the example environment.
+\newenvironment{example}{
+        \refstepcounter{theorem}
+        \refstepcounter{theoremHref}
+        \makeatletter
+            \ifnum\value{subsection}>0
+            \def\@currentlabel{\thesubsection.\thetheorem}%
+            \else
+            \def\@currentlabel{\thesection.\thetheorem}%
+            \fi
+        \makeatother
+        \vspace{5pt}\par\noindent\textbf{Example \@currentlabel}\hspace{5pt}
+}{
+		\vspace{5pt}\par
+}
+
+
+

@@ -1,0 +1,138 @@
+\subsection{Plurality with Elimination}
+
+
+\content{
+        \begin{example} Who wins the following election under the plurality
+        method? \\
+        \begin{tabular}{|l|c|c|c|c|c|c|}
+        \hline
+        & 3&4&4&6&2&1\\
+        \hline
+        1st & B&C&B&D&B&E\\
+        \hline
+        2nd & C&A&D&C&E&A\\
+        \hline
+        3rd & A&D&C&A&D&D\\
+        \hline
+        4th & D&B&A&E&C&B\\
+        \hline
+        5th & E&E&E&B&D&C\\
+        \hline
+        \end{tabular}
+        \end{example}
+}{% presentation
+\vspace{4in}
+}{% nopresentation
+\vspace{2.5in}
+}{% comments
+Since the winner under plurality (B) does not have the majority, with the
+plurality with eliminiation method we eliminate the last place candidate
+(according to plurality) and recount the votes.
+}
+
+\content{
+        \begin{example} Your turn! Use the Plurality with Elimination method to
+        determine who wins. \\
+        \begin{tabular}{|l|c|c|c|c|c|}
+        \hline
+        & 44 & 14 & 70 & 22 & 80 \\
+        \hline
+        1st & G&G&M&M&B\\
+        \hline
+        2nd & M&B&G&B&M\\
+        \hline
+        3rd & B&M&B&G&G\\
+        \hline
+        \end{tabular}
+        \end{example}
+}{% presentation
+\vspace{3in}
+}{% nopresentation
+\vspace{2in}
+}{% comments
+$G$ is eliminated first, then $M$ has a majority. 
+}
+
+\content{
+\begin{example} Use the plurality method with elimination to determine who wins
+the election.\\
+\begin{tabular}{|l|c|c|c|}
+\hline
+& 342 & 214 & 298 \\
+\hline
+1st & E&D&K\\
+\hline
+2nd & D&K&D\\
+\hline
+3rd & K&E&E\\
+\hline
+\end{tabular}
+
+Is there a Condorcet Candidate? If so, did they win the election? 
+\end{example}
+}{% presentation
+\vspace{3in}
+}{% nopresentation
+\vspace{2in}
+}{% comments
+$K$ wins under this method. But $D$ is a Condorcet Candidate. 
+}
+
+\content{
+\begin{example} Who wins the following election under the plurality with
+elimination method? \\
+\begin{tabular}{|l|c|c|c|c|}
+\hline
+& 37 & 22 & 12 & 29 \\
+\hline
+1st & A&B&B&C\\
+\hline
+2nd & B&C&A&A\\
+\hline
+3rd & C&A&C&B\\
+\hline
+\end{tabular}
+\end{example}
+}{% presentation
+\vspace{2in}
+}{% nopresentation
+\vspace{2in}
+}{% comments
+$C$ is eliminated first, then $A$ wins with the majority. 
+}
+
+\content{
+Now, suppose that after officials have announced the results, the ballots were
+accidentally destroyed before they could be certified, so the votes have to be
+recast. Ten of the people whose preference was $B,A,C$ decide that they want to
+now support the winner $A$, so they change their votes to $A,B,C$, all the other
+votes remain the same. What are the results of the election now? \\
+\begin{tabular}{|l|p{0.25in}|p{0.25in}|p{0.25in}|p{0.25in}|}
+\hline
+&  &  &  &  \\
+\hline
+1st & &&&\\
+\hline
+2nd & &&&\\
+\hline
+3rd & &&&\\
+\hline
+\end{tabular}
+}{% presentation
+\vspace{3in}
+}{% nopresentation
+\vspace{2in}
+}{% comments
+}
+
+
+\content{
+\begin{definition} (Monotonicity Criterion) If voters change their votes to
+increase the preference of the winning candidate, it should not harm the
+candidates chances of winning. 
+\end{definition}
+}{% presentation
+}{% nopresentation
+}{% comments
+}
+

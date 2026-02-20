@@ -1,0 +1,158 @@
+\subsection{Beginnings}
+
+\content{
+        \begin{definition} Each individual which is casting a vote is called a
+        \textbf{player}, which we will denote $P_1, P_2, \dots, P_N$, where $N$
+        is the number of players.
+
+        Each player is given a \textbf{weight}, which usually 
+        represents how many votes they get. 
+
+        The \textbf{quota} is the minimum weight needed for the proposal to be
+        approved. 
+
+        We will often represent all of this information in the following form: 
+        $$ [q: w_1, w_2, \dots, w_N] $$
+        where $q$ represents the quota, and $w_i$ is the weight of player $P_i$.
+        \end{definition}
+}{% presentation
+\vspace{2in}
+}{% nopresentation
+\vspace{2in}
+}{% comments
+}
+
+\content{
+        \begin{example} Suppose that in a small company, There are four
+        shareholders, the first has a 30\% ownership, the second and third both
+        have a 25\% ownership, and the fourth a 20\% ownership. The company
+        by-laws state that more than 50\% of the ownership must approve any
+        decision to open a new location. Represent this situation as a wieghted
+        voting system. 
+        \end{example}
+}{% presentation
+\vspace{2in}
+}{% nopresentation
+\vspace{2in}
+}{% comments
+$$ [51: 30, 25, 25, 20] $$
+}
+
+\content{
+        \begin{example} What is wrong with the following weighted voting system? 
+        $$ [11: 4, 3, 2, 1] $$
+        \end{example}
+}{% presentation
+\vspace{2in}
+}{% nopresentation
+\vspace{2in}
+}{% comments
+This is gridlock, nothing can be approved. 
+}
+
+\content{
+        \begin{example} What is wrong with the following weighted voting system? 
+        $$ [3: 3,2,1] $$
+        \end{example}
+}{% presentation
+\vspace{2in}
+}{% nopresentation
+\vspace{2in}
+}{% comments
+This is anarchy, since both yes and no could reach the quota simultaneously. 
+}
+
+\subsubsection{Power}
+
+\content{
+        \begin{example} Consider the weighted voting system 
+        $$ [8: 9,3,2,1]. $$
+        Where does the power lie? Why?
+        \end{example}
+}{% presentation
+\vspace{2in}
+}{% nopresentation
+\vspace{2in}
+}{% comments
+Player 1 has all the power. 
+}
+
+
+\content{
+        \begin{definition} A player is said to have \textbf{veto power} if they
+        are necessary for a proposal to pass. 
+        \end{definition}
+
+        \begin{definition} A \textbf{dictator} is a player who can reach the
+        quota by themselves and also has veto power. 
+        \end{definition}
+
+        \begin{example} Determine all the players who have veto power in the
+        weighted voting system
+        $$ [22: 8, 6, 4, 4, 3, 2, 1]. $$
+        \end{example}
+}{% presentation
+\vspace{2in}
+}{% nopresentation
+\vspace{2in}
+}{% comments
+In the previous example, player 1 is a dictator. \\
+How do we determine who has veto power? Derive the formula 
+$$ V - q < w_i. $$
+}
+
+\content{
+        \begin{example} Determine all the players who have veto power in the
+        following weighted voting system: 
+        $$ [34: 12, 11, 10, 7, 3 ]. $$
+        \end{example}
+}{% presentation
+\vspace{3in}
+}{% nopresentation
+\vspace{3in}
+}{% comments
+Players 1, 2, and 3 all have veto power. 
+}
+
+\content{
+        \begin{definition} A player is called a \textbf{dummy} if their vote is
+        never essential for a group to reach quota. 
+        \end{definition}
+
+        \begin{example} Identify any dummies in the weighted voting system 
+        $$ [10: 7, 6, 2]. $$
+        \end{example}
+}{% presentation
+\vspace{2in}
+}{% nopresentation
+\vspace{2in}\newpage
+}{% comments
+}
+
+\content{
+        Before we can define power, we need a few more definitions. 
+
+        \begin{definition} A \textbf{coalition} is a group of players voting the
+        same way. 
+        \end{definition}
+
+        \begin{definition} A coalition is said to be a \textbf{winning
+        coalition} if the players in the coalition reach the quota. 
+        \end{definition}
+
+        \begin{definition} A player in a coalition is said to be critical if
+        them leaving the coalition would change it from a winning coalition to a
+        losing coalition. 
+        \end{definition}
+
+        \begin{example} Consider the weighted voting system: 
+        $$ [14: 7, 6, 3, 3]. $$
+        Identify all winning coalitions. 
+        \end{example}
+}{% presentation
+\vspace{1in}
+}{% nopresentation
+\vspace{2in}
+}{% comments
+}
+
