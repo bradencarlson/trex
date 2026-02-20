@@ -254,7 +254,7 @@ fn get_document_content(range: &Vec<usize>, outline: &Outline) -> String {
             max = *num;
         }
     }
-    if max >= num_files {
+    if max > num_files {
         println!("There is something wrong with the outline, the
             position of the last section is greater than the number of files present.");
         return c
