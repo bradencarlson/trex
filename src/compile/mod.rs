@@ -69,10 +69,14 @@ impl fmt::Display for CMD {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "The code appended to the command will be:\n");
         match self.engine {
-            _ => {
-                write!(f, "{}", tex::get_tex_code(&self.range, &self.outline, &self.class_options))
+            Engine::PDFLATEX => {
+                write!(f, "{}\n", tex::get_tex_code(&self.range, &self.outline, &self.class_options));
             } 
+            _ => {
+                write!(f, "Invalid engine detected.\n");
+            }
         }
+        write!(f, "Quiet mode enabled: {}", self.quiet)
 
     }
 }
@@ -142,7 +146,6 @@ pub fn compile(outline: Outline, options: &HashMap<String, String>) {
     }
 
     if let Some(s) = options.get(parse_args::DRYRUN_ARG) {
-        println!("Running the following command:");
         println!("{cmd}");
     } else {
         cmd.run();
