@@ -16,6 +16,7 @@ pub const FILENAME_ARG: &str = "-f";
 pub const HELP_ARG: &str = "-h";
 pub const JOBNAME_ARG: &str = "-j";
 pub const CLASS_OPTION: &str = "-o";
+pub const QUIET_ARG: &str = "-q";
 pub const RANGE_ARG: &str = "-r";
 pub const VERBOSE_ARG: &str = "-v";
 pub const CLEAN_ARG: &str = "-c";
@@ -76,7 +77,12 @@ pub fn parse(args: Vec<String>) -> HashMap<String, String> {
             CLEAN_ARG => {
                 idx += 1;
                 map.insert(String::from(CLEAN_ARG), "true".to_string());
-                continue
+                continue;
+            },
+            QUIET_ARG => {
+                idx += 1;
+                map.insert(String::from(QUIET_ARG), "true".to_string());
+                continue;
             },
             HELP_ARG => {
                 idx += 1;

@@ -32,6 +32,7 @@ pub struct CMD {
     pub engine: Engine,
     pub jobname: String,
     pub range: Vec<usize>,
+    pub quiet: bool,
     pub outline: Outline,
     pub class_options: Vec<String>,
 }
@@ -44,6 +45,7 @@ impl CMD {
             engine: Engine::PDFLATEX,
             jobname: String::from("out"),
             range: Vec::<usize>::new(),
+            quiet: false,
             outline: Outline::new(),
             class_options: Vec::<String>::new(),
         }
@@ -133,7 +135,11 @@ pub fn compile(outline: Outline, options: &HashMap<String, String>) {
         }
     }
 
-    let cmd = create_command(proposed_engine, jobname, rng, outline, class_options);
+    let mut cmd = create_command(proposed_engine, jobname, rng, outline, class_options);
+
+    if let Some(_s) = options.get(parse_args::QUIET_ARG) {
+        cmd.quiet = true;
+    }
 
     if let Some(s) = options.get(parse_args::DRYRUN_ARG) {
         println!("Running the following command:");
