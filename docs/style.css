@@ -154,17 +154,17 @@ body {
  **************************************************/
 
 .doc-table {
-  border: 1px solid var(--white);
+  border: 1px solid #ffffff40;
   border-collapse: collapse;
 }
 
 .doc-td {
-  padding: 3px;
+  padding: 6px;
   min-width: 50px;
 }
 
 .doc-td:nth-child(odd) {
-  border-right: 1px solid var(--white);
+  border-right: 1px solid #ffffff40;
   text-align: center;
 }
 
