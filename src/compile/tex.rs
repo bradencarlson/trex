@@ -152,9 +152,23 @@ fn run_pdflatex(cmd: &CMD) {
         &cmd.class_options
     );
 
-    let mut c = Command::new(&cl[0]);
-    c.args(&cl[1..]);
-    c.status().expect("Something went wrong compiling the document.");
+    let mut c = Command::new(&cl[0])
+        .args(&cl[1..])
+        .stdout(Stdio::piped())
+        .spawn()
+        .expect("Error running pdflatex.");
+
+    let pdf_out = c.stdout.expect("Could not get pdflatex output.");
+
+    let sed = Command::new("sed")
+        .stdin(Stdio::from(pdf_out))
+        .arg("-En")
+        .arg("/(Warning|!)/p")
+        .spawn()
+        .expect("Calling sed failed.");
+
+    let output = sed.wait_with_output().expect("Failed to wait on child process.");
+
     
 }
 
