@@ -159,12 +159,16 @@ fn run_pdflatex(cmd: &CMD) {
             let mut output = String::from_utf8(out.stdout)
                 .unwrap_or("No output from pdflatex found.".to_string());
 
-            for line in output.split('\n').collect::<Vec<&str>>().iter() {
-                if line.contains("Warning") {
-                    println!("{}", line);
-                } else if line.starts_with("!") {
-                    println!("{}", line);
+            if cmd.quiet {
+                for line in output.split('\n').collect::<Vec<&str>>().iter() {
+                    if line.contains("Warning") {
+                        println!("{}", line);
+                    } else if line.starts_with("!") {
+                        println!("{}", line);
+                    }
                 }
+            } else {
+                println!("{}", output);
             }
 
     } else {
