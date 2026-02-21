@@ -160,11 +160,22 @@ fn run_pdflatex(cmd: &CMD) {
                 .unwrap_or("No output from pdflatex found.".to_string());
 
             if cmd.quiet {
+                let mut print = false;
                 for line in output.split('\n').collect::<Vec<&str>>().iter() {
+                    if print {
+                        if line.starts_with("?") {
+                            print = false;
+                            continue;
+                        } else {
+                            println!("{}", line);
+                            continue;
+                        }
+                    }
                     if line.contains("Warning") {
                         println!("{}", line);
                     } else if line.starts_with("!") {
                         println!("{}", line);
+                        print = true;
                     }
                 }
             } else {
