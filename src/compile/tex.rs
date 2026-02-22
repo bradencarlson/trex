@@ -14,6 +14,9 @@ use std::process::{Command, Stdio};
 use std::fs;
 use std::fs::File;
 use std::io;
+use std::io::{BufReader,BufRead};
+use std::io::Read;
+use std::thread;
 use std::hash::DefaultHasher;
 use std::hash::{Hash, Hasher};
 
@@ -152,35 +155,41 @@ fn run_pdflatex(cmd: &CMD) {
         &cmd.class_options
     );
 
-    if let Ok(out) = Command::new(&cl[0])
+    if let Ok(mut out) = Command::new(&cl[0])
         .args(&cl[1..])
+        .stdin(Stdio::inherit())
         .stdout(Stdio::piped())
-        .output() {
-            let mut output = String::from_utf8(out.stdout)
-                .unwrap_or("No output from pdflatex found.".to_string());
+        .spawn() {
+            let mut output = out.stdout.take().expect("Failed to
+                take stdout.");
 
-            if cmd.quiet {
+            let reader = BufReader::new(output);
+
+            let handle = thread::spawn(move || {
                 let mut print = false;
-                for line in output.split('\n').collect::<Vec<&str>>().iter() {
-                    if print {
-                        if line.starts_with("?") {
-                            print = false;
-                            continue;
-                        } else {
-                            println!("{}", line);
-                            continue;
+                for line in reader.lines() {
+                    if let Ok(string) = line {
+                        if print {
+                            if string.starts_with("?") {
+                                print = false;
+                                continue;
+                            } else {
+                                println!("{}", string);
+                                continue;
+                            }
+                        }
+                        if string.contains("Warning") {
+                            println!("{}", string);
+                        } else if string.starts_with("!") {
+                            println!("{}", string);
+                            print = true;
                         }
                     }
-                    if line.contains("Warning") {
-                        println!("{}", line);
-                    } else if line.starts_with("!") {
-                        println!("{}", line);
-                        print = true;
-                    }
                 }
-            } else {
-                println!("{}", output);
-            }
+            });
+
+            out.wait().expect("failed to wait for pdflatex.");
+            handle.join().expect("thread panicked.");
 
     } else {
         println!("Something (internally) went wrong while
