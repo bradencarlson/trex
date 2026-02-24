@@ -14,6 +14,7 @@ use std::process::{Command, Stdio};
 use std::fs;
 use std::fs::File;
 use std::io;
+use std::time::Duration;
 use std::io::{BufReader,BufRead};
 use std::io::Read;
 use std::thread;
@@ -163,27 +164,44 @@ fn run_pdflatex(cmd: &CMD) {
             let mut output = out.stdout.take().expect("Failed to
                 take stdout.");
 
-            let reader = BufReader::new(output);
+            let mut reader = BufReader::new(output);
 
             let handle = thread::spawn(move || {
                 let mut print = false;
-                for line in reader.lines() {
-                    if let Ok(string) = line {
-                        if print {
-                            if string.starts_with("?") {
+                let mut line = String::new();
+                while let Ok(success) = reader.read_line(&mut line) {
+                    // remove trailing newline
+                    line.pop();
+                    if success <= 0 {
+                        break;
+                    } else {
+                        if print == true {
+                            println!("{}", line);
+                            if line.starts_with("\n") {
                                 print = false;
-                                continue;
-                            } else {
-                                println!("{}", string);
-                                continue;
                             }
                         }
-                        if string.contains("Warning") {
-                            println!("{}", string);
-                        } else if string.starts_with("!") {
-                            println!("{}", string);
+
+                        if line.contains("Warning") {
+                            if let Some(idx) = line.find(":") {
+                                let message = line.split_at(idx+1).1;
+                                println!("\u{1b}[0;33mWarning:\u{1b}[0;00m{}", message);
+                            }
+                        } else if line.starts_with("!") {
+                            let message = &line[1..];
+                            println!("\u{1b}[1;31mError:\u{1b}[0;00m{}", message);
+                            /*println!("Looks like there is an error. Your options");
+                            println!("are as follows:");
+                            println!("exit [x]");
+                            println!("help [h]");
+                            println!("run in nonstop mode [r]");
+                            println!("pdflatex|");
+                            println!("Note that for the [h] and [r] options, you may have");
+                            println!("to do this more than once, if your document needs a second ");
+                            println!("pass.");*/
                             print = true;
                         }
+                        line = String::new();
                     }
                 }
             });
