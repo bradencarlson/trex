@@ -132,6 +132,8 @@ pub fn run(cmd: &CMD) {
                     }
                     continue;
                 }
+            } else {
+                continue;
             }
         }
 
