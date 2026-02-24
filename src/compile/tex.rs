@@ -88,7 +88,11 @@ pub fn run(cmd: &CMD) {
     };
     while true {
         println!("compiling {}", &cmd.jobname);
-        run_pdflatex(cmd);
+        if !run_pdflatex(cmd) {
+            // If this didn't work, or the user exited (with x option for example)
+            // then just exit now.
+            break;
+        }
 
         match get_file_hash(&aux) {
             Some(h) => aux_hashes.push(h),
@@ -142,7 +146,7 @@ pub fn run(cmd: &CMD) {
 
 }
 
-fn run_pdflatex(cmd: &CMD) {
+fn run_pdflatex(cmd: &CMD) -> bool {
     /* Runs pdflatex with the appropriate tex code. 
      *
      * Paramters: 
@@ -190,15 +194,6 @@ fn run_pdflatex(cmd: &CMD) {
                         } else if line.starts_with("!") {
                             let message = &line[1..];
                             println!("\u{1b}[1;31mError:\u{1b}[0;00m{}", message);
-                            /*println!("Looks like there is an error. Your options");
-                            println!("are as follows:");
-                            println!("exit [x]");
-                            println!("help [h]");
-                            println!("run in nonstop mode [r]");
-                            println!("pdflatex|");
-                            println!("Note that for the [h] and [r] options, you may have");
-                            println!("to do this more than once, if your document needs a second ");
-                            println!("pass.");*/
                             print = true;
                         }
                         line = String::new();
@@ -206,12 +201,15 @@ fn run_pdflatex(cmd: &CMD) {
                 }
             });
 
-            out.wait().expect("failed to wait for pdflatex.");
+            let success = out.wait().expect("failed to wait for pdflatex.").success();
             handle.join().expect("thread panicked.");
+
+            return success;
 
     } else {
         println!("Something (internally) went wrong while
             running pdflatex.");
+        return false;
     }
 
 
