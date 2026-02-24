@@ -242,9 +242,35 @@ fn run_bibtex(cmd: &CMD) {
     cl.push("bibtex".to_string());
     cl.push(cmd.jobname.clone());
 
-    let mut c = Command::new(&cl[0]);
-    c.args(&cl[1..]);
-    c.status().expect("Something went wrong while running bibtex.");
+    if let Ok(mut out) = Command::new(&cl[0])
+        .args(&cl[1..])
+        .stdin(Stdio::inherit())
+        .stdout(Stdio::piped())
+        .spawn() {
+
+            let stdout = out.stdout.take().expect("Failed to capture stdout");
+
+            let mut reader = BufReader::new(stdout);
+
+            let handle = thread::spawn(move || {
+                let mut line = String::new();
+                while let Ok(read) = reader.read_line(&mut line) {
+                    // remove trailing newline.
+                    line.pop();
+                    if read <= 0 {
+                        break;
+                    }
+                    println!("{}", line);
+                    line.clear();
+                }
+            });
+
+            out.wait().expect("failed to wait for bibtex.");
+            handle.join().expect("Failed to close reader.");
+
+    } else {
+        print::error("Error:", vec!["Something went wrong running bibtex"]);
+    }
 }
 
 fn get_pdflatex_command_list(jobname: &String, range: &Vec<usize>,
