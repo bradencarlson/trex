@@ -71,7 +71,7 @@ impl fmt::Display for CMD {
         match self.engine {
             Engine::PDFLATEX => {
                 write!(f, "{}\n", tex::get_tex_code(&self.range, &self.outline, &self.class_options));
-            } 
+            }
             _ => {
                 write!(f, "Invalid engine detected.\n");
             }
@@ -282,7 +282,7 @@ fn generate_range_from_name(name: &str, outline: &Outline) -> Vec<usize> {
                         processed = true;
                         v.push(idx + 1);
                     }
-                    
+
                     idx += 1;
                 }
             }

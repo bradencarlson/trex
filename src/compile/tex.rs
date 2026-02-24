@@ -4,11 +4,11 @@
  * Date: February 2026
  *
  * Implements the neccesary logic for the compilation of tex documents using
- * pdflatex. There are a few public functions: 
+ * pdflatex. There are a few public functions:
  *   clean        - clean up auxiliary files
  *   run          - compile the document
  *   get_tex_code - get the actual tex code which will be used.
- */ 
+ */
 
 use std::process::{Command, Stdio};
 use std::fs;
@@ -23,6 +23,7 @@ use std::hash::{Hash, Hasher};
 
 use crate::config::Outline;
 use crate::utils::stack::TwoStack;
+use crate::utils::print;
 use super::CMD;
 
 pub fn clean() {
@@ -64,7 +65,7 @@ pub fn run(cmd: &CMD) {
      * the function. This will take care of multiple passes, running bibtex
      * if needed, etc.
      *
-     * Paramters: 
+     * Paramters:
      *   cmd - the CMD struct from which to read the outline, jobname, etc.
      */
 
@@ -73,7 +74,7 @@ pub fn run(cmd: &CMD) {
     aux.push_str(".aux");
     bbl.push_str(".bbl");
 
-    // Define a stack with maximum height 2 to hold the hashes for the aux 
+    // Define a stack with maximum height 2 to hold the hashes for the aux
     // and bib files.
     let mut aux_hashes: TwoStack<u64> = TwoStack::new();
     let mut bib_hashes: TwoStack<u64> = TwoStack::new();
@@ -87,7 +88,9 @@ pub fn run(cmd: &CMD) {
         None => {}
     };
     while true {
-        println!("compiling {}", &cmd.jobname);
+        if !cmd.quiet {
+            print::info("info:", vec!["compiling ", &cmd.jobname]);
+        }
         if !run_pdflatex(cmd) {
             // If this didn't work, or the user exited (with x option for example)
             // then just exit now.
@@ -106,13 +109,16 @@ pub fn run(cmd: &CMD) {
                 aux_content = text;
             },
             Err(e) => {
-                println!("Something went wrong getting aux contents.");
-                println!("{}", e);
+                // This is a genuine error that something bad is happening, so do not
+                // ignore this even if cmd.quiet == true
+                print::error("error:", vec!["Something went wrong getting aux contents."]);
             }
         };
 
         if aux_content.contains("bibstyle") || aux_content.contains("bibdata") {
-            println!("running bibtex on {}", &bbl);
+            if !cmd.quiet {
+                print::info("info:", vec!["running bibtex", &bbl]);
+            }
             run_bibtex(cmd);
             match get_file_hash(&bbl) {
                 Some(h) => bib_hashes.push(h),
@@ -121,7 +127,9 @@ pub fn run(cmd: &CMD) {
 
             if bib_hashes.len == 2 {
                 if bib_hashes.one.unwrap_or(0) != bib_hashes.two.unwrap_or(0) {
-                    println!("There are two bib hashes, and they differ, recompiling.");
+                    if !cmd.quiet {
+                        print::info("info:", vec!["There are two bib hashes, and they differ, recompiling."]);
+                    }
                     continue;
                 }
             }
@@ -129,14 +137,18 @@ pub fn run(cmd: &CMD) {
 
         if aux_hashes.len == 2 {
             if aux_hashes.one.unwrap_or(0) != aux_hashes.two.unwrap_or(0) {
-                println!("There are two aux hashes, and they differ, recompiling.");
+                if !cmd.quiet {
+                    print::info("info:", vec!["There are two aux hashes, and they differ, recompiling."]);
+                }
                 continue;
             } else {
                 break;
             }
         } else {
             if aux_content.contains("newlabel") {
-                println!("newlables detected... compiling again.");
+                if !cmd.quiet {
+                    print::info("info:", vec!["newlables detected... compiling again."]);
+                }
                 continue;
             } else {
                 break;
@@ -147,14 +159,14 @@ pub fn run(cmd: &CMD) {
 }
 
 fn run_pdflatex(cmd: &CMD) -> bool {
-    /* Runs pdflatex with the appropriate tex code. 
+    /* Runs pdflatex with the appropriate tex code.
      *
-     * Paramters: 
+     * Paramters:
      *   cmd - the CMD struct from which to read the outline, jobname, etc.
      */
 
     let cl = get_pdflatex_command_list(
-        &cmd.jobname, 
+        &cmd.jobname,
         &cmd.range,
         &cmd.outline,
         &cmd.class_options
@@ -165,46 +177,53 @@ fn run_pdflatex(cmd: &CMD) -> bool {
         .stdin(Stdio::inherit())
         .stdout(Stdio::piped())
         .spawn() {
-            let mut output = out.stdout.take().expect("Failed to
-                take stdout.");
 
-            let mut reader = BufReader::new(output);
+            if !cmd.quiet {
+                let mut output = out.stdout.take().expect("Failed to
+                    take stdout.");
 
-            let handle = thread::spawn(move || {
-                let mut print = false;
-                let mut line = String::new();
-                while let Ok(success) = reader.read_line(&mut line) {
-                    // remove trailing newline
-                    line.pop();
-                    if success <= 0 {
-                        break;
-                    } else {
-                        if print == true {
-                            println!("{}", line);
-                            if line.starts_with("\n") {
-                                print = false;
+                let mut reader = BufReader::new(output);
+
+                let handle = thread::spawn(move || {
+                    let mut print = false;
+                    let mut line = String::new();
+                    while let Ok(success) = reader.read_line(&mut line) {
+                        // remove trailing newline
+                        line.pop();
+                        if success <= 0 {
+                            break;
+                        } else {
+                            if print == true {
+                                println!("{}", line);
+                                if line.starts_with("\n") {
+                                    print = false;
+                                }
                             }
-                        }
 
-                        if line.contains("Warning") {
-                            if let Some(idx) = line.find(":") {
-                                let message = line.split_at(idx+1).1;
-                                println!("\u{1b}[0;33mWarning:\u{1b}[0;00m{}", message);
+                            if line.contains("Warning") {
+                                if let Some(idx) = line.find(": ") {
+                                    let message = line.split_at(idx+2).1;
+                                    print::warning("Warning:", vec![message]);
+                                }
+                            } else if line.starts_with("! ") {
+                                let message = &line[2..];
+                                print::error("Error:", vec![message]);
+                                print = true;
                             }
-                        } else if line.starts_with("!") {
-                            let message = &line[1..];
-                            println!("\u{1b}[1;31mError:\u{1b}[0;00m{}", message);
-                            print = true;
+                            line = String::new();
                         }
-                        line = String::new();
                     }
-                }
-            });
+                });
 
-            let success = out.wait().expect("failed to wait for pdflatex.").success();
-            handle.join().expect("thread panicked.");
+                let success = out.wait().expect("failed to wait for pdflatex.").success();
+                handle.join().expect("thread panicked.");
 
-            return success;
+                return success;
+
+            } else {
+                let success = out.wait().expect("Failed to wait for pdflatex.").success();
+                return success;
+            }
 
     } else {
         println!("Something (internally) went wrong while
@@ -213,7 +232,7 @@ fn run_pdflatex(cmd: &CMD) -> bool {
     }
 
 
-    
+
 }
 
 fn run_bibtex(cmd: &CMD) {
@@ -231,7 +250,7 @@ fn get_pdflatex_command_list(jobname: &String, range: &Vec<usize>,
     /* Generates the actual list of strings which should make up the command
      * that is to be run when running pdflatex.
      *
-     * Parameters: 
+     * Parameters:
      *   jobname       - the name (without extension) of the output file.
      *   range         - the range of files to include.
      *   outline       - the outline of the document.
@@ -395,7 +414,7 @@ fn get_document_content(range: &Vec<usize>, outline: &Outline) -> String {
 fn get_file_hash(filename: &str) -> Option<u64> {
     let mut t = DefaultHasher::new();
     let file = match fs::read(filename) {
-        Ok(f) => f, 
+        Ok(f) => f,
         Err(_) => return None
     };
     file.hash(&mut t);
