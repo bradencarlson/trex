@@ -88,9 +88,6 @@ pub fn run(cmd: &CMD) {
         None => {}
     };
     while true {
-        if !cmd.quiet {
-            print::info("info:", vec!["compiling ", &cmd.jobname]);
-        }
         if !run_pdflatex(cmd) {
             // If this didn't work, or the user exited (with x option for example)
             // then just exit now.
@@ -116,9 +113,6 @@ pub fn run(cmd: &CMD) {
         };
 
         if aux_content.contains("bibstyle") || aux_content.contains("bibdata") {
-            if !cmd.quiet {
-                print::info("info:", vec!["running bibtex ", &cmd.jobname]);
-            }
             run_bibtex(cmd);
             match get_file_hash(&bbl) {
                 Some(h) => bib_hashes.push(h),
@@ -167,6 +161,9 @@ fn run_pdflatex(cmd: &CMD) -> bool {
      *   cmd - the CMD struct from which to read the outline, jobname, etc.
      */
 
+    if !cmd.quiet {
+        print::header("pdflatex");
+    }
     let cl = get_pdflatex_command_list(
         &cmd.jobname,
         &cmd.range,
@@ -189,7 +186,6 @@ fn run_pdflatex(cmd: &CMD) -> bool {
                 let handle = thread::spawn(move || {
                     let mut print = false;
                     let mut line = String::new();
-                    print::header("pdflatex");
                     while let Ok(success) = reader.read_line(&mut line) {
                         // remove trailing newline
                         line.pop();
@@ -239,6 +235,9 @@ fn run_pdflatex(cmd: &CMD) -> bool {
 }
 
 fn run_bibtex(cmd: &CMD) {
+    if !cmd.quiet {
+        print::header("bibtex");
+    }
     let mut cl = Vec::<String>::new();
     cl.push("bibtex".to_string());
     cl.push(cmd.jobname.clone());
