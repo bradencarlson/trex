@@ -248,29 +248,33 @@ fn run_bibtex(cmd: &CMD) {
         .stdout(Stdio::piped())
         .spawn() {
 
-            let stdout = out.stdout.take().expect("Failed to capture stdout");
+            if !cmd.quiet {
+                let stdout = out.stdout.take().expect("Failed to capture stdout");
 
-            let mut reader = BufReader::new(stdout);
+                let mut reader = BufReader::new(stdout);
 
-            let handle = thread::spawn(move || {
-                let mut line = String::new();
-                while let Ok(read) = reader.read_line(&mut line) {
-                    // remove trailing newline.
-                    line.pop();
-                    if read <= 0 {
-                        break;
+                let handle = thread::spawn(move || {
+                    let mut line = String::new();
+                    while let Ok(read) = reader.read_line(&mut line) {
+                        // remove trailing newline.
+                        line.pop();
+                        if read <= 0 {
+                            break;
+                        }
+                        if line.starts_with("Warning--") {
+                            let msg = &line[9..];
+                            print::warning("Warning:", vec![msg]);
+                        }
+                        //println!("{}", line);
+                        line.clear();
                     }
-                    if line.starts_with("Warning--") {
-                        let msg = &line[9..];
-                        print::warning("Warning:", vec![msg]);
-                    }
-                    //println!("{}", line);
-                    line.clear();
-                }
-            });
+                });
 
-            out.wait().expect("failed to wait for bibtex.");
-            handle.join().expect("Failed to close reader.");
+                out.wait().expect("failed to wait for bibtex.");
+                handle.join().expect("Failed to close reader.");
+            } else {
+                out.wait().expect("failed to wait for bibtex.");
+            }
 
     } else {
         print::error("Error:", vec!["Something went wrong running bibtex"]);
