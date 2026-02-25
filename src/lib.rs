@@ -30,6 +30,7 @@ Command line options: \n
   -r  Specify a range of files. This can be a valid range of numbers (i.e.
       1-3,6-9,11) or a specific section or chapter name as it appears in the
       config file.\n
+  -t  Print out code instead of compiling it.\n
   -v  Enable verbose output.\n";
 
 
