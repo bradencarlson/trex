@@ -63,6 +63,21 @@ impl CMD {
         };
     }
 
+    pub fn get_code(&self) -> String {
+        match self.engine {
+            Engine::PDFLATEX => {
+                let mut code = tex::get_code(&self.range, &self.outline, &self.class_options);
+                // the tex submodule wraps the code in "'s, so remove these before returning.
+                code.retain(|c| c != '\"');
+                return code;
+            },
+            _ => {
+                return String::new();
+            }
+        };
+
+    }
+
 }
 
 impl fmt::Display for CMD {
@@ -70,7 +85,7 @@ impl fmt::Display for CMD {
         write!(f, "The code appended to the command will be:\n");
         match self.engine {
             Engine::PDFLATEX => {
-                write!(f, "{}\n", tex::get_tex_code(&self.range, &self.outline, &self.class_options));
+                write!(f, "{}\n", tex::get_code(&self.range, &self.outline, &self.class_options));
             }
             _ => {
                 write!(f, "Invalid engine detected.\n");
@@ -145,8 +160,10 @@ pub fn compile(outline: Outline, options: &HashMap<String, String>) {
         cmd.quiet = true;
     }
 
-    if let Some(s) = options.get(parse_args::DRYRUN_ARG) {
+    if let Some(_s) = options.get(parse_args::DRYRUN_ARG) {
         println!("{cmd}");
+    } else if let Some(_s) = options.get(parse_args::CODE_ARG) {
+        println!("{}",cmd.get_code());
     } else {
         cmd.run();
     }

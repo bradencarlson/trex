@@ -7,7 +7,7 @@
  * pdflatex. There are a few public functions:
  *   clean        - clean up auxiliary files
  *   run          - compile the document
- *   get_tex_code - get the actual tex code which will be used.
+ *   get_code - get the actual tex code which will be used.
  */
 
 use std::process::{Command, Stdio};
@@ -303,12 +303,12 @@ fn get_pdflatex_command_list(jobname: &String, range: &Vec<usize>,
         j.push_str(jobname.as_str());
     }
     cl.push(j);
-    cl.push(get_tex_code(range, outline, class_options));
+    cl.push(get_code(range, outline, class_options));
 
     cl
 }
 
-pub fn get_tex_code(range: &Vec<usize>, outline: &Outline, class_options: &Vec<String>) -> String {
+pub fn get_code(range: &Vec<usize>, outline: &Outline, class_options: &Vec<String>) -> String {
     /* Gets the TeX code of the document, based on the specified range and the structure of the
      * outline file.
      *
@@ -342,7 +342,7 @@ pub fn get_tex_code(range: &Vec<usize>, outline: &Outline, class_options: &Vec<S
 }
 
 fn get_document_content(range: &Vec<usize>, outline: &Outline) -> String {
-    /* Used by get_tex_code to obtain the TeX code of the document based on the range which was
+    /* Used by get_code to obtain the TeX code of the document based on the range which was
      * passed to this command.
      *
      * Returns:
@@ -507,7 +507,7 @@ mod pdflatex {
         c.range = vec![6];
         c.jobname = String::from("lecture-6");
 
-        let tex = get_tex_code(&c.range, &c.outline, &c.class_options);
+        let tex = get_code(&c.range, &c.outline, &c.class_options);
         assert_eq!(tex, "\"\\input{preamble.tex}\\begin{document}\
             \\setcounter{chapter}{0}\
             \\chapter{Chapter 1}\
@@ -528,7 +528,7 @@ mod pdflatex {
         c.range = vec![1,2,3];
         c.jobname = String::from("lectures-1-3");
 
-        let tex = get_tex_code(&c.range, &c.outline, &c.class_options);
+        let tex = get_code(&c.range, &c.outline, &c.class_options);
         assert_eq!(tex, "\"\\input{preamble.tex}\\begin{document}\
             \\setcounter{chapter}{0}\\chapter{Chapter 1}\
             \\setcounter{section}{0}\
@@ -552,7 +552,7 @@ mod pdflatex {
 
         assert_eq!(c.outline.chapter_indices, vec![0,0,0,0,0,0,0]);
 
-        let tex = get_tex_code(&c.range, &c.outline, &c.class_options);
+        let tex = get_code(&c.range, &c.outline, &c.class_options);
         assert_eq!(tex, "\"\\input{preamble.tex}\\begin{document}\\setcounter{section}{0}\
             \\section{Voting Theory}\
             \\setcounter{subsection}{0}\
@@ -577,7 +577,7 @@ mod pdflatex {
         c.range = vec![10];
         c.jobname = String::from("lectures-1-3");
 
-        let tex = get_tex_code(&c.range, &c.outline, &c.class_options);
+        let tex = get_code(&c.range, &c.outline, &c.class_options);
         assert_eq!(tex, "\"\\input{preamble.tex}\\begin{document}\
             \\setcounter{chapter}{1}\
             \\chapter{Chapter 2}\
@@ -599,7 +599,7 @@ mod pdflatex {
         c.range = vec![1,2,3,4,5,6,7,8,9,10];
         c.jobname = String::from("lectures");
 
-        let tex = get_tex_code(&c.range, &c.outline, &c.class_options);
+        let tex = get_code(&c.range, &c.outline, &c.class_options);
         assert_eq!(tex, "\"\\input{preamble.tex}\\begin{document}\
             \\setcounter{chapter}{0}\
             \\chapter{Chapter 1}\
@@ -634,7 +634,7 @@ mod pdflatex {
         c.range = vec![1,2,3,4,5,6,7];
         c.jobname = String::from("lectures");
 
-        let tex = get_tex_code(&c.range, &c.outline, &c.class_options);
+        let tex = get_code(&c.range, &c.outline, &c.class_options);
         assert_eq!(tex, "\"\\input{preamble.tex}\\begin{document}\
             \\setcounter{section}{0}\
             \\section{Voting Theory}\
@@ -669,7 +669,7 @@ mod pdflatex {
         c.range = vec![2,3];
         c.jobname = String::from("out");
 
-        let tex = get_tex_code(&c.range, &c.outline, &c.class_options);
+        let tex = get_code(&c.range, &c.outline, &c.class_options);
 
         assert_eq!(tex,"\"\\input{preamble.tex}\
             \\begin{document}\
@@ -692,7 +692,7 @@ mod pdflatex {
         c.outline = o;
         c.range = compile::generate_range_from_name("Files 4-7", &c.outline);
 
-        let t = get_tex_code(&c.range, &c.outline, &c.class_options);
+        let t = get_code(&c.range, &c.outline, &c.class_options);
 
         assert_eq!(t, "\"\
             \\input{preamble.tex}\
@@ -720,7 +720,7 @@ mod pdflatex {
         c.outline = o;
         c.range = compile::generate_range_from_name("Chapter 2", &c.outline);
 
-        let t = get_tex_code(&c.range, &c.outline, &c.class_options);
+        let t = get_code(&c.range, &c.outline, &c.class_options);
 
         assert_eq!(t, "\"\
             \\input{preamble.tex}\
@@ -791,7 +791,7 @@ mod pdflatex {
         c.class_options = vec![
             String::from("nopresentation")];
 
-        let tex = get_tex_code(&c.range, &c.outline, &c.class_options);
+        let tex = get_code(&c.range, &c.outline, &c.class_options);
         assert_eq!(tex, "\"\\PassOptionsToClass{nopresentation}{article}\
             \\input{preamble.tex}\\begin{document}\
             \\setcounter{chapter}{0}\
@@ -816,7 +816,7 @@ mod pdflatex {
             String::from("nopresentation"),
             String::from("12pt")];
 
-        let tex = get_tex_code(&c.range, &c.outline, &c.class_options);
+        let tex = get_code(&c.range, &c.outline, &c.class_options);
         assert_eq!(tex, "\"\\PassOptionsToClass{nopresentation}{article}\
             \\PassOptionsToClass{12pt}{article}\
             \\input{preamble.tex}\\begin{document}\
@@ -839,7 +839,7 @@ mod pdflatex {
         c.range = vec![4];
         c.jobname = String::from("out");
 
-        let tex = get_tex_code(&c.range, &c.outline, &c.class_options);
+        let tex = get_code(&c.range, &c.outline, &c.class_options);
 
         assert_eq!(tex, "\"\\input{preamble.tex}\
             \\begin{document}\
