@@ -117,7 +117,7 @@ pub fn run(cmd: &CMD) {
 
         if aux_content.contains("bibstyle") || aux_content.contains("bibdata") {
             if !cmd.quiet {
-                print::info("info:", vec!["running bibtex", &bbl]);
+                print::info("info:", vec!["running bibtex ", &cmd.jobname]);
             }
             run_bibtex(cmd);
             match get_file_hash(&bbl) {
@@ -189,6 +189,7 @@ fn run_pdflatex(cmd: &CMD) -> bool {
                 let handle = thread::spawn(move || {
                     let mut print = false;
                     let mut line = String::new();
+                    print::header("pdflatex");
                     while let Ok(success) = reader.read_line(&mut line) {
                         // remove trailing newline
                         line.pop();
@@ -212,7 +213,7 @@ fn run_pdflatex(cmd: &CMD) -> bool {
                                 print::error("Error:", vec![message]);
                                 print = true;
                             }
-                            line = String::new();
+                            line.clear();
                         }
                     }
                 });
@@ -260,7 +261,11 @@ fn run_bibtex(cmd: &CMD) {
                     if read <= 0 {
                         break;
                     }
-                    println!("{}", line);
+                    if line.starts_with("Warning--") {
+                        let msg = &line[9..];
+                        print::warning("Warning:", vec![msg]);
+                    }
+                    //println!("{}", line);
                     line.clear();
                 }
             });

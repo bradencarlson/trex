@@ -1,3 +1,4 @@
+const HEADER_LEN: usize = 80;
 
 pub fn info<T: ToString + ?Sized>(label: &str, message: Vec::<&T>) {
     let mut result = String::new();
@@ -30,3 +31,12 @@ pub fn error<T: ToString + ?Sized>(label: &str, message: Vec::<&T>) {
     println!("{}", result);
 }
 
+pub fn header(label: &str) {
+    let mut header = String::from("-- ");
+    header.push_str(label);
+    header.push_str(" ");
+    while header.len() < HEADER_LEN {
+        header.push_str("-");
+    }
+    println!("{}", header);
+}
