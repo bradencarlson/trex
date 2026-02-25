@@ -32,6 +32,7 @@ pub struct CMD {
     pub engine: Engine,
     pub jobname: String,
     pub range: Vec<usize>,
+    pub quiet: bool,
     pub outline: Outline,
     pub class_options: Vec<String>,
 }
@@ -44,6 +45,7 @@ impl CMD {
             engine: Engine::PDFLATEX,
             jobname: String::from("out"),
             range: Vec::<usize>::new(),
+            quiet: false,
             outline: Outline::new(),
             class_options: Vec::<String>::new(),
         }
@@ -67,10 +69,14 @@ impl fmt::Display for CMD {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "The code appended to the command will be:\n");
         match self.engine {
+            Engine::PDFLATEX => {
+                write!(f, "{}\n", tex::get_tex_code(&self.range, &self.outline, &self.class_options));
+            }
             _ => {
-                write!(f, "{}", tex::get_tex_code(&self.range, &self.outline, &self.class_options))
-            } 
+                write!(f, "Invalid engine detected.\n");
+            }
         }
+        write!(f, "Quiet mode enabled: {}", self.quiet)
 
     }
 }
@@ -133,10 +139,13 @@ pub fn compile(outline: Outline, options: &HashMap<String, String>) {
         }
     }
 
-    let cmd = create_command(proposed_engine, jobname, rng, outline, class_options);
+    let mut cmd = create_command(proposed_engine, jobname, rng, outline, class_options);
+
+    if let Some(_s) = options.get(parse_args::QUIET_ARG) {
+        cmd.quiet = true;
+    }
 
     if let Some(s) = options.get(parse_args::DRYRUN_ARG) {
-        println!("Running the following command:");
         println!("{cmd}");
     } else {
         cmd.run();
@@ -273,7 +282,7 @@ fn generate_range_from_name(name: &str, outline: &Outline) -> Vec<usize> {
                         processed = true;
                         v.push(idx + 1);
                     }
-                    
+
                     idx += 1;
                 }
             }
