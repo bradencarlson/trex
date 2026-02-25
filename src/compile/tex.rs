@@ -12,11 +12,7 @@
 
 use std::process::{Command, Stdio};
 use std::fs;
-use std::fs::File;
-use std::io;
-use std::time::Duration;
 use std::io::{BufReader,BufRead};
-use std::io::Read;
 use std::thread;
 use std::hash::DefaultHasher;
 use std::hash::{Hash, Hasher};
@@ -41,7 +37,6 @@ pub fn clean() {
                     let name = e.file_name();
                     let filename = name.to_str()
                         .expect("Something went wrong.");
-                    let mut valid = false;
                     for ending in file_types.iter() {
                         if filename.ends_with(ending) {
                             files.push(filename.to_string());
@@ -87,7 +82,7 @@ pub fn run(cmd: &CMD) {
         Some(h) => bib_hashes.push(h),
         None => {}
     };
-    while true {
+    loop {
         if !run_pdflatex(cmd) {
             // If this didn't work, or the user exited (with x option for example)
             // then just exit now.
@@ -105,7 +100,7 @@ pub fn run(cmd: &CMD) {
             Ok(text) => {
                 aux_content = text;
             },
-            Err(e) => {
+            Err(_e) => {
                 // This is a genuine error that something bad is happening, so do not
                 // ignore this even if cmd.quiet == true
                 print::error("error:", vec!["Something went wrong getting aux contents."]);
@@ -178,7 +173,7 @@ fn run_pdflatex(cmd: &CMD) -> bool {
         .spawn() {
 
             if !cmd.quiet {
-                let mut output = out.stdout.take().expect("Failed to
+                let output = out.stdout.take().expect("Failed to
                     take stdout.");
 
                 let mut reader = BufReader::new(output);
@@ -351,8 +346,6 @@ fn get_document_content(range: &Vec<usize>, outline: &Outline) -> String {
 
     let mut c = String::new();
     let num_files = outline.files.len();
-    let num_sections = outline.section_positions.len();
-    let num_chapters = outline.chapter_positions.len();
     let start = range[0]-1;
     let end = range[range.len()-1];
 

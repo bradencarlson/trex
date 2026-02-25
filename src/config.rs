@@ -88,19 +88,15 @@ impl fmt::Display for Outline {
          * that they were found in.
          */
 
-        write!(f, "preamble: {}\n", self.preamble);
-        write!(f, "Number of Files: {}\n", self.files.len());
-        write!(f, "handle_subsections: {}\n", self.handle_subsections);
-        let mut c_idx = 0;
-        let mut s_idx = 0;
-        let mut idx = 0;
-
-        write!(f, "\nchapter positions: {:?}", self.chapter_positions);
-        write!(f, "\nchapter names: {:?}", self.chapter_names);
-        write!(f, "\nchapter indices: {:?}", self.chapter_indices);
-        write!(f, "\nsection positions: {:?}", self.section_positions);
-        write!(f, "\nsection names: {:?}", self.section_names);
-        write!(f, "\nsection indices: {:?}", self.section_indices);
+        let _ = write!(f, "preamble: {}\n", self.preamble);
+        let _ = write!(f, "Number of Files: {}\n", self.files.len());
+        let _ = write!(f, "handle_subsections: {}\n", self.handle_subsections);
+        let _ = write!(f, "\nchapter positions: {:?}", self.chapter_positions);
+        let _ = write!(f, "\nchapter names: {:?}", self.chapter_names);
+        let _ = write!(f, "\nchapter indices: {:?}", self.chapter_indices);
+        let _ = write!(f, "\nsection positions: {:?}", self.section_positions);
+        let _ = write!(f, "\nsection names: {:?}", self.section_names);
+        let _ = write!(f, "\nsection indices: {:?}", self.section_indices);
         write!(f, "\nsubsection indices: {:?}", self.subsection_indices)
 
 

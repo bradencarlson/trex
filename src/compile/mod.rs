@@ -11,7 +11,6 @@ use std::collections::HashMap;
 use std::str::FromStr;
 use number_range::NumberRangeOptions;
 use std::process::exit;
-use std::process::Command;
 use std::fmt;
 
 use crate::config::Outline;
@@ -20,7 +19,6 @@ use crate::parse_args;
 mod tex;
 
 const DEFAULT_ENGINE: &str = "pdflatex";
-const DEFAULT_RANGE: &str = "1";
 const DEFAULT_JOBNAME: &str = "job";
 
 pub enum Engine {
@@ -82,13 +80,13 @@ impl CMD {
 
 impl fmt::Display for CMD {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "The code appended to the command will be:\n");
+        let _ = write!(f, "The code appended to the command will be:\n");
         match self.engine {
             Engine::PDFLATEX => {
-                write!(f, "{}\n", tex::get_code(&self.range, &self.outline, &self.class_options));
+                let _ = write!(f, "{}\n", tex::get_code(&self.range, &self.outline, &self.class_options));
             }
             _ => {
-                write!(f, "Invalid engine detected.\n");
+                let _ = write!(f, "Invalid engine detected.\n");
             }
         }
         write!(f, "Quiet mode enabled: {}", self.quiet)
@@ -98,9 +96,8 @@ impl fmt::Display for CMD {
 
 pub fn clean(options: &HashMap<String,String>) {
     /* Removes auxiliary files created during the compilation process. */
-    let pdflatex = String::from("pdflatex");
     match options.get(parse_args::ENGINE_ARG) {
-        Some(pdflatex) => {
+        Some(_a) => {
             tex::clean();
         }
         None => {
@@ -141,7 +138,6 @@ pub fn compile(outline: Outline, options: &HashMap<String, String>) {
             Err(_) => {
                 let v: Vec<usize> = generate_range_from_name(range, &outline);
                 v
-                //exit(2);
             },
         };
 
@@ -313,13 +309,19 @@ fn generate_range_from_name(name: &str, outline: &Outline) -> Vec<usize> {
      * 'all' keyword */
     if !processed {
         if name == "all" {
-            for file in outline.files.iter() {
+            processed = true;
+            for _file in outline.files.iter() {
                 v.push(idx);
                 idx += 1;
             }
         }
     }
 
+    /* Lastly, if everything else fails, then the range passed is invalid, so
+     * let's return the default range. */
+    if !processed {
+        v.push(1);
+    }
 
     return v;
 }
