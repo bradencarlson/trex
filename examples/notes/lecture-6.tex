@@ -1,0 +1,90 @@
+\subsection{Banzhaf Power Index}
+
+\content{
+        \begin{definition} To calculate the Banzhaf Power Index: 
+        \begin{itemize}
+        \item List all winning coalitions.
+        \item In each winning coalition, determine all players who are critical.
+        \item Count up how many times each player is critical. 
+        \item Convert these to fractions by dividing by the total number of times any
+        player is critical. 
+        \end{itemize}
+        \end{definition}
+
+        \begin{example} Calculate the Banzhaf Power Index for the three players
+        in the following weighted voting system 
+        $$ [10: 7, 6, 2]. $$
+        \end{example}
+}{% presentation
+\vspace{3in}
+}{% nopresentation
+\vspace{3in}
+}{% comments
+}
+
+
+\content{
+        \begin{example} Calculate the Banzhaf Power Index for the following
+        weighted voting system
+        $$ [ 8: 6,3,2 ]. $$
+        \end{example}
+}{% presentation
+\vspace{3in}
+}{% nopresentation
+\vspace{3in}
+}{% comments
+$P_1 = 3/5$, $P_2 = 1/5$ and $P_3 =1/5$.
+}
+
+\content{
+        \begin{example} An executive board consists of a president (P) and three 
+        vice-presidents (V1,V2,V3).  For a motion to pass it must have three yes 
+        votes, one of which must be the president's. Find a weighted voting system 
+        to represent this situation, then find the Banzhaf power index of the
+        system. The list of all coalitions is given below
+        \end{example}
+}{% presentation
+\begin{align*}
+\{P_1\} \quad \{P_2\} \quad \{P_3\} \quad \{P_4\} \\
+\{P_1,P_2\} \quad \{P_1,P_3\}\quad \{P_1,P_4\} \quad \{P_2,P_3\}\\
+\{P_2, P_4\} \quad \{P_3, P_4\} \quad \{P_1, P_2, P_3\} \quad \{P_1, P_3,
+P_4\}\\
+\{P_1, P_2, P_4\}\quad \{P_2,P_3, P_4\}\quad \{P_1, P_2, P_3,P_4\}
+\end{align*}
+}{% nopresentation
+\begin{align*}
+\{P_1\} \quad \{P_2\} \quad \{P_3\} \quad \{P_4\} \\
+\{P_1,P_2\} \quad \{P_1,P_3\}\quad \{P_1,P_4\} \quad \{P_2,P_3\}\\
+\{P_2, P_4\} \quad \{P_3, P_4\} \quad \{P_1, P_2, P_3\} \quad \{P_1, P_3,
+P_4\}\\
+\{P_1, P_2, P_4\}\quad \{P_2,P_3, P_4\}\quad \{P_1, P_2, P_3,P_4\}
+\end{align*}
+\vspace{1in}
+}{% comments
+One example of this is $[8: 4, 2, 2, 2]$. The Banzhaf power index of this
+weighted voting system is
+$$ P_1: 2/5\: P_2: 1/5\: P_3: 1/5\: P_4: 1/5 $$
+}
+
+
+\content{
+        \begin{example} Compute the Banzhaf power index for the following
+        weighted voting system. 
+        $$ [16: 7,6,3,3,2 ]. $$
+        The winning coalitions are listed below: 
+        \begin{align*} 
+        \{P_1, P_2, P_3\}, \{P_1, P_2, P_4\}, \{P_1, P_2, P_3, P_4\}, \\
+        \{P_1, P_2, P_3, P_5\}, \{P_1, P_2, P_4, P_5\}, \\
+        \{P_1, P_2, P_3, P_4, P_5\}
+        \end{align*}
+        \end{example}
+}{% presentation
+\vspace{1in}
+}{% nopresentation
+\vspace{1in}
+}{% comments
+Power index for this example is 
+$$ P_1: 3/8\quad P_2: 3/8\quad P_3: 1/8 $$
+$$P_4: 1/8\quad P_5: 0 $$
+}
+

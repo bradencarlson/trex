@@ -1,0 +1,169 @@
+\subsection{Pairwise Comparison Method}
+
+\content{
+        \begin{example} Let's revisit an example from last time. \\
+        \begin{tabular}{|l|c|c|c|c|}
+        \hline
+        & 1 & 3 & 3 & 3 \\
+        \hline
+        1st Choice  & A & A & O & H \\
+        \hline
+        2nd Choice  & O & H &H&A \\
+        \hline
+        3rd Choice & H&O&A&O \\
+        \hline
+        \end{tabular}
+        \end{example}
+}{% presentation
+\vspace{4in}
+}{% nopresentation
+\vspace{2in}
+}{% comments
+Review plurality method. and go over all pairwise comparisons. Is there a
+Condorcet Candidate? Did they win the election? Review definitions of Condorcet
+Candidate and the Condorcet Criteria if needed. 
+}
+
+
+\content{
+        \begin{definition} (Pairwise Comparison Method) Given a preference
+        schedule for an election, perform all one-on-one comparisons (eliminate
+        all but 2 candidates at a time). A candidate recieves a point for each comparison 
+        the candidate wins. If there is a tie, each candidate gets half a point.
+        At the end, the candidate with the most points wins. 
+        \end{definition}
+}{% presentation
+}{% nopresentation
+}{% comments
+}
+
+\content{
+        \begin{example} Suppose we must award one of four students, labeled
+        $A$, $B$, $C$, and $D$, a scholarship. The comitee submits the following
+        preference schedule. With the pairwise comparison method, which student
+        will recieve the scholarship? \\
+        \begin{tabular}{|l|c|c|c|c|} 
+        \hline
+        & 5&5&6&4\\
+        \hline
+        1st & D&A&C&B\\
+        \hline
+        2nd & A&C&B&D\\
+        \hline
+        3rd & C&B&D&A\\
+        \hline
+        4th & B&D&A&C\\
+        \hline
+        \end{tabular}
+        \end{example}
+}{% presentation
+\vspace{3in}
+}{% nopresentation
+\newpage
+\vspace{1in}
+}{% comments
+}
+
+\content{
+        \begin{example} Your turn! Using the pairwise comparison method, which
+        candidate wins the following election? \\
+        \begin{tabular}{|l|c|c|c|c|c|c|}
+        \hline
+        & 3&4&4&6&2&1\\
+        \hline
+        1st & B&C&B&D&B&E\\
+        \hline
+        2nd & C&A&D&C&E&A\\
+        \hline
+        3rd & A&D&C&A&A&D\\
+        \hline
+        4th & D&B&A&E&C&B\\
+        \hline
+        5th & E&E&E&B&D&C\\
+        \hline
+        \end{tabular}\\
+        (Hint: there are 10 comparisons to make on this one)
+        \end{example}
+}{% presentation
+\vspace{4in}
+}{% nopresentation
+\vspace{3in}
+}{% comments
+}
+
+\content{
+        \textbf{Question:} Does the pairwise comparison method satisfy the
+        Condorcet Criterion?
+}{% presentation
+\vspace{1in}
+}{% nopresentation
+\vspace{2cm}
+}{% comments
+}
+
+\content{
+        \begin{example} Using the pairwise comparison method, which
+        candidate wins the following election? \\
+        \begin{tabular}{|l|c|c|c|c|}
+        \hline
+        & 13&14&11&9\\
+        \hline
+        1st & B&D&B&C\\
+        \hline
+        2nd & C&C&A&A\\
+        \hline
+        3rd & A&A&D&D\\
+        \hline
+        4th & D&B&C&B\\
+        \hline
+        \end{tabular}\\
+        \end{example}
+}{% presentation
+\vspace{1in}
+}{% nopresentation
+\vspace{2in}
+\newpage
+}{% comments
+}
+
+
+\content{
+        So what is wrong with this method? 
+        \begin{example} Suppose in one of the previous examples, (recall that
+        $C$ was the winner), the candidate $D$ is discovered to be inelegible
+        for the scholarship due to failing a class last semester. With $D$ gone,
+        the comittee decides to recount the votes using the same method. Is the
+        outcome the same? \\
+        \begin{tabular}{|l|c|c|c|c|} 
+        \hline
+        & 5&5&6&4\\
+        \hline
+        1st & D&A&C&B\\
+        \hline
+        2nd & A&C&B&D\\
+        \hline
+        3rd & C&B&D&A\\
+        \hline
+        4th & B&D&A&C\\
+        \hline
+        \end{tabular}
+        \end{example}
+}{% presentation
+\vspace{4in}
+}{% nopresentation
+\vspace{2in}
+}{% comments
+}
+
+
+\content{
+        \begin{definition} (Independence of Irrelevant Alternatives (IIA)
+        Criterion) If a non-winning candidate is removed from the ballot, it
+        should not change the winner of the election. 
+        \end{definition}
+}{% presentation
+\vspace{1in}
+}{% nopresentation
+}{% comments
+Note that the pairwise comparison method can violate this criterion. 
+}

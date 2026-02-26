@@ -1,0 +1,120 @@
+\subsection{Shapley-Shubik Power Index}
+
+\content{
+        \begin{definition} A sequential coalition is an ordered coalition, that
+        is, it keeps track of the order in which each player joins the
+        coalition. 
+        \end{definition}
+}{% presentation
+}{% nopresentation
+}{% comments
+We will use the notation 
+$$ \la P_1, P_2, P_3\ra$$
+to denote sequential coalitions. 
+}
+
+\content{
+        \begin{definition} A \textbf{pivotal player} is the player in the
+        coalition which changes the coalition from a losing coalition to a
+        winning one.
+        \end{definition}
+}{% presentation
+}{% nopresentation
+}{% comments
+}
+
+\content{
+        \begin{definition} (Shapley-Shubik power index) To compute the
+        Shapley-Shubik power index: 
+        \begin{itemize}
+        \item List all sequential coalitions
+        \item Determine all pivotal players
+        \item Count up how many times each player was pivotal
+        \item convert these into fractions by dividing each count by the total
+        number of sequential coalitions
+        \end{itemize}
+        \end{definition}
+}{% presentation
+}{% nopresentation
+}{% comments
+}
+
+\content{
+        \begin{example} Calculate the Shapley-Shubik Power Index for the following
+        weighted voting system
+        $$ [ 8: 6,3,2 ]. $$
+        \end{example}
+}{% presentation
+\vspace{3in}
+}{% nopresentation
+\vspace{3in}
+}{% comments
+Power index is: 
+$$ P_1: 2/3, P_2: 1/6, P_3: 1/6.$$
+}
+
+
+\content{
+        \begin{example} Compute the Shapley-Shubik Power Index for the weighted
+        voting system: 
+        $$ [ 36 : 20, 17, 15 ] $$
+        \end{example}
+}{% presentation
+\vspace{3in}
+}{% nopresentation
+\vspace{3in}
+}{% comments
+$P_1 = 1/2$, $P_2 = 1/2$, $P_3 = 0$.
+}
+
+\content{
+        \begin{example} Compute the Shapley-Shubik Power Index for the weighted
+        voting system: 
+        $$ [ 22: 23, 15, 7 ]. $$
+        \end{example}
+}{% presentation
+\vspace{2in}
+}{% nopresentation
+\vspace{2in}
+}{% comments
+Notice that $P_1$ is \textbf{not} a dictator!
+}
+
+\content{
+        \begin{example} Small review: Compute the Banzhaf Power Index for the weighted
+        voting system: 
+        $$ [ 39: 23, 17, 15 ]. $$
+        Are there any dummies in this system? 
+        \end{example}
+}{% presentation
+\vspace{3in}
+}{% nopresentation
+\vspace{3in}
+}{% comments
+Power index: 
+$$ P_1: 1/2, P_2: 1/2, P_3: 0. $$
+}
+
+\content{
+        \begin{example} Consider the weighted voting system given by 
+        $$ [ q: 7, 3, 1 ]. $$
+        Which values of $q$ result in a dictator? (list all possible values)
+        \end{example}
+}{% presentation
+\vspace{3in}
+}{% nopresentation
+\vspace{1in}
+}{% comments
+}
+
+\content{
+        \begin{example} In the Shapley-Shubik method, is it possible for a dummy
+        to be a pivotal player? Why or why not? 
+        \end{example}
+}{% presentation
+\vspace{2in}
+}{% nopresentation
+\vspace{2in}
+}{% comments
+No, if they were, they would be a critical player in a winning coalition. 
+}

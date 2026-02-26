@@ -10,15 +10,17 @@
 use std::collections::HashMap;
 use std::fs;
 
+pub const CLEAN_ARG: &str = "-c";
 pub const DRYRUN_ARG: &str = "-d";
 pub const ENGINE_ARG: &str = "-e";
 pub const FILENAME_ARG: &str = "-f";
 pub const HELP_ARG: &str = "-h";
 pub const JOBNAME_ARG: &str = "-j";
 pub const CLASS_OPTION: &str = "-o";
+pub const QUIET_ARG: &str = "-q";
 pub const RANGE_ARG: &str = "-r";
+pub const CODE_ARG: &str = "-t";
 pub const VERBOSE_ARG: &str = "-v";
-pub const CLEAN_ARG: &str = "-c";
 
 pub fn parse(args: Vec<String>) -> HashMap<String, String> {
     /* Takes in a vector of arguments, considers them in pairs, and if they represent a valid (key,
@@ -76,7 +78,17 @@ pub fn parse(args: Vec<String>) -> HashMap<String, String> {
             CLEAN_ARG => {
                 idx += 1;
                 map.insert(String::from(CLEAN_ARG), "true".to_string());
-                continue
+                continue;
+            },
+            QUIET_ARG => {
+                idx += 1;
+                map.insert(String::from(QUIET_ARG), "true".to_string());
+                continue;
+            },
+            CODE_ARG => {
+                idx +=1;
+                map.insert(String::from(CODE_ARG), "true".to_string());
+                continue;
             },
             HELP_ARG => {
                 idx += 1;

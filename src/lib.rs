@@ -9,10 +9,10 @@ use std::collections::HashMap;
 
 pub mod parse_args;
 pub mod config;
-pub mod outline;
 pub mod compile;
+pub mod utils;
 
-const help_message: &str = "\
+const HELP_MESSAGE: &str = "\
 TreX Help Page\n\
 \n\
 Compiles multi-file markup languages. Currently, only LaTeX is supported.
@@ -26,9 +26,11 @@ Command line options: \n
   -h  Show this help page.\n
   -j  Specify jobname (name of output file, do not include file extension).\n
   -o  Specify a class option.\n
+  -q  Suppress all output.\n
   -r  Specify a range of files. This can be a valid range of numbers (i.e.
       1-3,6-9,11) or a specific section or chapter name as it appears in the
       config file.\n
+  -t  Print out code instead of compiling it.\n
   -v  Enable verbose output.\n";
 
 
@@ -36,7 +38,7 @@ pub fn run(args: &HashMap<String,String>) {
 
     match args.get(parse_args::HELP_ARG) {
         Some(_value) => {
-            println!("{}", help_message);
+            println!("{}", HELP_MESSAGE);
             return;
         },
         None => {}

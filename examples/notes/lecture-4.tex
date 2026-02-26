@@ -1,0 +1,214 @@
+\subsection{Borda Count Method and Voting Theory Review}
+
+\content{
+        \begin{example} Let's just dive right into an example. \\
+        \begin{tabular}{|l|c|c|c|c|}
+        \hline
+        & 51 & 25 & 10 & 14 \\
+        \hline
+        1st & S&T&P&O\\
+        \hline
+        2nd & T&P&T&T\\
+        \hline
+        3rd & O&O&O&P\\
+        \hline
+        4th & P&S&S&S\\
+        \hline
+        \end{tabular}
+        \end{example}
+}{% presentation
+\vspace{3in}
+}{% nopresentation
+\vspace{3in}
+}{% comments
+Go over how points are assigned, then do the example. $T$ is the winner of this
+election, with 325 points.
+}
+
+\content{
+        \begin{example} Determine who wins under the Borda Count method.\\
+        \begin{tabular}{|l|c|c|c|c|c|}
+        \hline
+        & 44 & 14 & 70 & 22 & 80 \\
+        \hline
+        1st & G&G&M&M&B\\
+        \hline
+        2nd & M&B&G&B&M\\
+        \hline
+        3rd & B&M&B&G&G\\
+        \hline
+        \end{tabular}
+        \end{example}
+}{% presentation
+\vspace{2in}
+}{% nopresentation
+\vspace{3in}\newpage
+}{% comments
+}
+
+\content{
+        \begin{example} Your turn! Use the Borda Count method to determine who
+        wins the following two elections! \\
+        \begin{tabular}{|l|c|c|c|c|}
+        \hline
+        & 11 & 5 & 10 & 3 \\
+        \hline
+        1st & A&C&B&A \\
+        \hline
+        2nd & C&B&C&B\\
+        \hline
+        3rd & B&A&A&C\\
+        \hline
+        \end{tabular}
+        \end{example}
+}{% presentation
+\vspace{2in}
+}{% nopresentation
+\vspace{3in}
+}{% comments
+}
+
+\content{
+        \begin{example} Use the Borda Count method to determine who
+        wins the following election! \\
+        \begin{tabular}{|l|c|c|c|c|}
+        \hline
+        &  120 & 50 & 40 & 90 \\
+        \hline
+        1st & C&B&D&A\\
+        \hline
+        2nd & D&C&A&C\\
+        \hline
+        3rd & B&A&B&B\\
+        \hline
+        4th & A&D&C&D\\
+        \hline
+        \end{tabular}
+        \end{example}
+}{% presentation
+\vspace{2in}
+}{% nopresentation
+\vspace{3in}\newpage
+}{% comments
+}
+
+\content{
+        \begin{example} Let's go back to the first example. Recall that the
+        winner of the election was $T$ with 325 points. Is there something not
+        fair about that? \\
+        \begin{tabular}{|l|c|c|c|c|}
+        \hline
+        & 51 & 25 & 10 & 14 \\
+        \hline
+        1st & S&T&P&O\\
+        \hline
+        2nd & T&P&T&T\\
+        \hline
+        3rd & O&O&O&P\\
+        \hline
+        4th & P&S&S&S\\
+        \hline
+        \end{tabular}
+        \end{example}
+}{% presentation
+\vspace{3in}
+}{% nopresentation
+\vspace{3in}
+}{% comments
+$S$ has a majority!
+}
+
+\content{
+        \begin{example} Use the Plurality method to determine the winner of this
+        election. \\
+        \begin{tabular}{|l|c|c|c|c|}
+        \hline
+        & 9 & 19 & 11 & 8 \\
+        \hline
+        1st & B&A&C&B\\
+        \hline
+        2nd & A&B&B&C\\
+        \hline
+        3rd & C&C&A&A\\
+        \hline
+        \end{tabular}
+        \end{example}
+}{% presentation
+\vspace{2in}
+}{% nopresentation
+\vspace{2in}
+}{% comments
+}
+
+\content{
+        \begin{example} With the same preference schedule as in the previous
+        example, who wins under the Pairwise Comparison method? 
+        \end{example}
+}{% presentation
+\vspace{3in}
+}{% nopresentation
+\vspace{3in}
+}{% comments
+}
+
+\content{
+        \begin{example} Use the Plurality with Elimination method to determine who wins
+        this election. \\
+        \begin{tabular}{|l|c|c|c|c|c|c|}
+        \hline
+        & 120 & 50 & 40 & 90 & 60 & 100\\
+        \hline
+        1st & C&B&D&A&A&D\\
+        \hline
+        2nd & D&C&A&C&D&B\\
+        \hline
+        3rd & B&A&B&B&C&A\\
+        \hline
+        4th & A&D&C&D&B&C\\
+        \hline
+        \end{tabular}
+        \end{example}
+}{% presentation
+\vspace{3in}
+}{% nopresentation
+\vspace{3in}
+}{% comments
+}
+
+\content{
+        \begin{example} Time to think! Does the Pairwise Comparison Method
+        Satisfy the Majority Criterion? Why or why not? 
+        \end{example}
+}{% presentation
+\vspace{2in}
+}{% nopresentation
+\vspace{2in}
+}{% comments
+}
+
+\content{
+Fairness Criterion: These are all things that we think should be true if a
+voting method is fair. 
+\begin{enumerate}
+\item Condorcet Criterion: If there is a Condorcet candidate, they should win
+the election.
+\item Independence of Irrelevant Alternatives (IIA) Criterion: if a loser drops
+out of the election, this should not hurt the winners chances of winning.
+\item Monotonicity Criterion: If voters change their votes to support the
+winner, this should not hurt the winners chances of winning.
+\item Majority Criterion: If a candidate has a majority, they should win the
+election. 
+\end{enumerate}
+}{% presentation
+}{% nopresentation
+}{% comments
+}
+
+\content{
+\begin{theorem} (Arrow's Impossibility Theorem) No voting method is guaranteed
+to always satisfy all four fairness criterion. 
+\end{theorem}
+}{% presentation
+}{% nopresentation
+}{% comments
+}
