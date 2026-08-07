@@ -142,6 +142,7 @@ pub fn run(cmd: &CMD) {
                 }
                 continue;
             } else {
+                print::info("info:", vec!["no newlabels detected... no need to recompile."]);
                 break;
             }
         }
