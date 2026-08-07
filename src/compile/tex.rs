@@ -196,15 +196,20 @@ fn run_pdflatex(cmd: &CMD) -> bool {
                             }
 
                             if line.contains("Warning") {
-                                if let Some(idx) = line.find(": ") {
-                                    let message = line.split_at(idx+2).1;
-                                    print::warning("Warning:", vec![message]);
+                                if line.contains("backwards compatibility") {
+                                    print::info("Info:", vec!["backwards compatibility mode detected."]);
+                                } else {
+
+                                    if let Some(idx) = line.find(": ") {
+                                        let message = line.split_at(idx+2).1;
+                                        print::warning("Warning:", vec![message]);
+                                    }
                                 }
                             } else if line.starts_with("! ") {
                                 let message = &line[2..];
                                 print::error("Error:", vec![message]);
                                 print = true;
-                            }
+                            } 
                             line.clear();
                         }
                     }
