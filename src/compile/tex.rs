@@ -26,7 +26,7 @@ pub fn clean() {
     /* Cleans up auxiliary files created when compiling a tex document. */
 
     let mut files = Vec::<String>::new();
-    let file_types = vec![".aux", ".log", ".toc", ".bbl", ".blg"];
+    let file_types = vec![".out", ".aux", ".log", ".toc", ".bbl", ".blg"];
     if let Ok(dir) = fs::read_dir(".") {
         for entry in dir {
             if let Ok(e) = entry {
@@ -142,6 +142,7 @@ pub fn run(cmd: &CMD) {
                 }
                 continue;
             } else {
+                print::info("info:", vec!["no newlabels detected... no need to recompile."]);
                 break;
             }
         }
